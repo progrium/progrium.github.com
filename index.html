@@ -20,6 +20,8 @@
       #wrapper { position: absolute; left: 50%; margin-left: -295px; width: 590;}
       
     </style>
+    <script type="text/javascript" 
+      src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
   </head>
   <body>
     <div id="wrapper">
@@ -127,8 +129,8 @@
     </div>
     <script type="text/javascript" src="http://www.scriptlets.org/run/18tphza"></script>
     <script type="text/javascript">
-      document.getElementById('flickrembed').src = document.getElementById('flickrembed').src.replace('FLICKRSECRET', flickrThing);
-      document.getElementById('flickrparam').value = document.getElementById('flickrparam').value.replace('FLICKRSECRET', flickrThing);
+      $('flickrembed').src = $('flickrembed').src.replace('FLICKRSECRET', flickrThing);
+      $('flickrparam').value = $('flickrparam').value.replace('FLICKRSECRET', flickrThing);
     </script>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
