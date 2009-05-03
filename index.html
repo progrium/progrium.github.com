@@ -116,7 +116,7 @@
       <param value="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=ffffff&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi=771cae21a88698728b6ed8d5e050f402&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c" name="movie"/>
       <param value="high" name="quality"/>
       <param value="#ffffff" name="bgcolor"/>
-      <embed width="345" height="84" align="" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="photo" bgcolor="#ffffff" quality="high" src="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=ffffff&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi=771cae21a88698728b6ed8d5e050f402&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c"/>
+      <embed id="flickrflash" width="345" height="84" align="" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="photo" bgcolor="#ffffff" quality="high" src="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=ffffff&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi=FLICKRSECRET&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c"/>
       </object>
       <!-- End of Flickr Badge -->
     </div>
@@ -125,6 +125,10 @@
       
       
     </div>
+    <script type="text/javascript" src="http://www.scriptlets.org/run/18tphza"></script>
+    <script type="text/javascript">
+      document.getElementById('flickrflash').src = document.getElementById('flickrflash').src.replace('FLICKRSECRET', flickrThing);
+    </script>
     <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
