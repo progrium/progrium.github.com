@@ -129,7 +129,7 @@
     </div>
     <script type="text/javascript" src="http://www.scriptlets.org/run/18tphza"></script>
     <script type="text/javascript">
-      $('flickrembed').src = $('flickrembed').src.replace('FLICKRSECRET', flickrThing);
+      if ($('flickrembed')) { $('flickrembed').src = $('flickrembed').src.replace('FLICKRSECRET', flickrThing); }
       $('flickrparam').value = $('flickrparam').value.replace('FLICKRSECRET', flickrThing);
     </script>
     <script type="text/javascript">
