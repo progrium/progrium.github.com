@@ -2,165 +2,160 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>progrium == "Jeff Lindsay"</title>
-    <style type="text/css">
-      body,td,th { font-size: 12px; font-family: Trebuchet MS, helvetica;}
-      div.friendfeed.widget { top: 0px; border: 0px; font-size: 12px; font-family: Trebuchet MS, helvetica; width: 320px !important; }
-      .friendfeed.widget, div.friendfeed.widget div, div.friendfeed.widget span, div.friendfeed.widget img, div.friendfeed.widget table, div.friendfeed.widget tr, div.friendfeed.widget td { line-height: 14px !important;}
-      div.friendfeed.widget .feed { padding-left: 0px;}
-      #header { margin-left: 94px; margin-bottom: 25px; }
-      #header h2 {margin-bottom: 2px; margin-top: 0px; font-size: 23px; }
-      #header ul {list-style-type: square; margin-top: 0px; padding-left: 20px;}
-      h3 { margin: 0px;}
-      table { margin-bottom: 10px; margin-left: -2px;}
-      #info { width: 275px; float: left; }
-      #projects { width: 250px; float: right; margin-top: 100px; margin-left: -148px;}
-      #stream { width: 320px; float: left; margin-top: 95px; margin-left: -275px;}
-      #images { width: 275px; float: left; margin-left: -80px;}
-      #wrapper { position: absolute; left: 50%; margin-left: -295px; width: 590;}
-      
-    </style>
-    <script type="text/javascript" src="http://use.typekit.com/faj7pkq.js"></script>
-    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    <title>progrium :: Jeff Lindsay :: Hacker-philosopher</title>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/style/bootstrap.min.css" />
     <script type="text/javascript" 
       src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
     <script type="text/javascript" src="http://www.scriptlets.org/run/18tphza"></script>
-		<link rel="me" href="http://www.google.com/profiles/progrium" />
+    <link rel="me" href="http://www.google.com/profiles/progrium" />
+    <style type="text/css">
+      body { 
+        background: url(/images/progrium_bg.png) repeat-x;
+        background-color: #eaf0e2;
+        font-family: 'Droid Sans', sans-serif;
+        }
+      #header {
+        color: #eaf0e2;
+        text-shadow: 2px 2px 4px #444;
+      }
+      a:link, a:hover, a:visited {
+        color: #e6f0e6;
+      }
+      #header img {
+        width: 320px;
+        height: 320px;
+        -ms-transform:rotate(-6deg);
+        -o-transform:rotate(-6deg);
+        -webkit-transform:rotate(-6deg);
+        -moz-transform:rotate(-6deg);
+        float: left;
+        margin-top: 90px;
+        -moz-box-shadow: 2px 2px 8px #444;
+        -webkit-box-shadow: 2px 2px 8px #444;
+        box-shadow: 2px 2px 8px #444;
+        }
+      #header h1 {
+        font-family: 'Droid Serif', serif; font-weight: 400; font-size: 60px;
+        color: #f8fbf8;
+        margin-top: 120px;
+      }
+      #header h1 small {
+        font-family: 'Droid Sans', sans-serif; font-weight: 400; font-size: 30px;
+        position: absolute;
+        margin-left: -180px;
+        padding-top: 40px;
+        color: #aab0aa;
+        
+      }
+      #header h2 {
+        font-family: 'Droid Sans', sans-serif; font-weight: 400; font-size: 30px;
+        color: #e6f0e6;
+        margin-top: 80px;
+        margin-left: 30px;
+      }
+      #header ul {
+        margin-left: 180px;
+        list-style-type: none;
+        position: absolute;
+        top: 30px;
+      }
+      #header li {
+        font-family: 'Droid Sans', sans-serif;
+        float: left;
+        margin-left: 40px;
+        font-size: 24px;
+      }
+      #content {
+        margin-top: 40px;
+        margin-bottom: 50px;
+      }
+      #organizations {
+        list-style-type: none;
+      }
+      #organizations li {
+        font-family: 'Droid Sans', sans-serif;
+        float: left;
+        width: 200px;
+        margin-right: 30px;
+        font-size: 24px;
+        margin-left: 80px;
+        font-size: 12px;
+      }
+      #organizations img {
+        width: 80px;
+        height: 80px;
+        float: left;
+        margin-left: -90px;
+      }
+      #organizations h3 {
+        font-weight: bold;
+        font-size: 24px;
+        line-height: 24px;
+      }
+      #organizations p {
+        font-size: 12px;
+        line-height: 14px;
+        padding-top: 10px;
+        color: #404040;
+      }
+      #footer {
+        background: url(/images/progrium_bg.png) repeat-x;
+        padding: 45px;
+      }
+      #footer .banners {
+        padding-right: 150px;
+      }
+    </style>
   </head>
   <body>
-    <div id="wrapper">
-      
-      <div id="info">
-        <object width="86" height="86" style="float: left;"><param name="movie" value="http://robo.to/swf/smirk.swf?uuid=986f7e2ef7493820fb69e29b8e29e1bdc2374cf7&cURI=rtmp://robo.to/smirk_ul&sURL=http://robo.to/amf/gateway&sName=SmirksController&mirror=0&hideBlerb=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://robo.to/swf/smirk.swf?uuid=986f7e2ef7493820fb69e29b8e29e1bdc2374cf7&cURI=rtmp://robo.to/smirk_ul&sURL=http://robo.to/amf/gateway&sName=SmirksController&mirror=0&hideBlerb=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="86" height="86"></embed></object>
-        <div id="header">
-          <h2>Jeff Lindsay</h2>
+    <div class="container">
+      <div id="header" class="row">
+        <div class="span6">
+          <img src="/images/progrium_photo.png" alt="Jeff Lindsay" />
+        </div>
+        <div class="span10">
+          <h1>Jeff Lindsay <small>(progrium)</small></h1>
+          <h2>Pragmatic idealist. Builder.<br />Thought explorer.</h2>
           <ul>
-            <li><a href="http://www.facebook.com/progrium">Facebook</a></li>
-            <li><a href="http://www.linkedin.com/in/progrium">LinkedIn</a></li>
-            <li><a href="http://github.com/progrium">GitHub</a></li>
+            <li><a href="http://blogrium.com">Blog</a></li>
+            <li><a href="http://github.com/progrium">Projects</a></li>
+            <li><a href="http://blogrium.com/about">About</a></li>
           </ul>
         </div>
       </div>
-      
-    <div id="projects">
-    
-    <table><tr>
-      <td><img width="42" height="42" src="images/blogrium.gif" /></td>
-      <td valign="top">
-        <a href="http://blogrium.wordpress.com" style="font-weight: bold;">Blogrium</a><br />
-        progrium has a blogrium<br />
-      </td></tr></table>
-      
-    <table><tr>
-      <td><img width="42" height="42" src="http://hackerdojo.pbworks.com/f/logo_icon.png" /></td>
-      <td valign="top">
-        <a href="http://hackerdojo.com">Hacker Dojo</a><br />
-        Geek community center<br />
-      </td></tr></table>
-
-    <table><tr>
-      <td><img width="42" height="42" src="http://www.notify.io/favicon.ico" /></td>
-      <td valign="top">
-        <a href="http://notify.io">Notify.io</a><br />
-        Web notification system
-      </td></tr></table>
-
-    <table><tr>
-      <td><img width="42" height="42" src="http://superhappydevhouse.org/f/shdh_logo.png?ts=1229477587" /></td>
-      <td valign="top">
-        <a href="http://superhappydevhouse.org">SuperHappyDevHouse</a><br />
-        Party for hackers and thinkers<br />
-        <small>See also: <a href="http://hackerdojo.com">Hacker Dojo</a></small>
-      </td></tr></table>
-      
-    <table><tr>
-      <td><img src="http://tigsource.com/favicon.ico" width="40" height="40" style="padding-left: 1px;" /></td>
-      <td valign="top">
-        <a href="http://tigsource.com">TIGSource</a><br />
-        The cult of indie games<br />
-        <small>See also: <a href="http://tigforums.com">TIGForums</a></small>
-      </td></tr></table>
-      
-    <table><tr>
-      <td><img src="http://db.tigsource.com/favicon.ico" width="40" height="40" style="padding-left: 1px;" /></td>
-      <td valign="top">
-        <a href="http://tigdb.com">TIGdb</a><br />
-        Discover the best indie games<br />
-      </td></tr></table>
-      
-    <table><tr>
-      <td><img width="42" height="42" src="images/webhooks.png" /></td>
-      <td valign="top">
-        <a href="http://webhooks.org">WebHooks</a><br />
-        User-defined HTTP callbacks<br />
-      </td></tr></table>
-      
-    <table><tr>
-      <td><img width="40" height="40" src="http://www.postbin.org/favicon.ico" /></td>
-      <td valign="top">
-        <a href="http://www.postbin.org">PostBin</a><br />
-        Debug webhooks<br />
-      </td></tr></table>
-      
-    <table><tr>
-      <td><img width="40" height="40" src="http://www.scriptlets.org/favicon.ico" /></td>
-      <td valign="top">
-        <a href="http://www.scriptlets.org">Scriptlets</a><br />
-        Quick web scripts<br />
-      </td></tr></table>
-      
-    <!--table><tr>
-      <td><img width="40" height="40" src="http://www.getachievements.com/favicon.ico" /></td>
-      <td valign="top">
-        <a href="http://www.getachievements.com">Get Achievements</a><br />
-        Simple achievements platform<br />
-      </td></tr></table-->
-      
-    <!--table><tr>
-      <td><img width="40" height="40" src="images/groksystems.png" /></td>
-      <td valign="top">
-        <a href="http://groksystems.com">Grok Systems</a><br />
-        Blog about systems theory<br />
-      </td></tr></table-->
-      
-    </div>    
-    
-    
-
-    
-    
-    <div id="stream">
-    
-    <script type="text/javascript" src="http://friendfeed.com/embed/widget/progrium?v=2&amp;hide_logo=1&amp;hide_comments_likes=1&amp;width=275"></script>
-    
+      <div id="content" class="row">
+        <ul id="organizations" class="span16">
+          <li>
+            <img src="/images/hackerdojo_logo.png" />
+            <h3>Hacker Dojo</h3>
+            <small>Founding Director</small>
+            <p>Community center for builders,<br /> creators, and technologists</p>
+          </li>
+          <li>
+            <img src="/images/twilio_logo.png" />
+            <h3>Twilio</h3>
+            <small>System Designer</small>
+            <p>API toolkit for easily building apps<br /> that integrate with telecom systems</p>
+          </li>
+          <li>
+            <img src="/images/devhouse_logo.png" />
+            <h3>DevHouse</h3>
+            <small>Founding Organizer</small>
+            <p>Party for hackers and thinkers in<br /> Silicon Valley and around the world</p>
+          </li>
+        </ul>
+      </div>
     </div>
-    
-    
-    
-    <div id="images">
-      <!-- Start of Flickr Badge -->
-      
-      <script type="text/javascript">
-        document.write('<object id="zg" width="345" height="84" align="" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param id="flickrparam" value="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=ffffff&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi='+flickrThing+'&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c" name="movie"/><param value="high" name="quality"/><param value="#ffffff" name="bgcolor"/><embed id="flickrembed" width="345" height="84" align="" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="photo" bgcolor="#ffffff" quality="high" src="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=ffffff&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi='+flickrThing+'&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c"/></object>');
-      </script>
-      
-      <!-- End of Flickr Badge -->
+    <div id="footer">
+      <div class="container">
+        <a href="http://twitstamp.com"><img src="http://twitstamp.com/progrium/standard.png" border="0" alt="twitstamp.com" style="margin-right: 40px; padding-bottom: 5px;"/></a>
+        <script type="text/javascript">
+          document.write('<object id="zg" width="345" height="85" align="" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param id="flickrparam" value="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=40655b&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi='+flickrThing+'&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c" name="movie"/><param value="high" name="quality"/><param value="#40655b" name="bgcolor"/><embed id="flickrembed" width="345" height="85" align="" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" name="photo" bgcolor="#40655b" quality="high" src="http://www.flickr.com/apps/badge/flashbadge.swf?host=http://www.flickr.com&bg_color=40655b&cols=8&rows=2&wh=42&swapInterv=3&loadInterv=120&transition=bigThenSmall&nsid=76895297@N00&scope=0&favorites=0&tags=&tag_mode=all&group_id=&text=&set_id=&context=&v=62865&magisterLudi='+flickrThing+'&auth_token=&auth_hash=4297d05d5ef7c48f699d4748f19e4ca9&flickr_secret=164819fc6fcd852c"/></object>');
+        </script><object width="85" height="85"><param name="movie" value="http://robo.to/swf/smirk.swf?uuid=986f7e2ef7493820fb69e29b8e29e1bdc2374cf7&cURI=rtmp://robo.to/smirk_ul&sURL=http://robo.to/amf/gateway&sName=SmirksController&mirror=0&hideBlerb=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://robo.to/swf/smirk.swf?uuid=986f7e2ef7493820fb69e29b8e29e1bdc2374cf7&cURI=rtmp://robo.to/smirk_ul&sURL=http://robo.to/amf/gateway&sName=SmirksController&mirror=0&hideBlerb=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="85" height="85"></embed></object>
+      </div>
     </div>
-      
-      
-      
-      
-    </div>
-
-    <script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-    try {
-    var pageTracker = _gat._getTracker("UA-6824126-1");
-    pageTracker._trackPageview();
-    } catch(err) {}</script>
 
   </body>
 </html>
