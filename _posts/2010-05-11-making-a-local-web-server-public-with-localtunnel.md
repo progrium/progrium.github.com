@@ -3,7 +3,7 @@ layout: post
 title: "Making a local web server public with localtunnel"
 description: ""
 category: 
-tags: ['tools', 'tunneling', 'ssh', 'port forwarding']
+tags: []
 ---
 These days it's fairly common to run a local environment for web development. Whether you're running Apache, Mongrel, or the App Engine SDK, we're all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.
 

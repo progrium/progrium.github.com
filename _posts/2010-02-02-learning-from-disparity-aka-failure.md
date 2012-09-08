@@ -3,10 +3,10 @@ layout: post
 title: "Learning from expectation disparity, aka \"failure\""
 description: ""
 category: 
-tags: ["life", "learning", "mistakes", "failure"]
+tags: []
 ---
 
-I've long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: "Yes, you can learn from failure, but you can also learn from success!" Only after reading Jason Fried's blog post from nearly one year ago to the day titled, [Learning from failure is overrated](http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated) have I realized exactly what's wrong. We're talking about different kinds of failure.
+I've long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: "Yes, you can learn from failure, but you can also learn from success!" Only after reading Jason Fried's blog post from one year ago, [Learning from failure is overrated](http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated), have I realized exactly what's wrong. We're talking about different kinds of failure.
 
 Learning happens when you correct the mismatch of an expected outcome from the actual outcome. This is where the idea of learning from failure actually comes from. Failure represents a mistake in judgment, a disparity between expectation and reality. Therefore, if your expectation is validated by success and there is no disparity, then you didn't actually *learn* anything &mdash; you already knew.
 

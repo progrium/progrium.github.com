@@ -11,4 +11,5 @@ While working on a startup in 2006, Jeff wrote about a pattern in web architectu
 
 The success of SuperHappyDevHouse led to the formation of Hacker Dojo, a non-profit community center for technologists. Jeff co-founded Hacker Dojo in 2009 with SuperHappyDevHouse co-founder David Weekly and a group of passionate friends from the community, including Lee Felsenstein, moderator of the 1970's computer hobbyist group Homebrew Computer Club. In just three months of operating with over 100 paying members and hundreds of visitors for events and coworking, Hacker Dojo achieved immediate success. Hacker Dojo made headlines on the front page of the Mercury News and garnered a letter of congratulations from the City of Mountain View.
 
-Over the years, Jeff has worked with various startups as a software developer and general advisor, including CommerceNet, Netflix, NASA Ames, and Twilio.
+Over the years, Jeff has worked with various startups and organizations as a software developer or advisor, including CommerceNet, Netflix, NASA Ames, and Twilio.
+
