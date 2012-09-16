@@ -51,6 +51,10 @@ code {
   height: 112px;
   opacity: 0.15;
   margin-left: -100px;
+
+  /* putting h2 on top with absolute doesn't work in some browsers
+     as if float took priority, so this fixes that. */
+  margin-right: -130px;
 }
 
 #roots {
