@@ -7,6 +7,9 @@ tags: []
 ---
 [Skypipe](https://github.com/progrium/skypipe) is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data *anywhere*. 
 
+I built it while on vacation the last couple months. I wasn't intending
+to write software while on my trip, but I just couldn't help myself.
+
 Skypipe is conceptually similar to named pipes or netcat, but with more power and a simpler interface. Here is a basic example using skypipe as you would a regular named pipe to gzip a file across shells:
 
 	$ skypipe | gzip -9 -c > out.gz
