@@ -77,6 +77,6 @@ This and a few other issues are already tracked in [Github Issues](https://githu
 
 The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I'd like to find a way to package skypipe in a way that includes all its dependencies. Perhaps [PyInstaller](http://www.pyinstaller.org/) can help with this.
 
-Another feature I'm sure a lot of people will want (or complain about) is to ignore the software with a service aspect and run their own server. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen. 
+Another feature I'm sure a lot of people will want (or complain about) is being able to run your own server and ignore the software with a service aspect. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen. 
 
 Contribution ideas aside, I'm hoping skypipe will be useful to others besides myself. I was really going for a magical tool. I think a big part of this magic is the use of software with a service, which I consider a bit novel in itself. What do you think?  
