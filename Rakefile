@@ -73,12 +73,17 @@ end # task :preview
 
 desc "Generate static site and publish with Github Pages"
 task :publish do
-  sh "jekyll --no-server --no-auto"
-  sh "git checkout master"
-  sh "cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
-  sh "git commit -a -m 'auto publish'"
-  sh "git push origin master"
-  sh "git checkout source"
+  if `git status`.include? "not staged for commit"
+    puts "You have changes to commit first"
+  else
+    sh "git push origin source"
+    sh "jekyll --no-server --no-auto"
+    sh "git checkout master"
+    sh "cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
+    sh "git commit -a -m 'auto publish #{`date`.strip}'"
+    sh "git push origin master"
+    sh "git checkout source"
+  end
 end
 
 def ask(message, valid_options)
