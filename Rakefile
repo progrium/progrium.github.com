@@ -71,6 +71,16 @@ task :preview do
   system "jekyll --auto --server"
 end # task :preview
 
+desc "Generate static site and publish with Github Pages"
+task :publish do
+  sh "jekyll --no-server --no-auto"
+  sh "git checkout master"
+  sh "cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
+  sh "git commit -a -m 'auto publish'"
+  sh "git push origin master"
+  sh "git checkout source"
+end
+
 def ask(message, valid_options)
   if valid_options
     answer = get_stdin("#{message} #{valid_options.to_s.gsub(/"/, '').gsub(/, /,'/')} ") while !valid_options.include?(answer)
