@@ -16,6 +16,33 @@ layout: default
 <a href="{{post.url}}#disqus_thread">Comments</a>
 <hr />
 {% endfor %}
+
+<ul class="pager article">
+  {% if paginator.next_page %}
+  <li class="previous">
+    <a href="/blog/page{{paginator.next_page}}">&larr; Older</a>
+  </li>
+  {% else %}
+  <li class="previous disabled">
+    <a href="#">&larr; Older</a>
+  </li>
+  {% endif %}
+  
+  {% if paginator.previous_page %}
+  <li class="next">
+    {% if paginator.previous_page == 1 %}
+    <a href="/blog">Newer &rarr;</a>
+    {% else %}
+    <a href="/blog/page{{paginator.previous_page}}">Newer &rarr;</a>
+    {% endif %}
+  </li>
+  {% else %}
+  <li class="next disabled">
+    <a href="#">Newer &rarr;</a>
+  </li>
+  {% endif %}
+</ul>
+
   <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'progrium'; // required: replace example with your forum shortname
