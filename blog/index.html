@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Jeff Lindsay :: Pragmatic idealist. Builder. Thought explorer.</title>
+
+    
+    <meta name="author" content="Jeff Lindsay" />
+
+    <script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />
+    <link href="http://fonts.googleapis.com/css?family=VT323" rel="stylesheet" type="text/css" />
+
+
+    <link rel="stylesheet" type="text/css" href="/style/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/pager.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/alerts.min.css" />
+    <link rel="stylesheet/less" type="text/css" href="/style/progrium.less" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/images/JeffLindsayDeluxe.png" /> 
+
+    <script type="text/javascript" src="/scripts/less-1.3.0.min.js"></script>
+
+    <link rel="me" href="http://www.google.com/profiles/progrium" />
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+        <div id="tree"></div>
+        <h2><a href="/" title="Pragmatic idealist. Builder. Thought explorer."><span>Jeff Li</span>nds<span>ay</span></a></h2>
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="http://github.com/progrium">Projects</a></li>
+          <!--li>Blueprints</li-->
+          <li><a href="/about.html">About</a></li>
+          <li id="hire"><a href="mailto:progrium+hire@gmail.com">Hire Me</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="content">
+      <div class="container">
+        <div class="sidebar">
+  <div class="portrait">
+    <img src="/images/JeffLindsayDeluxe.png" width="150" height="150" />
+  </div>
+  <div class="button"><a href="/blog/atom.xml">Subscribe to Blog</a></div>
+</div>
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Sep</span>
+    <span class="day">30</span><br />
+    <span class="year">2012</span>
+  </div>
+  <h1><a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe">Piping into and out of the cloud with skypipe</a></h1>
+  <p><a href='https://github.com/progrium/skypipe'>Skypipe</a> is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data <em>anywhere</em>.</p>
+
+<p>I built it while on vacation the last couple months. I wasn&#8217;t intending to write software while on my trip, but I just couldn&#8217;t help myself.</p>
+
+<p>Skypipe is conceptually similar to named pipes or netcat, but with more power and a simpler interface. Here is a basic example using skypipe as you would a regular named pipe to gzip a file across shells:</p>
+
+<pre><code>$ skypipe | gzip -9 -c &gt; out.gz</code></pre>
+
+<p>Your skypipe is now ready to receive some data from another shell process:</p>
+
+<pre><code>$ cat file | skypipe</code></pre>
+
+<p>Unlike named pipes, however, <em>this will work across any machines connected to the Internet</em>. You don&#8217;t have to specify a host address or set up &#8220;listen mode&#8221; like you would with netcat. In fact, unlike netcat, which is point to point, you could use skypipe for log aggregation. Here we&#8217;ll used named skypipes. Run this on several hosts:</p>
+
+<pre><code>$ tail -f /var/log/somefile | skypipe logs</code></pre>
+
+<p>Then run this on a single machine:</p>
+
+<pre><code>$ skypipe logs &gt; /var/log/aggregate</code></pre>
+
+<p>This can also broadcast to multiple hosts. With the above, you can &#8220;listen in&#8221; by running this from your laptop, even while behind a NAT:</p>
+
+<pre><code>$ skypipe logs</code></pre>
+
+<p>You can also temporarily store data or files in the pipe, even several files, until you pull them out. On one machine load some files into a named skypipe:</p>
+
+<pre><code>$ cat file_a | skypipe files
+$ cat file_b | skypipe files</code></pre>
+
+<p>Now, from somewhere else, pull them out in order:</p>
+
+<pre><code>$ skypipe files &gt; new_file_a
+$ skypipe files &gt; new_file_b</code></pre>
+
+<p>Lastly, you can use skypipe like the channel primitive in Go for coordinating between shell scripts. As a simple example, we&#8217;ll use skypipe to wait for an event triggered by another script:</p>
+
+<pre><code>#!/bin/bash
+echo &quot;I&#39;m going to wait until triggered&quot;
+skypipe trigger
+echo &quot;I was triggered!&quot;</code></pre>
+
+<p>Triggering is just sending an EOF over the pipe, causing the listening skypipe to terminate. We can do this with a simple idiom:</p>
+
+<pre><code>$ echo | skypipe trigger</code></pre>
+
+<h3 id='how_does_this_magic_work'>How does this magic work?</h3>
+
+<p>You&#8217;ll need a free <a href='https://www.dotcloud.com/'>Dotcloud</a> account to use skypipe, but you don&#8217;t need to know anything about using Dotcloud to use skypipe.</p>
+
+<p>When you first use skypipe it will want you to run a setup command (<code>skypipe --setup</code>). This will deploy a very simple messaging server to Dotcloud. From then on, skypipe will use your account to transparently find and use this server, no matter where you are. The server is managed automatically and runs on Dotcloud free of charge, so you never need to think about it.</p>
+
+<h3 id='software_with_a_service'>Software with a service!</h3>
+
+<p>This is a new paradigm of creating tools that transparently leverage the cloud to create magical experiences. It&#8217;s not quite software as a service, it&#8217;s software <em>with</em> a service. Nobody is using a shared, central server, and no one needs to setup or manage their own server. The <em>software</em> deploys and manages its own server for you.</p>
+
+<p>Thanks to platforms like Heroku and Dotcloud, we can now build software leveraging features of software as a service that is <em>packaged and distributed like normal open source software</em>.</p>
+
+<p>I&#8217;m excited to see what else can be done with this pattern. Naturally, I&#8217;m already thinking about a number of other potential uses.</p>
+
+<h3 id='using_skypipe_and_getting_involved'>Using skypipe and getting involved</h3>
+
+<p>Skypipe is still an alpha piece of software. Be warned, there are some rough edges. That said, you can install skypipe with pip:</p>
+
+<pre><code>$ pip install skypipe</code></pre>
+
+<p>The user experience is not yet entirely optimized. One of the biggest issues is that it needs to check for the server on every use. This can be done less often and cached, which would make it much snappier and on par with most command line utilities.</p>
+
+<p>This and a few other issues are already tracked in <a href='https://github.com/progrium/skypipe/issues'>Github Issues</a>; feel free to take a whack at them. The codebase is intentionally small, documented, and written to be read, although there are no tests yet.</p>
+
+<p>The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I&#8217;d like to find a way to package skypipe in a way that includes all its dependencies. Perhaps <a href='http://www.pyinstaller.org/'>PyInstaller</a> can help with this.</p>
+
+<p>Another feature I&#8217;m sure a lot of people will want (or complain about) is being able to run your own server and ignore the software with a service aspect. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen.</p>
+
+<p>Contribution ideas aside, I&#8217;m hoping skypipe will be useful to others besides myself. I was really going for a magical tool. I think a big part of this magic is the use of software with a service, which I consider a bit novel in itself. What do you think?</p>
+</div>
+
+<a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Sep</span>
+    <span class="day">07</span><br />
+    <span class="year">2012</span>
+  </div>
+  <h1><a href="/blog/2012/09/07/let-me-tell-you-about-my-website">Let me tell you about my website</a></h1>
+  <p>Since mid-July I&#8217;ve been on vacation traveling around the world. Originally, the only project I allowed myself to work on is my website and blog. I quickly broke that rule with a number of new and existing projects. Nevertheless, as you can see, I did ship this site.</p>
+
+<p>I&#8217;ve never been happy with my website or blog, perhaps because I&#8217;ve never been able to invest enough time into it. Over the years, I&#8217;ve at least been able to put a lot of thought into what I want and how I want to express myself. This attempt gets pretty close.</p>
+
+<h3 id='highlevel_goals'>High-level Goals</h3>
+
+<p>Too many of my personal site designs have been dark and gloomy, often monochromatic. I think one of the biggest ideas going into this project was to make something bright and colorful. From a pure functional standpoint, I felt this was important. I also wanted to actually reflect my style. Too often I&#8217;ve settled for pre-designed blog themes that &#8220;kinda, sorta&#8221; match my sense of style and how I want to express myself. This time I would have full control.</p>
+
+<p>As I&#8217;m starting to freelance again, I also wanted to have a good marketing tool for myself. Even if it just expressed the affordances I have as a free agent. If somebody discovered me online, they&#8217;d know they could buy my time. &#8220;Yes, I can be hired for any of these fine services.&#8221;</p>
+
+<p>Combining my personal website with my blog is another thing I wanted to do. So far they&#8217;ve always been separate. Not only would this be for consistency and simplicity, but for future proofing. Anything else I want to put online I can do with this site in a way that feels part of a whole. A whole that represents my identity and personal brand.</p>
+
+<h3 id='aesthetic'>Aesthetic</h3>
+
+<p>Like I mentioned, I wanted bright and colorful. I also wanted simple and toy-like. I wanted it to feel well designed, but without a lot of modern web design tropes. This led to a minimalist foundation that I could sprinkle my favorite motifs on top of.</p>
+
+<p>I actually only had one website in mind that I used for initial inspiration. In fact, I think when I came across <a href='http://disqus.com/for-websites/awesome-ux'>this page of the Disqus website</a>, I immediately started imagining a new personal website. Most of that initial vision has since disappeared, but with that framing I was able to move on to colors.</p>
+
+<p>The colors on that page reminded me of one of my favorite kinds of infographics: transit maps. I quickly started poking around ColourLovers for palettes inspired by transit maps. I found a few and settled on <a href='http://www.colourlovers.com/palette/1043750/Tokyo_Subway'>one based on Tokyo&#8217;s subway map</a>. Then I moved on to typeface.</p>
+
+<p>I limited my options to what was available on Google Webfonts. Previously I was a fan of the Droid Sans and Droid Serif families. This time around, I used Open Sans as the primary font. For the header title (my name), I needed something different. I wanted something heavier but not wide. Ideally, I wanted a bold Futura Condensed, but a heavy Futura isn&#8217;t on Google Webfonts.</p>
+
+<p>I struggled with this for a while, then by accident found VT323. It had the weight and shape qualities I was looking for, but I didn&#8217;t think I wanted a pixelated typeface. It seemed too cliche. However, when I tried it, it became obvious VT323 not only went well with my pixelated avatar, but it added more of me to the overall design without being too cliche.</p>
+
+<p>The tree in the header was a late addition. I have a thing for trees as a symbol of nature and I wanted to add more character to the design. Originally I was going to use Context Free to create a procedurally generated tree, but this proved too time consuming to get what I wanted. A free vector based tree was not hard to find.</p>
+
+<h3 id='platform'>Platform</h3>
+
+<p>I&#8217;ve become a fan of using <a href='http://pages.github.com/'>GitHub Pages</a> for simple websites. It&#8217;s hosted, it&#8217;s free, and powered by Git. The site is then versioned, editable online, and even forkable. The only limitation is that it only hosts static files.</p>
+
+<p>Luckily, they&#8217;ve built-in support for <a href='https://github.com/mojombo/jekyll'>Jekyll</a>, which is more or less like pre-rendering a dynamic site. This not only gives you templating, layouts, and includes, but it&#8217;s &#8220;blog aware&#8221; so you get pagination, meta-data, and even related post links. The only real dynamic bits of the site are blog comments and analytics, both are solved by client-side JavaScript powered services. Neither of those I care to have in my Git repo anyway.</p>
+
+<p>The other part of this plan I like is that it lets you write content in simple Markdown files kept in a Git repo. If I ever need, I can take this repo anywhere and still have my blog posts as Markdown files. This is a far more ideal place to be in that most blogging platforms I&#8217;ve used in the past.</p>
+
+<h3 id='future'>Future</h3>
+
+<p>It&#8217;s still a work in progress. You may have noticed the homepage currently redirects to the blog index. I&#8217;m hoping to have more of a landing or intro page as the homepage. The idea there is to quickly communicate what I&#8217;m about and what I work on.</p>
+
+<p>I also want to incorporate more hand-drawn elements into the design. A lot of my writing is well accompanied by diagrams and visuals, so I wanted to include more of these in my posts. Doing as many of these as I can with my drawing tablet will give the site more character. My character.</p>
+
+<p>I was also thinking about &#8220;project pages&#8221; that describe and introduce the projects I&#8217;m involved in without being hidden as an old blog post. Perhaps more exciting, though, are project idea pages or &#8220;blueprints&#8221;. These would allow me to document projects I&#8217;m thinking about building, letting me get feedback and encourage collaboration before even starting.</p>
+
+<p>Building a site from scratch was a pretty substantial investment. With the right tools and enough time to think through and iterate on the visual design, I now have something that works and that I can build on as needed. Not only that, I shipped before I got back from vacation. :)</p>
+</div>
+
+<a href="/blog/2012/09/07/let-me-tell-you-about-my-website#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">May</span>
+    <span class="day">11</span><br />
+    <span class="year">2010</span>
+  </div>
+  <h1><a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel">Making a local web server public with localtunnel</a></h1>
+  <p>These days it&#8217;s fairly common to run a local environment for web development. Whether you&#8217;re running Apache, Mongrel, or the App Engine SDK, we&#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.</p>
+
+<p>However, with the growing popularity of callbacks and <a href='http://webhooks.org'>webhooks</a>, you can only really debug if your script is live and on the Internet. There are also other cases where you need to make what are normally private and/or local web servers public, such as various kinds of testing or quick public demos. Demos are a surprisingly common case, especially for multi-user systems (&#8220;Man, I wish I could have you join this chat room app I&#8217;m working on, but it&#8217;s only running on my laptop&#8221;).</p>
+
+<p>The solution is obvious, right? SSH remote forwarding, or reverse tunneling. Use a magical set of options with SSH with a public server you have SSH access to, and set up a tunnel from that machine to your local machine. When people connect to a port on your public machine, it gets forwarded to a local port on your machine, looking as if that port was on a public IP.</p>
+
+<p>The idea is great, but it&#8217;s a hassle to set up. You need to make sure sshd is set up properly in order to make a public tunnel on the remote machine, or you need to set up two tunnels, one from your machine to a private port on the remote machine, and then another on the remote machine from a public port to the private port (that forwards to your machine).</p>
+
+<p>In short, it&#8217;s too much of a hassle to consider it a quick and easy option. Here is the quick and easy option:</p>
+
+<pre><code>$ localtunnel 8080</code></pre>
+
+<p>And you&#8217;re done! With localtunnel, it&#8217;s so simple to set this up, it&#8217;s almost fun to do. What&#8217;s more is that the publicly accessible URL has a nice hostname and uses port 80, no matter what port its on locally. And it tells you what this URL is when you start localtunnel:</p>
+
+<pre><code>$ localtunnel 8080
+Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...</code></pre>
+
+<p>What&#8217;s going on behind the scenes is a web server component running on localtunnel.com. It serves two purposes: a virtual host reverse proxy to the port forward, and a tunnel register API (try going to <a href='http://open.localtunnel.com'>http://open.localtunnel.com</a>). This simple API allocates a port to tunnel on, and gives the localtunnel client command the information it needs to set up an SSH tunnel for you. The localtunnel command just wraps an SSH library and does this register call.</p>
+
+<p>Of course, there&#8217;s also the authentication part. As a free, public service, we don&#8217;t want to just give everybody SSH access to this machine (as it may seem). The user localtunnel on that box is made just for this service. It has no shell. It only has a home directory with an authorized_keys file. We require you to upload a public key for authentication, and we also mark that key with options that say you can only do port forwarding. Although, it can&#8217;t be used for arbitrary port forwarding&#8230; because it&#8217;s only a private port on the remote side, it can only be used with the special reverse proxy.</p>
+
+<p>So there it is. <a href='http://github.com/progrium/localtunnel'>And the code is on GitHub.</a> You might notice the server is in Python and the client in Ruby. Why? It just made sense. Python has Twisted, which I like for server stuff. And Ruby is great for command line scripts, and has a nice SSH library. In the end, it doesn&#8217;t matter what it&#8217;s written in. Ultimately it&#8217;s a Unix program.</p>
+
+<p>Enjoy!</p>
+</div>
+
+<a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Feb</span>
+    <span class="day">02</span><br />
+    <span class="year">2010</span>
+  </div>
+  <h1><a href="/blog/2010/02/02/learning-from-disparity-aka-failure">Learning from expectation disparity, aka "failure"</a></h1>
+  <p>I&#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &#8220;Yes, you can learn from failure, but you can also learn from success!&#8221; Only after reading Jason Fried&#8217;s blog post from one year ago, <a href='http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated'>Learning from failure is overrated</a>, have I realized exactly what&#8217;s wrong. We&#8217;re talking about different kinds of failure.</p>
+
+<p>Learning happens when you correct the mismatch of an expected outcome from the actual outcome. This is where the idea of learning from failure actually comes from. Failure represents a mistake in judgment, a disparity between expectation and reality. Therefore, if your expectation is validated by success and there is no disparity, then you didn&#8217;t actually <em>learn</em> anything &#8212; you already knew.</p>
+
+<p>However, validation of an expected but <em>unsure</em> success is obviously learning because it corrects the expectation of doubt you had. Furthermore, analysis of an unexpected success can result in learning from correcting the assumptions that led to expecting failure. A successful outcome, but a failure to expect it.</p>
+
+<p>This is where the confusion comes in. Unfortunately it&#8217;s an issue of semantics. The meaning of the word failure in the context of &#8220;learning from failure&#8221; is this failure to know the outcome. In this way, it&#8217;s true, you can only learn from failure. However, it is only this specific instance of expectation-failure this applies to so absolutely.</p>
+
+<p>Separately although related (which I think adds to the confusion), despite outcome-failures not necessarily teaching you what will work, they tend to be the strongest lessons experienced. I mostly attribute this to the greater level of disparity and correction made to your mental model that comes from expecting a failing outcome to succeed.</p>
+</div>
+
+<a href="/blog/2010/02/02/learning-from-disparity-aka-failure#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Jan</span>
+    <span class="day">26</span><br />
+    <span class="year">2010</span>
+  </div>
+  <h1><a href="/blog/2010/01/26/notifyio-brings-notifications-to-the-web">Notify.io brings notifications to the web</a></h1>
+  <blockquote>
+<p><strong>Update:</strong> Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.</p>
+</blockquote>
+
+<p>In October 2009 I started a project called <a href='http://www.notify.io/'>Notify.io</a> and a month later announced it. I talked about how it will bring notifications to the web. Now that it&#8217;s basically alpha complete, I&#8217;ll give you a quick walkthrough of what makes it so great.</p>
+<center><iframe height='315' frameborder='0' src='http://www.youtube.com/embed/Fs9NauQ2M6o' width='560'> </iframe></center>
+<h3 id='overview'>Overview</h3>
+
+<p>At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular <a href='http://growl.info/'>Growl</a> application for OS X (which should honestly just ship with OS X). Only it&#8217;s even better.</p>
+
+<h3 id='desktop_notifications'>Desktop Notifications</h3>
+
+<p>The original inspiration for Notify.io was to make Growl more useful by fixing its ability to receive notifications from the Internet. Out of the box, Growl is effectively only good for notifications from sources running on your machine. If you wanted to get notifications from a web app, you&#8217;d have to wait for them to release a desktop notifier, which hopefully would use Growl to actually display the notifications. So you end up with all these desktop notifiers running for some apps, and have no option of desktop notifications for others.</p>
+
+<p>This is probably the killer feature of Notify.io: it lets you get desktop notifications from any web app that supports it, which is an order of magnatude easier for them to do than build their own desktop notifier.</p>
+
+<h3 id='sources_and_outlets'>Sources and Outlets</h3>
+
+<p>The language of Notify.io is based around Sources and Outlets. Sources are pretty straightforward. They&#8217;re a source of notifications. They could represent an application, script, company, person (or perhaps object?) that can send you notifications.</p>
+
+<p>Outlets repesent the other major feature of Notify.io. They&#8217;re ways you can get a notification. The Desktop Notifier is your first and default outlet, but is just one of several options. Currently supported Outlets besides Desktop Notifier are Email, Jabber IM, and Webhooks. Outlets to look forward to are SMS, Twitter, IRC, and perhaps telephone.</p>
+
+<p>The magic is in routing notifications from Sources to Outlets. Currently this is a simple mapping of Source to Outlet. For example, you can get notifications from Source A on your desktop, while notifications from Source B go to IM. This simplistic routing is just the beginning. We&#8217;ll talk about how we&#8217;ll do advanced routing when we get to the Roadmap.</p>
+
+<h3 id='the_nio_client'>The Nio Client</h3>
+
+<p>For developers, it&#8217;s worth mentioning that the pipe for our Desktop Notifier is really just a Comet HTTP stream. It can be consumed by pretty much anything. We were originally talking with Growl and authors of other desktop notifiers of direct integration. This is still a possibility, but just so we could move forward, we built our own client for OS X. Clients for other systems are available (but not yet &#8220;officially&#8221; supported) or are in progress, including Windows and Android.</p>
+
+<p>Our OS X client is called Nio, short for Notify.io, so you can pronounce it N-I-O, but I tend to pronounce it &#8220;neo&#8221;. It&#8217;s basically just an application that sits in your menu bar listening to HTTP streams (yes, plural) for notifications and pipes them into Growl.</p>
+
+<p>For ease of installing streams, we made it handle files of the extension ListenURL. Once Nio is installed, you can download a ListenURL file containing a URL and it gets installed by Nio. The URL we give you is basically a &#8220;capability URL&#8221; or secret URL. This means streams are not super secure, but this is by design. If you wanted, you could share your URL with somebody so you both get notifications sent to that Outlet. You can always delete the Outlet and make another to disable that URL.</p>
+
+<p>The other cool thing about our client is that it has a shell script notification hook. This means you can have notifications trigger a shell script that&#8217;s passed the notification details. This is pretty powerful because it means you can do things like create your own local logging, hear your notifications with text-to-speech, or make certain notifications trigger a more obstrusive means of notifying you, such as Quicksilver&#8217;s Large Type feature. This kind of programmability is central to our approach to design, as you&#8217;ll see later on in the Roadmap.</p>
+
+<h3 id='simple_api_and_approval_model'>Simple API and Approval Model</h3>
+
+<p>For proper adoption, we need web apps to integrate Notify.io, so we have a super simple API for Sources. It&#8217;s a simple REST API based on an endpoint constructed by the target of your notification. Like <a href='http://en.gravatar.com/'>Gravatar</a>, we use an MD5 hash of a user&#8217;s email address to identify targets. For example, to send a notification to test@example.com, you&#8217;d do an HTTP POST to this URL:</p>
+
+<pre><code>http://api.notify.io/v1/notify/55502f40dc8b7c769880b10874abc9d0</code></pre>
+
+<p>You&#8217;d pass a few parameters, with at least your API key (meaning you need an account) and the text you want to send, and optionally an icon URL, link URL, title text and whether the notification should be &#8220;sticky&#8221;. That&#8217;s it. The request should respond immediately so it may be quick enough to be done inline in your app, but we recommend it be done asynchronously.</p>
+
+<p>Then what happens is the first notification you send actually triggers a notification to that user that you want to send them notifications. If they accept, future notifications will be sent and your previous notifications will show up in their history. This may change to replay previous notifications on approval, but the point here is the user has to approve notifications before they get them. In this way, it&#8217;s similar to Jabber&#8217;s approval model and helps avoid spammers.</p>
+
+<h3 id='public_service_software'>Public Service Software</h3>
+
+<p><a href='http://code.google.com/p/notify-io/'>Notify.io and its clients are open source</a>. The service is free. Or rather, it&#8217;s not-for-profit donationware. Notify.io is being run under a model I&#8217;m developing called POSS, the goal of which is to automate/abstract away the maintainence and funding of its operation. The end result should be: the service exists, it&#8217;s open source, and some in the developer community can deploy changes. But no single person is financially responsible for it, and it&#8217;s run on maintained cloud infrastructure. In this case it&#8217;s mostly App Engine.</p>
+
+<p>This means that Notify.io is not a startup. It&#8217;s public infrastructure. Ideally, I&#8217;m not even in the loop. It should be a self-sustaining public service. This is not fully realized, but it will be as it starts to consume more resources. For more information, you can <a href='http://blogrium.wordpress.com/2009/10/29/public-open-source-services/'>read more</a> on POSS or <a href='http://groups.google.com/group/poss-talk'>join our discussion group</a>.</p>
+
+<p>For now, the important thing is that Notify.io is open source. This means anybody can contribute bug fixes, new outlets, new desktop clients, etc.</p>
+
+<h3 id='roadmap'>Roadmap</h3>
+
+<p>Okay, sure, Notify.io is pretty cool now. But here are some of the major things that will be coming soon. Hopefully with your help!</p>
+
+<p><em>Advanced Routing and Filters</em><br /> From the beginning, I wanted really powerful routing and filtering. My evangelism of webhooks has given me the obvious answer to this, but in a more integrated way. Basically, how do you allow any routing scheme imagineable by users? Let them write code. Originally it was going to be powered by <a href='http://www.scriptlets.org/'>Scriptlets</a>, but since I split the eval engine out as <a href='http://github.com/progrium/DrEval'>DrEval</a>, it will be based on that.</p>
+
+<p>Basically, just a imagine a UI with a little textarea for writing JavaScript that can make web calls. Route notifications based on your IM status, your location, what music you&#8217;re listening to, arbitrary time schedules, or anything you can code.</p>
+
+<p><em>More Outlets</em><br /> Obviously, more Outlets are good. Obvious ones are IRC, SMS, and Twitter DM. With Twilio we can do voice call notifications. Integration with push clients like the iPhone&#8217;s Prowl app would be easy to do. Our outlet system is very simple, so you can <a href='http://github.com/progrium/notify-io/blob/master/www/outlet_types.py'>look at the source of our existing ones</a>, write an outlet and it&#8217;s likely we&#8217;ll deploy it.</p>
+
+<p><em>OpenID Support</em><br /> Right now, you authenticate with Google. I don&#8217;t believe in creating authentication systems, and Google was the quickest given the platform. It&#8217;s also pretty popular and ensures you have an email address we can use. However, there are plenty of people that don&#8217;t like the idea of using their Google Account, so at some point we&#8217;ll support OpenID login and then go from there.</p>
+
+<p><em>Multiple Email Support</em><br /> Ideally, a web app can use whatever email address you used to register with them to send you notifications. However, unless Gmail is your primary email you use for registration, they&#8217;ll still need to ask you for your email. It&#8217;s the Gravatar model. So like Gravatar, we&#8217;ll need to let you add multiple emails to your account, allowing web applications to be able to send notifications based on any of them.</p>
+
+<p><em>Convenience Libraries</em><br /> Our API is simple, but people are lazy. We&#8217;re currently working on convenience libraries for popular langauges that it make that much easier to integrate with Notify.io. If you use a neat language, you should make a libnio package for it!</p>
+
+<p><em>Ad-hoc Sources</em><br /> Sources require an account, which is a bit heavyweight. Sometimes you want to create your own distinct sources to share with others or use in your scripts to easily send yourself notifications. This is the idea of Ad-hoc Sources, inspired by David Reid and capability URLs. The idea is simple: create an ad-hoc source and you get a secret URL. This URL acts just like the notify API endpoint, only you don&#8217;t need an API key. You can use this in public scripts or give it to others to send you notifications, and if it&#8217;s ever abused or falls in the wrong hands, just delete it and make another.</p>
+
+<p><em>More Supported Clients</em><br /> A developer in Japan started a Windows client based on Nio that we&#8217;re planning to support as our primary Windows client. Another developer is working on an Android client. iPhone users have Prowl, so once there is a Prowl outlet, you can get them on your iPhone. But Prowl is not free, so perhaps it would be helpful if we had our own iPhone client. There are the beginnings of a Linux/libnotify client. These are all ways you can start contributing to Notify.io. ;)</p>
+
+<p>That&#8217;s about it. You can probably see why I describe Notify.io as the open notification platform of the web. It&#8217;s simple, powerful, and open source. It&#8217;s come a long way in just 3 months thanks to the contributions of Abimanyu Raja, Amanda Wixted, Mike Lundy, David Reid, Christopher Lobay, Hunter Gillane, Nakamatsu Shinji, and everybody that&#8217;s given user feedback so far.</p>
+</div>
+
+<a href="/blog/2010/01/26/notifyio-brings-notifications-to-the-web#disqus_thread">Comments</a>
+<hr />
+
+
+<ul class="pager article">
+  
+  <li class="previous">
+    <a href="/blog/page2">&larr; Older</a>
+  </li>
+  
+  
+  
+  <li class="next disabled">
+    <a href="#">Newer &rarr;</a>
+  </li>
+  
+</ul>
+
+  <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'progrium'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        </script>
+
+      </div>
+      <div id="roots">
+        <img src="/images/roots.png" />
+      </div>
+    </div>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+        try {
+        var pageTracker = _gat._getTracker("UA-6824126-1");
+        pageTracker._trackPageview();
+        } catch(err) {}</script>
+  </body>
+</html>

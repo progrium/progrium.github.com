@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>Jeff Lindsay</title>
+ <link href="http://progrium.com/atom.xml" rel="self"/>
+ <link href="http://progrium.com"/>
+ <updated>2012-11-18T13:42:49-08:00</updated>
+ <id>http://progrium.com</id>
+ <author>
+   <name>Jeff Lindsay</name>
+   <email>progrium@gmail.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Piping into and out of the cloud with skypipe</title>
+   <link href="http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe"/>
+   <updated>2012-09-30T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe</id>
+   <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/skypipe'&gt;Skypipe&lt;/a&gt; is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data &lt;em&gt;anywhere&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;I built it while on vacation the last couple months. I wasn&amp;#8217;t intending to write software while on my trip, but I just couldn&amp;#8217;t help myself.&lt;/p&gt;
+
+&lt;p&gt;Skypipe is conceptually similar to named pipes or netcat, but with more power and a simpler interface. Here is a basic example using skypipe as you would a regular named pipe to gzip a file across shells:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ skypipe | gzip -9 -c &amp;gt; out.gz&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Your skypipe is now ready to receive some data from another shell process:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat file | skypipe&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Unlike named pipes, however, &lt;em&gt;this will work across any machines connected to the Internet&lt;/em&gt;. You don&amp;#8217;t have to specify a host address or set up &amp;#8220;listen mode&amp;#8221; like you would with netcat. In fact, unlike netcat, which is point to point, you could use skypipe for log aggregation. Here we&amp;#8217;ll used named skypipes. Run this on several hosts:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ tail -f /var/log/somefile | skypipe logs&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then run this on a single machine:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ skypipe logs &amp;gt; /var/log/aggregate&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This can also broadcast to multiple hosts. With the above, you can &amp;#8220;listen in&amp;#8221; by running this from your laptop, even while behind a NAT:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ skypipe logs&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can also temporarily store data or files in the pipe, even several files, until you pull them out. On one machine load some files into a named skypipe:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat file_a | skypipe files
+$ cat file_b | skypipe files&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, from somewhere else, pull them out in order:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ skypipe files &amp;gt; new_file_a
+$ skypipe files &amp;gt; new_file_b&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lastly, you can use skypipe like the channel primitive in Go for coordinating between shell scripts. As a simple example, we&amp;#8217;ll use skypipe to wait for an event triggered by another script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+echo &amp;quot;I&amp;#39;m going to wait until triggered&amp;quot;
+skypipe trigger
+echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Triggering is just sending an EOF over the pipe, causing the listening skypipe to terminate. We can do this with a simple idiom:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ echo | skypipe trigger&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id='how_does_this_magic_work'&gt;How does this magic work?&lt;/h3&gt;
+
+&lt;p&gt;You&amp;#8217;ll need a free &lt;a href='https://www.dotcloud.com/'&gt;Dotcloud&lt;/a&gt; account to use skypipe, but you don&amp;#8217;t need to know anything about using Dotcloud to use skypipe.&lt;/p&gt;
+
+&lt;p&gt;When you first use skypipe it will want you to run a setup command (&lt;code&gt;skypipe --setup&lt;/code&gt;). This will deploy a very simple messaging server to Dotcloud. From then on, skypipe will use your account to transparently find and use this server, no matter where you are. The server is managed automatically and runs on Dotcloud free of charge, so you never need to think about it.&lt;/p&gt;
+
+&lt;h3 id='software_with_a_service'&gt;Software with a service!&lt;/h3&gt;
+
+&lt;p&gt;This is a new paradigm of creating tools that transparently leverage the cloud to create magical experiences. It&amp;#8217;s not quite software as a service, it&amp;#8217;s software &lt;em&gt;with&lt;/em&gt; a service. Nobody is using a shared, central server, and no one needs to setup or manage their own server. The &lt;em&gt;software&lt;/em&gt; deploys and manages its own server for you.&lt;/p&gt;
+
+&lt;p&gt;Thanks to platforms like Heroku and Dotcloud, we can now build software leveraging features of software as a service that is &lt;em&gt;packaged and distributed like normal open source software&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#8217;m excited to see what else can be done with this pattern. Naturally, I&amp;#8217;m already thinking about a number of other potential uses.&lt;/p&gt;
+
+&lt;h3 id='using_skypipe_and_getting_involved'&gt;Using skypipe and getting involved&lt;/h3&gt;
+
+&lt;p&gt;Skypipe is still an alpha piece of software. Be warned, there are some rough edges. That said, you can install skypipe with pip:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pip install skypipe&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The user experience is not yet entirely optimized. One of the biggest issues is that it needs to check for the server on every use. This can be done less often and cached, which would make it much snappier and on par with most command line utilities.&lt;/p&gt;
+
+&lt;p&gt;This and a few other issues are already tracked in &lt;a href='https://github.com/progrium/skypipe/issues'&gt;Github Issues&lt;/a&gt;; feel free to take a whack at them. The codebase is intentionally small, documented, and written to be read, although there are no tests yet.&lt;/p&gt;
+
+&lt;p&gt;The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I&amp;#8217;d like to find a way to package skypipe in a way that includes all its dependencies. Perhaps &lt;a href='http://www.pyinstaller.org/'&gt;PyInstaller&lt;/a&gt; can help with this.&lt;/p&gt;
+
+&lt;p&gt;Another feature I&amp;#8217;m sure a lot of people will want (or complain about) is being able to run your own server and ignore the software with a service aspect. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen.&lt;/p&gt;
+
+&lt;p&gt;Contribution ideas aside, I&amp;#8217;m hoping skypipe will be useful to others besides myself. I was really going for a magical tool. I think a big part of this magic is the use of software with a service, which I consider a bit novel in itself. What do you think?&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Let me tell you about my website</title>
+   <link href="http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website"/>
+   <updated>2012-09-07T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website</id>
+   <content type="html">&lt;p&gt;Since mid-July I&amp;#8217;ve been on vacation traveling around the world. Originally, the only project I allowed myself to work on is my website and blog. I quickly broke that rule with a number of new and existing projects. Nevertheless, as you can see, I did ship this site.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#8217;ve never been happy with my website or blog, perhaps because I&amp;#8217;ve never been able to invest enough time into it. Over the years, I&amp;#8217;ve at least been able to put a lot of thought into what I want and how I want to express myself. This attempt gets pretty close.&lt;/p&gt;
+
+&lt;h3 id='highlevel_goals'&gt;High-level Goals&lt;/h3&gt;
+
+&lt;p&gt;Too many of my personal site designs have been dark and gloomy, often monochromatic. I think one of the biggest ideas going into this project was to make something bright and colorful. From a pure functional standpoint, I felt this was important. I also wanted to actually reflect my style. Too often I&amp;#8217;ve settled for pre-designed blog themes that &amp;#8220;kinda, sorta&amp;#8221; match my sense of style and how I want to express myself. This time I would have full control.&lt;/p&gt;
+
+&lt;p&gt;As I&amp;#8217;m starting to freelance again, I also wanted to have a good marketing tool for myself. Even if it just expressed the affordances I have as a free agent. If somebody discovered me online, they&amp;#8217;d know they could buy my time. &amp;#8220;Yes, I can be hired for any of these fine services.&amp;#8221;&lt;/p&gt;
+
+&lt;p&gt;Combining my personal website with my blog is another thing I wanted to do. So far they&amp;#8217;ve always been separate. Not only would this be for consistency and simplicity, but for future proofing. Anything else I want to put online I can do with this site in a way that feels part of a whole. A whole that represents my identity and personal brand.&lt;/p&gt;
+
+&lt;h3 id='aesthetic'&gt;Aesthetic&lt;/h3&gt;
+
+&lt;p&gt;Like I mentioned, I wanted bright and colorful. I also wanted simple and toy-like. I wanted it to feel well designed, but without a lot of modern web design tropes. This led to a minimalist foundation that I could sprinkle my favorite motifs on top of.&lt;/p&gt;
+
+&lt;p&gt;I actually only had one website in mind that I used for initial inspiration. In fact, I think when I came across &lt;a href='http://disqus.com/for-websites/awesome-ux'&gt;this page of the Disqus website&lt;/a&gt;, I immediately started imagining a new personal website. Most of that initial vision has since disappeared, but with that framing I was able to move on to colors.&lt;/p&gt;
+
+&lt;p&gt;The colors on that page reminded me of one of my favorite kinds of infographics: transit maps. I quickly started poking around ColourLovers for palettes inspired by transit maps. I found a few and settled on &lt;a href='http://www.colourlovers.com/palette/1043750/Tokyo_Subway'&gt;one based on Tokyo&amp;#8217;s subway map&lt;/a&gt;. Then I moved on to typeface.&lt;/p&gt;
+
+&lt;p&gt;I limited my options to what was available on Google Webfonts. Previously I was a fan of the Droid Sans and Droid Serif families. This time around, I used Open Sans as the primary font. For the header title (my name), I needed something different. I wanted something heavier but not wide. Ideally, I wanted a bold Futura Condensed, but a heavy Futura isn&amp;#8217;t on Google Webfonts.&lt;/p&gt;
+
+&lt;p&gt;I struggled with this for a while, then by accident found VT323. It had the weight and shape qualities I was looking for, but I didn&amp;#8217;t think I wanted a pixelated typeface. It seemed too cliche. However, when I tried it, it became obvious VT323 not only went well with my pixelated avatar, but it added more of me to the overall design without being too cliche.&lt;/p&gt;
+
+&lt;p&gt;The tree in the header was a late addition. I have a thing for trees as a symbol of nature and I wanted to add more character to the design. Originally I was going to use Context Free to create a procedurally generated tree, but this proved too time consuming to get what I wanted. A free vector based tree was not hard to find.&lt;/p&gt;
+
+&lt;h3 id='platform'&gt;Platform&lt;/h3&gt;
+
+&lt;p&gt;I&amp;#8217;ve become a fan of using &lt;a href='http://pages.github.com/'&gt;GitHub Pages&lt;/a&gt; for simple websites. It&amp;#8217;s hosted, it&amp;#8217;s free, and powered by Git. The site is then versioned, editable online, and even forkable. The only limitation is that it only hosts static files.&lt;/p&gt;
+
+&lt;p&gt;Luckily, they&amp;#8217;ve built-in support for &lt;a href='https://github.com/mojombo/jekyll'&gt;Jekyll&lt;/a&gt;, which is more or less like pre-rendering a dynamic site. This not only gives you templating, layouts, and includes, but it&amp;#8217;s &amp;#8220;blog aware&amp;#8221; so you get pagination, meta-data, and even related post links. The only real dynamic bits of the site are blog comments and analytics, both are solved by client-side JavaScript powered services. Neither of those I care to have in my Git repo anyway.&lt;/p&gt;
+
+&lt;p&gt;The other part of this plan I like is that it lets you write content in simple Markdown files kept in a Git repo. If I ever need, I can take this repo anywhere and still have my blog posts as Markdown files. This is a far more ideal place to be in that most blogging platforms I&amp;#8217;ve used in the past.&lt;/p&gt;
+
+&lt;h3 id='future'&gt;Future&lt;/h3&gt;
+
+&lt;p&gt;It&amp;#8217;s still a work in progress. You may have noticed the homepage currently redirects to the blog index. I&amp;#8217;m hoping to have more of a landing or intro page as the homepage. The idea there is to quickly communicate what I&amp;#8217;m about and what I work on.&lt;/p&gt;
+
+&lt;p&gt;I also want to incorporate more hand-drawn elements into the design. A lot of my writing is well accompanied by diagrams and visuals, so I wanted to include more of these in my posts. Doing as many of these as I can with my drawing tablet will give the site more character. My character.&lt;/p&gt;
+
+&lt;p&gt;I was also thinking about &amp;#8220;project pages&amp;#8221; that describe and introduce the projects I&amp;#8217;m involved in without being hidden as an old blog post. Perhaps more exciting, though, are project idea pages or &amp;#8220;blueprints&amp;#8221;. These would allow me to document projects I&amp;#8217;m thinking about building, letting me get feedback and encourage collaboration before even starting.&lt;/p&gt;
+
+&lt;p&gt;Building a site from scratch was a pretty substantial investment. With the right tools and enough time to think through and iterate on the visual design, I now have something that works and that I can build on as needed. Not only that, I shipped before I got back from vacation. :)&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Making a local web server public with localtunnel</title>
+   <link href="http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel"/>
+   <updated>2010-05-11T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel</id>
+   <content type="html">&lt;p&gt;These days it&amp;#8217;s fairly common to run a local environment for web development. Whether you&amp;#8217;re running Apache, Mongrel, or the App Engine SDK, we&amp;#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.&lt;/p&gt;
+
+&lt;p&gt;However, with the growing popularity of callbacks and &lt;a href='http://webhooks.org'&gt;webhooks&lt;/a&gt;, you can only really debug if your script is live and on the Internet. There are also other cases where you need to make what are normally private and/or local web servers public, such as various kinds of testing or quick public demos. Demos are a surprisingly common case, especially for multi-user systems (&amp;#8220;Man, I wish I could have you join this chat room app I&amp;#8217;m working on, but it&amp;#8217;s only running on my laptop&amp;#8221;).&lt;/p&gt;
+
+&lt;p&gt;The solution is obvious, right? SSH remote forwarding, or reverse tunneling. Use a magical set of options with SSH with a public server you have SSH access to, and set up a tunnel from that machine to your local machine. When people connect to a port on your public machine, it gets forwarded to a local port on your machine, looking as if that port was on a public IP.&lt;/p&gt;
+
+&lt;p&gt;The idea is great, but it&amp;#8217;s a hassle to set up. You need to make sure sshd is set up properly in order to make a public tunnel on the remote machine, or you need to set up two tunnels, one from your machine to a private port on the remote machine, and then another on the remote machine from a public port to the private port (that forwards to your machine).&lt;/p&gt;
+
+&lt;p&gt;In short, it&amp;#8217;s too much of a hassle to consider it a quick and easy option. Here is the quick and easy option:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ localtunnel 8080&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And you&amp;#8217;re done! With localtunnel, it&amp;#8217;s so simple to set this up, it&amp;#8217;s almost fun to do. What&amp;#8217;s more is that the publicly accessible URL has a nice hostname and uses port 80, no matter what port its on locally. And it tells you what this URL is when you start localtunnel:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ localtunnel 8080
+Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What&amp;#8217;s going on behind the scenes is a web server component running on localtunnel.com. It serves two purposes: a virtual host reverse proxy to the port forward, and a tunnel register API (try going to &lt;a href='http://open.localtunnel.com'&gt;http://open.localtunnel.com&lt;/a&gt;). This simple API allocates a port to tunnel on, and gives the localtunnel client command the information it needs to set up an SSH tunnel for you. The localtunnel command just wraps an SSH library and does this register call.&lt;/p&gt;
+
+&lt;p&gt;Of course, there&amp;#8217;s also the authentication part. As a free, public service, we don&amp;#8217;t want to just give everybody SSH access to this machine (as it may seem). The user localtunnel on that box is made just for this service. It has no shell. It only has a home directory with an authorized_keys file. We require you to upload a public key for authentication, and we also mark that key with options that say you can only do port forwarding. Although, it can&amp;#8217;t be used for arbitrary port forwarding&amp;#8230; because it&amp;#8217;s only a private port on the remote side, it can only be used with the special reverse proxy.&lt;/p&gt;
+
+&lt;p&gt;So there it is. &lt;a href='http://github.com/progrium/localtunnel'&gt;And the code is on GitHub.&lt;/a&gt; You might notice the server is in Python and the client in Ruby. Why? It just made sense. Python has Twisted, which I like for server stuff. And Ruby is great for command line scripts, and has a nice SSH library. In the end, it doesn&amp;#8217;t matter what it&amp;#8217;s written in. Ultimately it&amp;#8217;s a Unix program.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Learning from expectation disparity, aka "failure"</title>
+   <link href="http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure"/>
+   <updated>2010-02-02T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure</id>
+   <content type="html">&lt;p&gt;I&amp;#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &amp;#8220;Yes, you can learn from failure, but you can also learn from success!&amp;#8221; Only after reading Jason Fried&amp;#8217;s blog post from one year ago, &lt;a href='http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated'&gt;Learning from failure is overrated&lt;/a&gt;, have I realized exactly what&amp;#8217;s wrong. We&amp;#8217;re talking about different kinds of failure.&lt;/p&gt;
+
+&lt;p&gt;Learning happens when you correct the mismatch of an expected outcome from the actual outcome. This is where the idea of learning from failure actually comes from. Failure represents a mistake in judgment, a disparity between expectation and reality. Therefore, if your expectation is validated by success and there is no disparity, then you didn&amp;#8217;t actually &lt;em&gt;learn&lt;/em&gt; anything &amp;#8212; you already knew.&lt;/p&gt;
+
+&lt;p&gt;However, validation of an expected but &lt;em&gt;unsure&lt;/em&gt; success is obviously learning because it corrects the expectation of doubt you had. Furthermore, analysis of an unexpected success can result in learning from correcting the assumptions that led to expecting failure. A successful outcome, but a failure to expect it.&lt;/p&gt;
+
+&lt;p&gt;This is where the confusion comes in. Unfortunately it&amp;#8217;s an issue of semantics. The meaning of the word failure in the context of &amp;#8220;learning from failure&amp;#8221; is this failure to know the outcome. In this way, it&amp;#8217;s true, you can only learn from failure. However, it is only this specific instance of expectation-failure this applies to so absolutely.&lt;/p&gt;
+
+&lt;p&gt;Separately although related (which I think adds to the confusion), despite outcome-failures not necessarily teaching you what will work, they tend to be the strongest lessons experienced. I mostly attribute this to the greater level of disparity and correction made to your mental model that comes from expecting a failing outcome to succeed.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Notify.io brings notifications to the web</title>
+   <link href="http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web"/>
+   <updated>2010-01-26T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web</id>
+   <content type="html">&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
+&lt;center&gt;&lt;iframe height='315' frameborder='0' src='http://www.youtube.com/embed/Fs9NauQ2M6o' width='560'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
+
+&lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
+
+&lt;h3 id='desktop_notifications'&gt;Desktop Notifications&lt;/h3&gt;
+
+&lt;p&gt;The original inspiration for Notify.io was to make Growl more useful by fixing its ability to receive notifications from the Internet. Out of the box, Growl is effectively only good for notifications from sources running on your machine. If you wanted to get notifications from a web app, you&amp;#8217;d have to wait for them to release a desktop notifier, which hopefully would use Growl to actually display the notifications. So you end up with all these desktop notifiers running for some apps, and have no option of desktop notifications for others.&lt;/p&gt;
+
+&lt;p&gt;This is probably the killer feature of Notify.io: it lets you get desktop notifications from any web app that supports it, which is an order of magnatude easier for them to do than build their own desktop notifier.&lt;/p&gt;
+
+&lt;h3 id='sources_and_outlets'&gt;Sources and Outlets&lt;/h3&gt;
+
+&lt;p&gt;The language of Notify.io is based around Sources and Outlets. Sources are pretty straightforward. They&amp;#8217;re a source of notifications. They could represent an application, script, company, person (or perhaps object?) that can send you notifications.&lt;/p&gt;
+
+&lt;p&gt;Outlets repesent the other major feature of Notify.io. They&amp;#8217;re ways you can get a notification. The Desktop Notifier is your first and default outlet, but is just one of several options. Currently supported Outlets besides Desktop Notifier are Email, Jabber IM, and Webhooks. Outlets to look forward to are SMS, Twitter, IRC, and perhaps telephone.&lt;/p&gt;
+
+&lt;p&gt;The magic is in routing notifications from Sources to Outlets. Currently this is a simple mapping of Source to Outlet. For example, you can get notifications from Source A on your desktop, while notifications from Source B go to IM. This simplistic routing is just the beginning. We&amp;#8217;ll talk about how we&amp;#8217;ll do advanced routing when we get to the Roadmap.&lt;/p&gt;
+
+&lt;h3 id='the_nio_client'&gt;The Nio Client&lt;/h3&gt;
+
+&lt;p&gt;For developers, it&amp;#8217;s worth mentioning that the pipe for our Desktop Notifier is really just a Comet HTTP stream. It can be consumed by pretty much anything. We were originally talking with Growl and authors of other desktop notifiers of direct integration. This is still a possibility, but just so we could move forward, we built our own client for OS X. Clients for other systems are available (but not yet &amp;#8220;officially&amp;#8221; supported) or are in progress, including Windows and Android.&lt;/p&gt;
+
+&lt;p&gt;Our OS X client is called Nio, short for Notify.io, so you can pronounce it N-I-O, but I tend to pronounce it &amp;#8220;neo&amp;#8221;. It&amp;#8217;s basically just an application that sits in your menu bar listening to HTTP streams (yes, plural) for notifications and pipes them into Growl.&lt;/p&gt;
+
+&lt;p&gt;For ease of installing streams, we made it handle files of the extension ListenURL. Once Nio is installed, you can download a ListenURL file containing a URL and it gets installed by Nio. The URL we give you is basically a &amp;#8220;capability URL&amp;#8221; or secret URL. This means streams are not super secure, but this is by design. If you wanted, you could share your URL with somebody so you both get notifications sent to that Outlet. You can always delete the Outlet and make another to disable that URL.&lt;/p&gt;
+
+&lt;p&gt;The other cool thing about our client is that it has a shell script notification hook. This means you can have notifications trigger a shell script that&amp;#8217;s passed the notification details. This is pretty powerful because it means you can do things like create your own local logging, hear your notifications with text-to-speech, or make certain notifications trigger a more obstrusive means of notifying you, such as Quicksilver&amp;#8217;s Large Type feature. This kind of programmability is central to our approach to design, as you&amp;#8217;ll see later on in the Roadmap.&lt;/p&gt;
+
+&lt;h3 id='simple_api_and_approval_model'&gt;Simple API and Approval Model&lt;/h3&gt;
+
+&lt;p&gt;For proper adoption, we need web apps to integrate Notify.io, so we have a super simple API for Sources. It&amp;#8217;s a simple REST API based on an endpoint constructed by the target of your notification. Like &lt;a href='http://en.gravatar.com/'&gt;Gravatar&lt;/a&gt;, we use an MD5 hash of a user&amp;#8217;s email address to identify targets. For example, to send a notification to test@example.com, you&amp;#8217;d do an HTTP POST to this URL:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;http://api.notify.io/v1/notify/55502f40dc8b7c769880b10874abc9d0&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&amp;#8217;d pass a few parameters, with at least your API key (meaning you need an account) and the text you want to send, and optionally an icon URL, link URL, title text and whether the notification should be &amp;#8220;sticky&amp;#8221;. That&amp;#8217;s it. The request should respond immediately so it may be quick enough to be done inline in your app, but we recommend it be done asynchronously.&lt;/p&gt;
+
+&lt;p&gt;Then what happens is the first notification you send actually triggers a notification to that user that you want to send them notifications. If they accept, future notifications will be sent and your previous notifications will show up in their history. This may change to replay previous notifications on approval, but the point here is the user has to approve notifications before they get them. In this way, it&amp;#8217;s similar to Jabber&amp;#8217;s approval model and helps avoid spammers.&lt;/p&gt;
+
+&lt;h3 id='public_service_software'&gt;Public Service Software&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href='http://code.google.com/p/notify-io/'&gt;Notify.io and its clients are open source&lt;/a&gt;. The service is free. Or rather, it&amp;#8217;s not-for-profit donationware. Notify.io is being run under a model I&amp;#8217;m developing called POSS, the goal of which is to automate/abstract away the maintainence and funding of its operation. The end result should be: the service exists, it&amp;#8217;s open source, and some in the developer community can deploy changes. But no single person is financially responsible for it, and it&amp;#8217;s run on maintained cloud infrastructure. In this case it&amp;#8217;s mostly App Engine.&lt;/p&gt;
+
+&lt;p&gt;This means that Notify.io is not a startup. It&amp;#8217;s public infrastructure. Ideally, I&amp;#8217;m not even in the loop. It should be a self-sustaining public service. This is not fully realized, but it will be as it starts to consume more resources. For more information, you can &lt;a href='http://blogrium.wordpress.com/2009/10/29/public-open-source-services/'&gt;read more&lt;/a&gt; on POSS or &lt;a href='http://groups.google.com/group/poss-talk'&gt;join our discussion group&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For now, the important thing is that Notify.io is open source. This means anybody can contribute bug fixes, new outlets, new desktop clients, etc.&lt;/p&gt;
+
+&lt;h3 id='roadmap'&gt;Roadmap&lt;/h3&gt;
+
+&lt;p&gt;Okay, sure, Notify.io is pretty cool now. But here are some of the major things that will be coming soon. Hopefully with your help!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Advanced Routing and Filters&lt;/em&gt;&lt;br /&gt; From the beginning, I wanted really powerful routing and filtering. My evangelism of webhooks has given me the obvious answer to this, but in a more integrated way. Basically, how do you allow any routing scheme imagineable by users? Let them write code. Originally it was going to be powered by &lt;a href='http://www.scriptlets.org/'&gt;Scriptlets&lt;/a&gt;, but since I split the eval engine out as &lt;a href='http://github.com/progrium/DrEval'&gt;DrEval&lt;/a&gt;, it will be based on that.&lt;/p&gt;
+
+&lt;p&gt;Basically, just a imagine a UI with a little textarea for writing JavaScript that can make web calls. Route notifications based on your IM status, your location, what music you&amp;#8217;re listening to, arbitrary time schedules, or anything you can code.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;More Outlets&lt;/em&gt;&lt;br /&gt; Obviously, more Outlets are good. Obvious ones are IRC, SMS, and Twitter DM. With Twilio we can do voice call notifications. Integration with push clients like the iPhone&amp;#8217;s Prowl app would be easy to do. Our outlet system is very simple, so you can &lt;a href='http://github.com/progrium/notify-io/blob/master/www/outlet_types.py'&gt;look at the source of our existing ones&lt;/a&gt;, write an outlet and it&amp;#8217;s likely we&amp;#8217;ll deploy it.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;OpenID Support&lt;/em&gt;&lt;br /&gt; Right now, you authenticate with Google. I don&amp;#8217;t believe in creating authentication systems, and Google was the quickest given the platform. It&amp;#8217;s also pretty popular and ensures you have an email address we can use. However, there are plenty of people that don&amp;#8217;t like the idea of using their Google Account, so at some point we&amp;#8217;ll support OpenID login and then go from there.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Multiple Email Support&lt;/em&gt;&lt;br /&gt; Ideally, a web app can use whatever email address you used to register with them to send you notifications. However, unless Gmail is your primary email you use for registration, they&amp;#8217;ll still need to ask you for your email. It&amp;#8217;s the Gravatar model. So like Gravatar, we&amp;#8217;ll need to let you add multiple emails to your account, allowing web applications to be able to send notifications based on any of them.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Convenience Libraries&lt;/em&gt;&lt;br /&gt; Our API is simple, but people are lazy. We&amp;#8217;re currently working on convenience libraries for popular langauges that it make that much easier to integrate with Notify.io. If you use a neat language, you should make a libnio package for it!&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Ad-hoc Sources&lt;/em&gt;&lt;br /&gt; Sources require an account, which is a bit heavyweight. Sometimes you want to create your own distinct sources to share with others or use in your scripts to easily send yourself notifications. This is the idea of Ad-hoc Sources, inspired by David Reid and capability URLs. The idea is simple: create an ad-hoc source and you get a secret URL. This URL acts just like the notify API endpoint, only you don&amp;#8217;t need an API key. You can use this in public scripts or give it to others to send you notifications, and if it&amp;#8217;s ever abused or falls in the wrong hands, just delete it and make another.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;More Supported Clients&lt;/em&gt;&lt;br /&gt; A developer in Japan started a Windows client based on Nio that we&amp;#8217;re planning to support as our primary Windows client. Another developer is working on an Android client. iPhone users have Prowl, so once there is a Prowl outlet, you can get them on your iPhone. But Prowl is not free, so perhaps it would be helpful if we had our own iPhone client. There are the beginnings of a Linux/libnotify client. These are all ways you can start contributing to Notify.io. ;)&lt;/p&gt;
+
+&lt;p&gt;That&amp;#8217;s about it. You can probably see why I describe Notify.io as the open notification platform of the web. It&amp;#8217;s simple, powerful, and open source. It&amp;#8217;s come a long way in just 3 months thanks to the contributions of Abimanyu Raja, Amanda Wixted, Mike Lundy, David Reid, Christopher Lobay, Hunter Gillane, Nakamatsu Shinji, and everybody that&amp;#8217;s given user feedback so far.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Hacker Dojo: place of the way of the hacker</title>
+   <link href="http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker"/>
+   <updated>2009-12-08T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker</id>
+   <content type="html">&lt;p&gt;Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on &lt;a href='http://www.flickr.com/photos/progrium/4017351989/'&gt;the front page&lt;/a&gt; of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href='http://hackerdojo.com'&gt;Hacker Dojo&lt;/a&gt;, aspiring to be a global hub of innovation, is based on a simple idea: to provide a community center for hackers, thinkers and technologists to meet, discuss, learn and create.&lt;/p&gt;
+
+&lt;p&gt;It&amp;#8217;s a non-profit, volunteer-run, member-supported operation that simply provides a space for hackers to do their thing 24/7, whether it&amp;#8217;s working on side projects, organizing a meetup, building the next startup, giving a class, working remotely, or just hanging out with diverse yet like-minded people. The thing they have in common is the hacker spirit, a force that drives ordinary but curious people to create what can end up being extraordinary, such as the personal computer, the first video game system, or the technology powering the Internet.&lt;/p&gt;
+
+&lt;p&gt;A dojo is considered a place to do and train one&amp;#8217;s craft with others. It&amp;#8217;s most commonly used in the context of martial arts or other physical training. But the word &amp;#8220;dojo&amp;#8221; is simply defined as &amp;#8220;place of the way.&amp;#8221; In the case of Hacker Dojo, that way is the way of the hacker.&lt;/p&gt;
+
+&lt;p&gt;The hacker is not what most people think. Although 99% of the 100+ members of Hacker Dojo are capable of doing the things most people think &amp;#8220;hackers&amp;#8221; do, I&amp;#8217;m 100% positive none of us have the intention of doing those things maliciously if at all. In fact, security has almost nothing to do with the way of the hacker. We define a hacker something like this:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A hacker is expert in their field, whether hobby or professional, that pushes the envelope of what&amp;#8217;s possible through hands-on exploration, driven by relentless curiosity and a desire to challenge the status quo.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Steven Levy, author of &lt;a href='http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511'&gt;Hackers: Heroes of the Computer Revolution&lt;/a&gt;, describes computer hackers as people that &amp;#8220;regard computing as the most important thing in the world.&amp;#8221; It&amp;#8217;s about passion. It&amp;#8217;s about something most of us can&amp;#8217;t even describe. It inexplicably compels us to explore technology. To build things. To learn things. To be like the heroes in our field and achieve the remarkable, which is something I think everybody can relate to.&lt;/p&gt;
+
+&lt;p&gt;In fact, there is no reason why anybody shouldn&amp;#8217;t aspire to be like a hacker, an innovator. This is what Hacker Dojo is about. We want to foster hacker culture so it can grow, develop and spread. We want to make its values explicit, and be the &amp;#8220;place of the way&amp;#8221; of the hacker.&lt;/p&gt;
+
+&lt;p&gt;If you still don&amp;#8217;t understand the hacker, or want to learn more, take a look at the &lt;a href='http://en.wikipedia.org/wiki/Hacker_ethic'&gt;Hacker ethic article&lt;/a&gt; on Wikipedia. There&amp;#8217;s also an excellent, short documentary available to watch online that shows you the energy and excitement of true hackers called &lt;a href='http://www.youtube.com/view_play_list?p=906FF3F2339D0C70'&gt;Hackers: Wizards of the Electronic Age&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you want to get involved in Hacker Dojo, come stop by or &lt;a href='http://hackerdojo.com/'&gt;visit the website&lt;/a&gt;! We hold many events at the Dojo, but it&amp;#8217;s also generally open for anybody to come and hack. If you&amp;#8217;re too far to come to us, you may find another &lt;a href='http://en.wikipedia.org/wiki/Hackerspace'&gt;hackerspace&lt;/a&gt; nearby. For example, in SF there is the excellent &lt;a href='https://www.noisebridge.net/wiki/Noisebridge'&gt;Noisebridge&lt;/a&gt; hackerspace.&lt;/p&gt;
+
+&lt;p&gt;When you&amp;#8217;re this obsessed with technology, so much that most &amp;#8220;normal&amp;#8221; people have no idea what you&amp;#8217;re talking about, it helps to have a place where people don&amp;#8217;t think you&amp;#8217;re crazy. People have moved to Mountain View to be closer to Hacker Dojo. If you already live nearby, you should definitely take advantage of this place of the way of the hacker.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Why efficiency is not as important as you think</title>
+   <link href="http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think"/>
+   <updated>2009-11-05T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think</id>
+   <content type="html">&lt;blockquote&gt;
+&lt;p&gt;&amp;#8220;Efficiency is doing things right; effectiveness is doing the right things.&amp;#8221; -Peter Drucker&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;When people, usually analytical people, want to improve a situation, they tend to optimize efficiency: achieve maximum output for input. &amp;#8220;Let&amp;#8217;s reduce waste! Let&amp;#8217;s simplify! Let&amp;#8217;s make things smoother! Let&amp;#8217;s try and get more out of the system!&amp;#8221; I suppose the obsession with efficiency is explained in the Drucker quote: that efficiency is &amp;#8220;doing things right.&amp;#8221; Who wouldn&amp;#8217;t want to do things right?&lt;/p&gt;
+
+&lt;p&gt;The problem with efficiency is that it has nothing to do with whether or not what you are currently doing is the right thing to do. Whereas effectiveness is about achieving the right result, or being on the right path.&lt;/p&gt;
+
+&lt;p&gt;Too many people assume a system is on the right path. If there is a problem, they address it by smoothing things out and making the process more efficient without questioning the larger system they were produced in. But if the system is going in the wrong direction, that&amp;#8217;s only going to make the real problem worse. The push for more standardized testing in public education comes to mind.&lt;/p&gt;
+
+&lt;p&gt;What&amp;#8217;s really important is effectiveness. In the end, it doesn&amp;#8217;t matter if your business is spending the least amount possible or your computer program running as fast as possible or your lifestyle entirely streamlined. If it&amp;#8217;s effective, it achieves the desired goal. Your business is producing value, your program is functionally useful, your lifestyle is making you happy. Effectiveness is qualitative. Efficiency is quantitative, which is why I think it&amp;#8217;s so big with analytical people. Probably intelligent people in general.&lt;/p&gt;
+
+&lt;p&gt;If you think about it, intelligence, especially knowledge, is mostly concerned with efficiency. It&amp;#8217;s more about how to solve problems, less so with what problems to solve. Knowledge is a tool. It&amp;#8217;s neutral. To what ends do you actually use it for? That requires values and intention&amp;#8212;the realm of wisdom. A wise person tends to be an effective person.&lt;/p&gt;
+
+&lt;p&gt;When approaching a problem, wisdom and pragmatism must frame intelligence. Before you start thinking about efficiency, you should step back and think about effectiveness. In computer engineering this idea spread with Donald Knuth&amp;#8217;s quote &amp;#8220;premature optimization is the root of all evil.&amp;#8221; His argument being that 97% of efficiency optimizations are unnecessary to achieve functionality, at which point you can determine which optimizations will be the most effective improvements of efficiency.&lt;/p&gt;
+
+&lt;p&gt;In a way, it&amp;#8217;s a look before you leap argument. Don&amp;#8217;t get me wrong with all this. Efficiency is terribly valuable and can improve a situation, but only if you&amp;#8217;re on the right path. Just because a system is currently working or was previously working doesn&amp;#8217;t mean it should be, or will in the future. You should always consider effectiveness before efficiency, even in &amp;#8220;working&amp;#8221; systems. Here&amp;#8217;s why:&lt;/p&gt;
+
+&lt;p&gt;Effectiveness opens the door for efficiency, but efficiency can change the requirements for effectiveness.&lt;/p&gt;
+
+&lt;p&gt;Quantitative improvements can qualitatively change the situation if taken far enough. The game can change. For example, you can become so efficient at producing cars that production isn&amp;#8217;t the problem anymore. Then it&amp;#8217;s a question of variety, like choice of color. &amp;#8220;You can have any color as long as that color is black,&amp;#8221; Ford said, and soon after lost the lead in car manufacturing. Perhaps when business slowed, they tried to make their sales and marketing or administrative organization more efficient. They didn&amp;#8217;t re-asses whether the thing they were doing so right (building cars so efficiently)&amp;#8230; was the right thing. The effective thing.&lt;/p&gt;
+
+&lt;p&gt;Efficiency is important, but powerless without effectiveness. Always keep an eye on effectiveness.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Public Open Source Services</title>
+   <link href="http://progrium.com/blog/2009/10/29/public-open-source-services"/>
+   <updated>2009-10-29T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2009/10/29/public-open-source-services</id>
+   <content type="html">&lt;p&gt;Last night I went off and put up a wiki about an idea I&amp;#8217;ve been thinking about for a while: &lt;a href='http://poss.gliderlab.com/'&gt;public open source services&lt;/a&gt; or POSS. Think: public services or utilities on the web run as open source.&lt;/p&gt;
+
+&lt;p&gt;Unlike open source software, web services aren&amp;#8217;t just source code. They&amp;#8217;re source code that &lt;em&gt;runs&lt;/em&gt;. They have to be maintained in order to keep running, and the resources they consume have to be paid for. This is why most web services are built using a business as the vehicle. This effectively constrains what you can build by framing it as something that needs to turn a profit or support you to work on it. But does it need to be that way? Can web services be built in a way that make it self-sufficient? Not needing some ambivalent leader to take responsibility for it?&lt;/p&gt;
+
+&lt;p&gt;I originally blogged about it in February 2007, 6 months after I first wrote about webhooks. Unfortunately my old blog isn&amp;#8217;t online right now. Back then, I was trying to solve the administrative problem. How do you maintain the servers in an open source way? My idea then, was to build a self-managing system using something like cfengine or Puppet, where the recipes and configurations are kept with the publicly available source code. As new configurations are checked in, the server(s) adopt the new directives and continue to self-manage.&lt;/p&gt;
+
+&lt;p&gt;The practicality of such a setup is a little far fetched, but seemed pretty feasible for smaller projects. However, since the release of Google App Engine, this concern for simple web applications has disappeared. Google just automates the system administration, and scaling! This means to run the app, you just have to write the code and hit deploy. That&amp;#8217;s a huge step! Administration concerns? Pretty much solved.&lt;/p&gt;
+
+&lt;p&gt;The next thing is the financial concern. How do you pay for it? Or rather, how does it pay for itself? This took longer to figure out, but here we are. From the wiki essay:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;You use the same Google Merchant account that App Engine debits as the one that accepts donations. This way no bank account is involved. Then you track the money that goes into the account (using the Google Merchant IPN equivalent). Then you look at your usage stats from the App Engine panel and predicate future usage trends. Then calculate the cost per month. Then divide the cash in the account by that and you have how long the service will run. You make this visible on all pages (at the bottom, say) that this service will run for X months, &amp;#8220;Pay now to keep it running.&amp;#8221; You accept any amount, but you are completely clear about what the costs are. And this is all automated.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Take the humans out of the loop!&lt;/p&gt;
+
+&lt;p&gt;Then you rely on the same sort of community approach of open source to contribute to the application. Like a few members of the project community are given certain rights, some will be given permission to deploy the app from time to time for updating the running service.&lt;/p&gt;
+
+&lt;p&gt;If the service isn&amp;#8217;t useful, nobody uses it, it&amp;#8217;s not paid for, it disappears. If it is useful, people will pay for it to keep it running. They are assured they are paying operating costs, which are significantly lower than most because it doesn&amp;#8217;t include paying for human resources! Volunteers might need to meddle with settings, but otherwise, the coders are in control and the community accepts or denies changes made by whoever wants them.&lt;/p&gt;
+
+&lt;p&gt;So if this is interesting, read the &lt;a href='http://poss.gliderlab.com/'&gt;full essay I wrote up on the wiki&lt;/a&gt;. It&amp;#8217;s been my intention to prototype and validate this model with many of my projects.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Why minimalist software wins at workflow</title>
+   <link href="http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow"/>
+   <updated>2009-06-26T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow</id>
+   <content type="html">&lt;p&gt;Recently I&amp;#8217;ve been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We&amp;#8217;re already married to &lt;a href='http://trac.edgewall.org/'&gt;Trac&lt;/a&gt;, so we&amp;#8217;ve been playing with &lt;a href='http://www.agile42.com/cms/pages/agilo/'&gt;Agilo&lt;/a&gt; and are looking at some of the other agile plugins for Trac. Unfortunately they&amp;#8217;re all so heavyweight, despite some that claim not to be.&lt;/p&gt;
+
+&lt;p&gt;I came back to a realization I&amp;#8217;m sure a lot of us have had: most software sucks. Especially software that&amp;#8217;s intended to augment some real-life process. When asking friend/colleague &lt;a href='http://timothyfitz.com'&gt;Timothy Fitz&lt;/a&gt; about recommendations on agile tools, he said: &amp;#8220;A board and post-its. Seriously.&amp;#8221;&lt;/p&gt;
+
+&lt;p&gt;This is part of the reason most enterprise software sucks so terribly. Enterprise is about lots of real-life process and workflow, and given that process augmentation software even in small doses generally sucks, large amounts of it will suck exponentially.&lt;/p&gt;
+
+&lt;p&gt;A lot of us have learned that less software is more effective. One major attraction of Trac was their goal of staying out of the way through minimalism. The trick with minimalism, in general, is knowing what&amp;#8217;s actually important; the essence of the message or design. This is a big part of my design process. Asking, &amp;#8220;How can I fold these requirements into fewer features and UI?&amp;#8221; instead of directly implementing a feature for every requirement.&lt;/p&gt;
+
+&lt;p&gt;The other thing about minimalism is that, like abstraction (another form of compression), everything you leave in the design makes such a huge difference. In programming, when you make abstractions, you&amp;#8217;re deciding what you can assume. This means abstractions can go in different directions depending on the assumption requirements of what&amp;#8217;s going to use the abstraction. The risk with minimalist software is that a simple design choice can drastically change the direction of the abstraction and make or break whether the software fits your needs.&lt;/p&gt;
+
+&lt;p&gt;Luckily, minimalism buys you a sort of abstraction that can enable projection. By this I mean that users can project their actual process and workflow onto the software. If it doesn&amp;#8217;t have features that impose a particular process, users are free to do what works for them. This is why wikis are so powerful.&lt;/p&gt;
+
+&lt;p&gt;Coming back to Timothy&amp;#8217;s &amp;#8220;a board and post-its&amp;#8221; remark, why do you even need software? If you can do it without software, why would you want to bring software in to slow things down?&lt;/p&gt;
+
+&lt;p&gt;Software does have a couple strengths. First, it encodes process in way that means you can automate parts of it. Nobody has to worry about manually typesetting when using a word processor. Second, it persists and organizes information that would normally be lost in handwritten notes, or worse, somebody&amp;#8217;s head. The trick is getting these advantages without getting in the way.&lt;/p&gt;
+
+&lt;p&gt;A naive approach to software design is thinking that perfectly modeling a system, such as your development process, is the way to good software. I used to think this. It sounds great because then you can programmatically reason about every aspect of the system. But in the real-world, no two systems are exactly alike. In fact, a given system can change quite a bit in its lifetime. So there&amp;#8217;s really no point to modeling systems with that kind of precision.&lt;/p&gt;
+
+&lt;p&gt;However, I&amp;#8217;m seeing a lot of this in agile/scrum software. Requirements have stories, stories have tasks, organized into iterations and releases. CRUD for every noun mentioned in scrum. This on top of abstractions in a direction different than we need. Numbers where it doesn&amp;#8217;t really matter. Nice pie chart breakdowns we&amp;#8217;ll rarely use. Top it off with horrible UI, since with all these features there isn&amp;#8217;t time to make them easy to use.&lt;/p&gt;
+
+&lt;p&gt;Honestly, &lt;a href='http://www.pivotaltracker.com/'&gt;Pivotal Tracker&lt;/a&gt; seems to have the best abstraction of agile. It folds requirements, stories and tasks into just stories. It automatically and dynamically creates iterations and calculates velocity. It keeps you on a single page, keeping you focused on what&amp;#8217;s important.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, we can&amp;#8217;t use Pivotal Tracker since we&amp;#8217;d need it on our servers and the licensing they offered doesn&amp;#8217;t scale if we want to essentially give it away as part of NASA Code. It&amp;#8217;s likely I&amp;#8217;ll want to just start nudging Trac in the right direction using Pivotal Tracker as a model reference, pulling together code from Agilo and other plugins. If there&amp;#8217;s one thing that complements minimalist design, it&amp;#8217;s an extension architecture, and Trac has an excellent plugin system.&lt;/p&gt;
+
+&lt;p&gt;Anyway, as far as augmenting process and workflow, I&amp;#8217;ve always liked the idea of starting with a wiki and lazily formalizing the process into custom software as needed. As long as you can keep it under control, mind your requirement abstractions, and avoid writing too much software.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Oh no! Hackers!</title>
+   <link href="http://progrium.com/blog/2009/06/17/oh-no-hackers"/>
+   <updated>2009-06-17T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2009/06/17/oh-no-hackers</id>
+   <content type="html">&lt;p&gt;That&amp;#8217;s right. Hide your floppies and cover your Ethernet ports. Virus-laden hackers are coming to take over your computer, steal your passwords, and do terrible things! Like hack your MySpace! Oh noes!&lt;/p&gt;
+
+&lt;p&gt;I guess I&amp;#8217;m getting over the fact that we probably won&amp;#8217;t be able to undo the damage done with the public&amp;#8217;s perception of what a &amp;#8220;hacker&amp;#8221; is. Perhaps, though, we can overload it to the point of ambiguity, so there&amp;#8217;s at least some question of context whether it&amp;#8217;s the good kind or the bad kind.&lt;/p&gt;
+
+&lt;p&gt;The problem is that positive connotations aren&amp;#8217;t enough. The people that would venture to understand &amp;#8220;hackers&amp;#8221; the slightest bit more than what they hear in the headlines are going to pretty quickly find the &amp;#8220;good hackers&amp;#8221; &amp;#8230; they&amp;#8217;re white hats, right?&lt;/p&gt;
+
+&lt;p&gt;The other day I was questioned by somebody (that should know better) if I hacked somebody&amp;#8217;s website that was recently compromised. Seriously? My response was &amp;#8220;I barely have enough time to do important things, let alone something that would be a waste of my time.&amp;#8221;&lt;/p&gt;
+
+&lt;p&gt;I self-identify as a hacker. I invite my friends over to &amp;#8220;hack.&amp;#8221; I started a party for &amp;#8220;hackers and thinkers&amp;#8221; (a very intentional choice of words). I&amp;#8217;m co-founding a community center called Hacker Dojo. What are we doing at all these functions? Building and learning.&lt;/p&gt;
+
+&lt;p&gt;We use the term perhaps too liberally, but always implying tribute to the true hackers that, as Steven Levy put it, &amp;#8220;regard computing as the most important thing in the world.&amp;#8221;&lt;/p&gt;
+
+&lt;p&gt;These people push the envelope of what&amp;#8217;s possible through hands-on exploration, driven by relentless curiosity and a desire to challenge the status quo. Steve Wozniak, Lee Felsenstein, Linus Torvalds, Tim Berners-Lee, John Carmack&amp;#8230;&lt;/p&gt;
+
+&lt;p&gt;Hell, there&amp;#8217;s something big behind this idea, why stop at computing? Buckminster Fuller, Nikola Tesla, Richard Feynman, Alfred Kinsey, Ben Franklin&amp;#8230;&lt;/p&gt;
+
+&lt;p&gt;Perhaps we&amp;#8217;re generalizing too far. Perhaps we&amp;#8217;re rendering &amp;#8220;hacker&amp;#8221; meaningless. Or are we giving it more meaning? Getting down to its essence. I wouldn&amp;#8217;t be defending this idea so strongly if I didn&amp;#8217;t think it had some great significance to humanity.&lt;/p&gt;
+
+&lt;p&gt;What upsets me is that many who would identify as hackers in this sense seem to be afraid to claim it. Most likely in fear of confusing the layman that has the media&amp;#8217;s myopic view of hackers. You&amp;#8217;ve never heard of the canonical conference for real hackers. No, it&amp;#8217;s not DefCon. (Just get up and leave.) It&amp;#8217;s a conference called Hackers. You&amp;#8217;ve never heard of it because they keep it secret!&lt;/p&gt;
+
+&lt;p&gt;This conference was started to gather everybody together that was mentioned in Steven Levy&amp;#8217;s book &lt;a href='http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511/ref=sr_1_2?ie=UTF8&amp;amp;s=books&amp;amp;qid=1245307316&amp;amp;sr=8-2'&gt;Hackers: Heroes of the Computer Revolution&lt;/a&gt; (one of the last good publication on hackers, and it came out in 1984!). This conference holds all the values of true hackerism and it&amp;#8217;s been happening for 25 years. But they won&amp;#8217;t promote it! It goes by a fake name and even has all mentions of &amp;#8220;hacker&amp;#8221; on their website replaced with an image so it won&amp;#8217;t be indexed. Seriously??&lt;/p&gt;
+
+&lt;p&gt;Trying to supplant public perception of hackers by just saying they&amp;#8217;re something different and providing a better name nobody uses (&amp;#8220;crackers&amp;#8221;) is not going to work. It hasn&amp;#8217;t worked. They need something to replace those visions of crackers with. We need tangible examples and stories. We need heroes. Heroes willing to wear the title.&lt;/p&gt;
+
+&lt;p&gt;Luckily, we have a new generation of hackers. One that has started a global movement called &lt;a href='http://hackerspaces.org/'&gt;hackerspaces&lt;/a&gt;, probably one of the biggest things for hackers in years. Our local hackerscene fostered by Silicon Valley culture and events like &lt;a href='http://devhouse.org'&gt;SuperHappyDevHouse&lt;/a&gt; have led to a hackerspace we hope will have a big impact. One that proudly wears the name hacker: &lt;a href='http://hackerdojo.com'&gt;Hacker Dojo&lt;/a&gt;.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Web hooks to revolutionize the web</title>
+   <link href="http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web"/>
+   <updated>2007-05-03T00:00:00-07:00</updated>
+   <id>http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web</id>
+   <content type="html">&lt;p&gt;There once was a command line. It was a powerful thing. Not only could you navigate your filesystem and launch applications, but you could program shell scripts to automate tasks and make convenient shortcuts. It also had pipes.&lt;/p&gt;
+
+&lt;p&gt;One of the major sources of power on the Unix command line is the simple construct of input and output. A program can read from &lt;code&gt;STDIN&lt;/code&gt; and can write to &lt;code&gt;STDOUT&lt;/code&gt;, and you have a fair amount of control over re-routing them however you want. Most commonly this is used to chain commands together, &amp;#8220;piping&amp;#8221; the output of one to the input of another.&lt;/p&gt;
+
+&lt;p&gt;This is infrastructure. Infrastructure that encourages simple, independent programs to be made almost exclusively for the purpose of chaining with other commands. These are commands like cat, grep, uniq, wc, sort, nc, and others. Many of them are useless by themselves, but together they achieve more than the sum of their parts. Especially when combined with larger programs. This is made possible from the simple idea of input and output.&lt;/p&gt;
+
+&lt;p&gt;This idea was implemented on Unix in 1977. Twenty years later, Jon Udell expressed a vision of web sites as data sources that could be reused and remixed, and a new programming paradigm that took the whole Internet as its platform. This lead Tim OReilly to ask in 2000:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;What is the equivalent of the pipe in the age of the web?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There seems to be a resounding consensus that the answer is feeds. The name sounds very promising, it sort of make you imagine feeds like in the telecom world. Data coming directly to you. But this is misleading because feeds aren&amp;#8217;t about data coming to you. They&amp;#8217;re about you getting that data yourself. A lot. Over and over again. This is polling.&lt;/p&gt;
+
+&lt;p&gt;If you could avoid polling, you probably would. If you&amp;#8217;re building an app that works with a feed, you have to write a polling system. This means messing with the often-hard-to-debug crontab or writing and managing a full-fledged daemon. Then you have to worry about caching and parsing. Feeds seem to be made for the browser because the browser does a lot of this work for you, but it&amp;#8217;s a different story if you&amp;#8217;re constantly polling feeds or APIs in the backend. Then it almost becomes too much work to do anything simple with feeds and APIs. If you want to use feeds for real-time notification, have fun setting that up.&lt;/p&gt;
+
+&lt;p&gt;I also think there&amp;#8217;s a problem with the command line metaphor in the first place. The web is not linear. Web apps aren&amp;#8217;t synchronous. A better metaphor would be a daemon process. How do they communicate? IPC? Sockets? Queues?&lt;/p&gt;
+&lt;div class='alert alert-info'&gt;
+Note from 2012: Remember, this was 2007. Web developers didn't have Node.js or EventMachine, and mainstream developers didn't understand queuing systems or async operations. Often all they had was Apache and PHP.
+&lt;/div&gt;
+&lt;p&gt;Unfortunately, web stacks are stateless request processors, so you can&amp;#8217;t really use sockets. You could use Amazon SQS or some other queuing system, but queues often just move the polling to somewhere else. What we need is something simple, stateless, and ideally real-time. We need to push.&lt;/p&gt;
+
+&lt;p&gt;This is where web hooks come in. Web hooks are essentially user defined callbacks made with HTTP POST. To support web hooks, you allow the user to specify a URL where your application will post to and on what events. Now your application is pushing data out wherever your users want. It&amp;#8217;s pretty much like re-routing &lt;code&gt;STDOUT&lt;/code&gt; on the command line.&lt;/p&gt;
+
+&lt;p&gt;We&amp;#8217;re already sort of doing this with pingbacks on blogs. However, the difference with web hooks is that the payload is arbitrary event data and the target URLs are user web scripts or handlers. From there, the users can do whatever they want.&lt;/p&gt;
+
+&lt;p&gt;The idea here is to create new infrastructure. New opportunities. I&amp;#8217;ve been thinking a lot about the possibilities of a web hook enabled web, and it makes me really excited. Because it&amp;#8217;s such open ended infrastructure, I&amp;#8217;m sure the possibilities extend well beyond what I can think of. Especially when combined with our growing ecosystem of APIs and feeds.&lt;/p&gt;
+
+&lt;p&gt;Web hooks are easy to implement for application developers. You just implement a UI or API to let the user specify target URLs, and then you&amp;#8217;re just making a standard HTTP POST on events. This is a fairly trivial operation in most environments, since you already do this to use other web APIs.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#8217;s be clear. When I talk about the user of web hooks, it&amp;#8217;s often a power user or developer. But being based on HTTP POST makes it very accessible for mainstream web developers. They already know how to work with POST variables. And PHP hosting is widely available and practically free. I think PHP would become a popular language for writing hook scripts.&lt;/p&gt;
+
+&lt;p&gt;Just think about it. Writing all the boilerplate polling and parsing infrastructure just to use a feed? Or writing a little PHP script that has all the incoming data in &lt;code&gt;$_POST&lt;/code&gt;. Plus it&amp;#8217;s real-time. Which has a lower barrier to entry when somebody gets a bright idea on how to use all this data we&amp;#8217;ve &amp;#8220;opened up&amp;#8221; on the programmable web?&lt;/p&gt;
+
+&lt;p&gt;The Unix pipe is simple because it&amp;#8217;s about linear input and output of text streams. The web is very different. At a high level, I think web hooks achieve the same simplicity but more appropriately for the web. When coupled with our existing ecosystem of feeds and APIs, we&amp;#8217;ll have an even more powerful platform than what pipes gave Unix.&lt;/p&gt;</content>
+ </entry>
+ 
+ 
+</feed>
