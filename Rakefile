@@ -80,7 +80,8 @@ task :publish do
     sh "jekyll --no-server --no-auto"
     sh "git checkout master"
     sh "cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
-    sh "git commit -a -m 'auto publish #{`date`.strip}'"
+    sh "git add ."
+    sh "git commit -m 'auto publish #{`date`.strip}'"
     sh "git push origin master"
     sh "git checkout source"
   end
