@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>From Webhooks to the Evented Web :: Jeff Lindsay
+      </title>
+
+    
+    <meta name="description" content="" />
+    
+    <meta name="author" content="Jeff Lindsay" />
+
+    <script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />
+    <link href="http://fonts.googleapis.com/css?family=VT323" rel="stylesheet" type="text/css" />
+
+
+    <link rel="stylesheet" type="text/css" href="/style/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/pager.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/alerts.min.css" />
+    <link rel="stylesheet/less" type="text/css" href="/style/progrium.less" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/images/JeffLindsayDeluxe.png" /> 
+
+    <script type="text/javascript" src="/scripts/less-1.3.0.min.js"></script>
+
+    <link rel="me" href="http://www.google.com/profiles/progrium" />
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+        <div id="tree"></div>
+        <h2><a href="/" title="Pragmatic idealist. Builder. Thought explorer."><span>Jeff Li</span>nds<span>ay</span></a></h2>
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="http://github.com/progrium">Projects</a></li>
+          <!--li>Blueprints</li-->
+          <li><a href="/about.html">About</a></li>
+          <li id="hire"><a href="mailto:progrium+hire@gmail.com">Hire Me</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="content">
+      <div class="container">
+        <div class="sidebar">
+  <div class="portrait">
+    <img src="/images/JeffLindsayDeluxe.png" width="150" height="150" />
+  </div>
+  <div class="button">Subscribe to Blog</div>
+  <h6>Related Posts</h6>
+  <ul>
+    
+    <li><a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe">Piping into and out of the cloud with skypipe</a></li>
+    
+    <li><a href="/blog/2012/09/07/let-me-tell-you-about-my-website">Let me tell you about my website</a></li>
+    
+    <li><a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel">Making a local web server public with localtunnel</a></li>
+    
+    <li><a href="/blog/2010/02/02/learning-from-disparity-aka-failure">Learning from expectation disparity, aka "failure"</a></li>
+    
+    <li><a href="/blog/2010/01/26/notifyio-brings-notifications-to-the-web">Notify.io brings notifications to the web</a></li>
+    
+    <li><a href="/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker">Hacker Dojo: place of the way of the hacker</a></li>
+    
+    <li><a href="/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think">Why efficiency is not as important as you think</a></li>
+    
+    <li><a href="/blog/2009/10/29/public-open-source-services">Public Open Source Services</a></li>
+    
+    <li><a href="/blog/2009/06/26/why-minimalist-software-wins-at-workflow">Why minimalist software wins at workflow</a></li>
+    
+    <li><a href="/blog/2009/06/17/oh-no-hackers">Oh no! Hackers!</a></li>
+    
+  </ul>
+</div>
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Nov</span>
+    <span class="day">19</span><br />
+    <span class="year">2012</span>
+  </div>
+  <h1><a href="/blog/2012/11/19/from-webhooks-to-the-evented-web">From Webhooks to the Evented Web</a></h1>
+  <p>Back in 2007 I started thinking and talking a lot about <a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'>an idea called webhooks</a>. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including <a href='http://localtunnel.com'>Localtunnel</a> and <a href='http://requestb.in'>RequestBin</a> (originally PostBin). There were others that might not be around anymore: <a href='http://mailhooks.com'>MailHooks</a>, <a href='http://clickhooks.com'>ClickHooks</a>, <a href='http://twitterhooks.com'>TwitterHooks</a>, <a href='http://scriptlets.org'>Scriptlets</a>, and a few others.</p>
+
+<p>Webhooks wasn&#8217;t really a new technology in the sense that there was a specification or tangible piece of software. It was more of an architectural pattern, and a loose one at that. To me it was just a different way to think about web applications, and it opened up a lot of new possibilities.</p>
+
+<p>I was really excited by those possibilities, so I started telling people about it. The only problem was that it was this semi-vague idea. I often spoke in high-level notions. It was hard for some people to understand at the time. I think some people mostly got it, but a lot of people didn&#8217;t get it and thought they did.</p>
+
+<h3 id='confusion'>Confusion</h3>
+
+<p>For example, the name &#8220;webhooks&#8221; was more about the pattern than any specific part of how it works. Webhooks involve two parts: an application that triggers a URL, and a handler at that URL. If you were to ask &#8220;where is the webhook?&#8221; different people will answer you differently. Some say it&#8217;s the trigger side. Some say it&#8217;s the handler side. For me, &#8220;a webhook&#8221; is the combination of both a trigger and a handler.</p>
+
+<p>It also didn&#8217;t help that there was never a spec. I always avoided a spec because there were a lot of different implementations already out there, and you might implement it slightly different for different use cases. It made sense to me to just keep it a general pattern and not limit what was possible.</p>
+
+<p>I didn&#8217;t want to say, &#8220;Well, if you want to implement webhooks, it&#8217;s got to be JSON. And use this payload structure. And this is the API for registering them. Otherwise, it&#8217;s not webhooks.&#8221; Because if you didn&#8217;t do those things in a particular way, they&#8217;d still be webhooks to me.</p>
+
+<h3 id='mild_success'>Mild Success</h3>
+
+<p>After a while, the idea got out there and companies like Google, Facebook, Wordpress, GitHub, Twilio, and other startups started implementing it. Five years later and I still often run into new applications or open source projects using the term webhooks. But even after all this time, there&#8217;s still a lot of cool stuff that I wanted to emerge that hasn&#8217;t really happened yet.</p>
+
+<p>Some of it is starting to happen, though. For example, how do you write these handlers script? I really didn&#8217;t believe in being able to just plug apps together like pipes. That&#8217;s something that could come later and would definitely need a spec. Instead, I wanted people to actually write handler scripts with code. That way they could make something that did whatever they wanted, exactly how they wanted.</p>
+
+<p>To facilitate that, I wanted a service that would let you write and it would host for you these little handler scripts for processing HTTP webhook requests. I actually built a prototype of this called Scriptlets. It was a web app where you could write JavaScript, hit save, and then you&#8217;d have a little script at a URL that you could use for webhooks.</p>
+
+<p>Scriptlets didn&#8217;t get very popular, though I didn&#8217;t push it very hard. There was a lot I wanted to do with it but there wasn&#8217;t enough demand to drive development, and I was so busy that it eventually became defunct.</p>
+
+<p>Four years later, we actually have a service like this. I discovered it about a week ago. It&#8217;s called <a href='http://webscript.io'>Webscript</a>. It&#8217;s basically Scriptlets done right. Webscript is a web app where you can write Lua, hit save, and then you&#8217;ve got little web service. It has basically everything you need to write webhook handler scripts.</p>
+
+<h3 id='the_ecosystem'>The Ecosystem</h3>
+
+<p>Slowly, people <em>are</em> building out pieces of the ecosystem. You could say that the webhooks paradigm was really about this ecosystem. At some point I realized this and decided to give that ecosystem a name. It turned out the ecosystem was really what I was getting at with webhooks. That&#8217;s where the magic was.</p>
+
+<p>I started calling this ecosystem the Evented Web. Like the Semantic Web and &#8220;programmable web,&#8221; it&#8217;s an umbrella term for a family of technologies coupled with a vision of what the world could be like. The Evented Web envisions a world where the programmable web that we have today of traditional web APIs is complemented by APIs that produce events through webhooks. Adding a callback mechanism to web APIs makes the web more like a giant evented framework.</p>
+
+<p>Just like with Node.js, perhaps the most popular evented framework, there&#8217;s all kinds of innovation happening in the community. It&#8217;s a new way of thinking about things. Pipes and streams come up a lot in the Node.js world now, and similar sorts of things can be done across web applications with an Evented Web.</p>
+
+<p>By the time I started talking more about the Evented Web instead of just webhooks, I was already pretty tired of talking about it all. I was sort of &#8220;over it&#8221; and I started to not care if people didn&#8217;t see or share this vision. I continued to think it was cool, but I started to move on to other interests.</p>
+
+<h3 id='the_future'>The Future</h3>
+
+<p>These days, the people that really get it are starting to build some really neat things. Webhooks have spread enough that you can at least reference them or the idea of HTTP callbacks and not have to explain yourself. Now is maybe the perfect time for me to put a few specific projects into motion that could at least provide a tangible foundation for building out the Evented Web. Not just vague notions.</p>
+
+<p>The most immediate thing is a lightweight spec for implementing webhooks. Specifically I mean registering a callback URL and invoking the callback URL. I&#8217;ve intentionally put this off for a lot of reasons. I didn&#8217;t want to get it wrong. I didn&#8217;t want to leave people out. I wanted to capture best practices, which for the longest time we hadn&#8217;t them figured out. But now might be the perfect time because there is a lot on the verge of happening.</p>
+
+<p>Stay tuned for my proposal for HTTP Subscriptions. It will be the first of several really cool developments for the Evented Web, from me and others.</p>
+</div>
+
+<hr />
+ <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'progrium'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+      </div>
+      <div id="roots">
+        <img src="/images/roots.png" />
+      </div>
+    </div>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+        try {
+        var pageTracker = _gat._getTracker("UA-6824126-1");
+        pageTracker._trackPageview();
+        } catch(err) {}</script>
+  </body>
+</html>
