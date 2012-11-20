@@ -4,13 +4,63 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2012-11-18T14:10:00-08:00</updated>
+ <updated>2012-11-19T22:17:54-08:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
    <email>progrium@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>From Webhooks to the Evented Web</title>
+   <link href="http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web"/>
+   <updated>2012-11-19T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web</id>
+   <content type="html">&lt;p&gt;Back in 2007 I started thinking and talking a lot about &lt;a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'&gt;an idea called webhooks&lt;/a&gt;. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; and &lt;a href='http://requestb.in'&gt;RequestBin&lt;/a&gt; (originally PostBin). There were others that might not be around anymore: &lt;a href='http://mailhooks.com'&gt;MailHooks&lt;/a&gt;, &lt;a href='http://clickhooks.com'&gt;ClickHooks&lt;/a&gt;, &lt;a href='http://twitterhooks.com'&gt;TwitterHooks&lt;/a&gt;, &lt;a href='http://scriptlets.org'&gt;Scriptlets&lt;/a&gt;, and a few others.&lt;/p&gt;
+
+&lt;p&gt;Webhooks wasn&amp;#8217;t really a new technology in the sense that there was a specification or tangible piece of software. It was more of an architectural pattern, and a loose one at that. To me it was just a different way to think about web applications, and it opened up a lot of new possibilities.&lt;/p&gt;
+
+&lt;p&gt;I was really excited by those possibilities, so I started telling people about it. The only problem was that it was this semi-vague idea. I often spoke in high-level notions. It was hard for some people to understand at the time. I think some people mostly got it, but a lot of people didn&amp;#8217;t get it and thought they did.&lt;/p&gt;
+
+&lt;h3 id='confusion'&gt;Confusion&lt;/h3&gt;
+
+&lt;p&gt;For example, the name &amp;#8220;webhooks&amp;#8221; was more about the pattern than any specific part of how it works. Webhooks involve two parts: an application that triggers a URL, and a handler at that URL. If you were to ask &amp;#8220;where is the webhook?&amp;#8221; different people will answer you differently. Some say it&amp;#8217;s the trigger side. Some say it&amp;#8217;s the handler side. For me, &amp;#8220;a webhook&amp;#8221; is the combination of both a trigger and a handler.&lt;/p&gt;
+
+&lt;p&gt;It also didn&amp;#8217;t help that there was never a spec. I always avoided a spec because there were a lot of different implementations already out there, and you might implement it slightly different for different use cases. It made sense to me to just keep it a general pattern and not limit what was possible.&lt;/p&gt;
+
+&lt;p&gt;I didn&amp;#8217;t want to say, &amp;#8220;Well, if you want to implement webhooks, it&amp;#8217;s got to be JSON. And use this payload structure. And this is the API for registering them. Otherwise, it&amp;#8217;s not webhooks.&amp;#8221; Because if you didn&amp;#8217;t do those things in a particular way, they&amp;#8217;d still be webhooks to me.&lt;/p&gt;
+
+&lt;h3 id='mild_success'&gt;Mild Success&lt;/h3&gt;
+
+&lt;p&gt;After a while, the idea got out there and companies like Google, Facebook, Wordpress, GitHub, Twilio, and other startups started implementing it. Five years later and I still often run into new applications or open source projects using the term webhooks. But even after all this time, there&amp;#8217;s still a lot of cool stuff that I wanted to emerge that hasn&amp;#8217;t really happened yet.&lt;/p&gt;
+
+&lt;p&gt;Some of it is starting to happen, though. For example, how do you write these handlers script? I really didn&amp;#8217;t believe in being able to just plug apps together like pipes. That&amp;#8217;s something that could come later and would definitely need a spec. Instead, I wanted people to actually write handler scripts with code. That way they could make something that did whatever they wanted, exactly how they wanted.&lt;/p&gt;
+
+&lt;p&gt;To facilitate that, I wanted a service that would let you write and it would host for you these little handler scripts for processing HTTP webhook requests. I actually built a prototype of this called Scriptlets. It was a web app where you could write JavaScript, hit save, and then you&amp;#8217;d have a little script at a URL that you could use for webhooks.&lt;/p&gt;
+
+&lt;p&gt;Scriptlets didn&amp;#8217;t get very popular, though I didn&amp;#8217;t push it very hard. There was a lot I wanted to do with it but there wasn&amp;#8217;t enough demand to drive development, and I was so busy that it eventually became defunct.&lt;/p&gt;
+
+&lt;p&gt;Four years later, we actually have a service like this. I discovered it about a week ago. It&amp;#8217;s called &lt;a href='http://webscript.io'&gt;Webscript&lt;/a&gt;. It&amp;#8217;s basically Scriptlets done right. Webscript is a web app where you can write Lua, hit save, and then you&amp;#8217;ve got little web service. It has basically everything you need to write webhook handler scripts.&lt;/p&gt;
+
+&lt;h3 id='the_ecosystem'&gt;The Ecosystem&lt;/h3&gt;
+
+&lt;p&gt;Slowly, people &lt;em&gt;are&lt;/em&gt; building out pieces of the ecosystem. You could say that the webhooks paradigm was really about this ecosystem. At some point I realized this and decided to give that ecosystem a name. It turned out the ecosystem was really what I was getting at with webhooks. That&amp;#8217;s where the magic was.&lt;/p&gt;
+
+&lt;p&gt;I started calling this ecosystem the Evented Web. Like the Semantic Web and &amp;#8220;programmable web,&amp;#8221; it&amp;#8217;s an umbrella term for a family of technologies coupled with a vision of what the world could be like. The Evented Web envisions a world where the programmable web that we have today of traditional web APIs is complemented by APIs that produce events through webhooks. Adding a callback mechanism to web APIs makes the web more like a giant evented framework.&lt;/p&gt;
+
+&lt;p&gt;Just like with Node.js, perhaps the most popular evented framework, there&amp;#8217;s all kinds of innovation happening in the community. It&amp;#8217;s a new way of thinking about things. Pipes and streams come up a lot in the Node.js world now, and similar sorts of things can be done across web applications with an Evented Web.&lt;/p&gt;
+
+&lt;p&gt;By the time I started talking more about the Evented Web instead of just webhooks, I was already pretty tired of talking about it all. I was sort of &amp;#8220;over it&amp;#8221; and I started to not care if people didn&amp;#8217;t see or share this vision. I continued to think it was cool, but I started to move on to other interests.&lt;/p&gt;
+
+&lt;h3 id='the_future'&gt;The Future&lt;/h3&gt;
+
+&lt;p&gt;These days, the people that really get it are starting to build some really neat things. Webhooks have spread enough that you can at least reference them or the idea of HTTP callbacks and not have to explain yourself. Now is maybe the perfect time for me to put a few specific projects into motion that could at least provide a tangible foundation for building out the Evented Web. Not just vague notions.&lt;/p&gt;
+
+&lt;p&gt;The most immediate thing is a lightweight spec for implementing webhooks. Specifically I mean registering a callback URL and invoking the callback URL. I&amp;#8217;ve intentionally put this off for a lot of reasons. I didn&amp;#8217;t want to get it wrong. I didn&amp;#8217;t want to leave people out. I wanted to capture best practices, which for the longest time we hadn&amp;#8217;t them figured out. But now might be the perfect time because there is a lot on the verge of happening.&lt;/p&gt;
+
+&lt;p&gt;Stay tuned for my proposal for HTTP Subscriptions. It will be the first of several really cool developments for the Evented Web, from me and others.&lt;/p&gt;</content>
+ </entry>
  
  <entry>
    <title>Piping into and out of the cloud with skypipe</title>
@@ -200,7 +250,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;/blockquote&gt;
 
 &lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe width='560' src='http://www.youtube.com/embed/Fs9NauQ2M6o' frameborder='0' height='315'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;center&gt;&lt;iframe height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o' width='560' frameborder='0'&gt; &lt;/iframe&gt;&lt;/center&gt;
 &lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
 
 &lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
