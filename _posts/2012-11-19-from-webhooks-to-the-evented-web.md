@@ -47,4 +47,4 @@ These days, the people that really get it are starting to build some really neat
 
 The most immediate thing is a lightweight spec for implementing webhooks. Specifically I mean registering a callback URL and invoking the callback URL. I've intentionally put this off for a lot of reasons. I didn't want to get it wrong. I didn't want to leave people out. I wanted to capture best practices, which for the longest time we hadn't them figured out. But now might be the perfect time because there is a lot on the verge of happening.
 
-Stay tuned for my proposal for HTTP Subscriptions. It will be the first of several really cool developments for the Evented Web, from me and others.
+Stay tuned for my proposal for HTTP Subscriptions. It will be the first of several really cool developments for the Evented Web, from me and from others.
