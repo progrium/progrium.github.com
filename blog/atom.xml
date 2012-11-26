@@ -4,13 +4,97 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2012-11-19T22:26:39-08:00</updated>
+ <updated>2012-11-26T08:56:13-08:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
    <email>progrium@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>X-Callback Header: Evented Web Building Block</title>
+   <link href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block"/>
+   <updated>2012-11-26T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block</id>
+   <content type="html">&lt;p&gt;Webhooks is the simple concept of HTTP callbacks. It expands on the simple request/response model of HTTP, giving you the semantics of &lt;a href='http://j.mp/10EitT8'&gt;callbacks in programming&lt;/a&gt;. Request/response gives you one response for one request in one synchronous operation. It&amp;#8217;s like invoking a function and getting a return value. With callbacks, after you register a callback, the callback will receive one or more invocations, perhaps minutes or hours apart.&lt;/p&gt;
+
+&lt;p&gt;Callbacks are a necessary component of any evented or reactor-based system, like Node.js, Twisted, or EventMachine. So, naturally, HTTP callbacks are necessary to achieve &lt;a href='http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/'&gt;the Evented Web&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Modeling callbacks in HTTP is somewhat straightforward. The callback is a URL. You perform an HTTP request against an application to register a callback URL. The application then performs an HTTP request to that URL to invoke that callback.&lt;/p&gt;
+
+&lt;p&gt;Those high-level requirements are enough to set anybody in the right direction to effectively implement webhooks or HTTP callbacks for their application. The problem is that now every application implements the specifics differently. While this is fine to provide a callback paradigm for each application, it doesn&amp;#8217;t let us &lt;em&gt;build&lt;/em&gt; on this paradigm. The Evented Web needs to agree on some standards, and the X-Callback header is one of those standards.&lt;/p&gt;
+
+&lt;h3 id='xcallback_header'&gt;X-Callback Header&lt;/h3&gt;
+
+&lt;p&gt;The X-Callback header is a proposal for a common way to describe HTTP callbacks, primarily in the case of registering them. It does not get into the specifics for different ways of using HTTP callbacks, so it&amp;#8217;s more of a building block for APIs or larger protocols such as HTTP Subscriptions, which I mentioned &lt;a href='http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/'&gt;in my previous post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;#8217;s what it looks like to use X-Callback:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;X-Callback: &amp;lt;http://example.com/callback&amp;gt;; method=&amp;quot;post&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The format is directly borrowed from the &lt;a href='http://www.w3.org/Protocols/9707-link-header.html'&gt;Link header&lt;/a&gt; used for responses. You provide a URL and then optional key-value parameters. In the case above, the HTTP method for invoking the callback was specified as a parameter.&lt;/p&gt;
+
+&lt;p&gt;Here is a more formal description of the header:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;X-Callback     = &amp;quot;X-Callback&amp;quot; &amp;quot;:&amp;quot; #(&amp;quot;&amp;lt;&amp;quot; URI &amp;quot;&amp;gt;&amp;quot; *( &amp;quot;;&amp;quot; callback-param ) )
+callback-param  = token [ &amp;quot;=&amp;quot; ( token | quoted-string ) ]&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since this is just the beginning of the conversation, there are no &amp;#8220;built-in&amp;#8221; callback parameters in this definition. They&amp;#8217;re effectively all extensions. However, these are what I&amp;#8217;d propose for standard parameters:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;method&lt;/strong&gt;: The HTTP method preferred for invoking this callback. Servers can ignore or override based on their policies, but this lets the requester optionally state preference.&lt;/li&gt;
+
+&lt;li&gt;&lt;strong&gt;secret&lt;/strong&gt;: The secret to be used for signing callback requests. More on this in the next section.&lt;/li&gt;
+
+&lt;li&gt;&lt;strong&gt;rel&lt;/strong&gt;: The relationship of this callback to this request, similar to the rel of the Link header. This lets you specify the role of this callback, which is useful when multiple callbacks are provided. It effectively lets you classify the callbacks.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id='authenticating_with_signatures'&gt;Authenticating with Signatures&lt;/h3&gt;
+
+&lt;p&gt;A common pattern across most implementations of webhooks has been the use of signatures for authenticating the callback &amp;#8220;invocation&amp;#8221; requests. Either built-in to the X-Callback header spec or maybe as a separate extension, a standard way of providing a secret then building and including a signature would be a Good Idea. The following is a proposal based on PubSubHubbub&amp;#8217;s signature model, but is not that different from the majority of implementations out there.&lt;/p&gt;
+
+&lt;p&gt;We start with a shared secret. Transmission of this secret can be done out of band (through a dashboard, for example), or the secret can be provided via the &lt;em&gt;secret&lt;/em&gt; parameter of the X-Callback header during registration.&lt;/p&gt;
+
+&lt;p&gt;The secret can then be used with HMAC to sign anything. In the case of callbacks, it would sign the body of the callback request body. Since you can use different hashing techniques with HMAC, the technique used is specified along with a hexadecimal digest of the HMAC signature. This is put in the X-Signature header of requests:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;X-Signature: sha1=0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now the callback handler can rebuild this signature knowing the secret and having the content body and the hash technique. Authenticating is then comparing the built signature with the one provided in the X-Signature header.&lt;/p&gt;
+
+&lt;p&gt;Signing lets the callback handler be more certain of the source without requiring SSL. Signatures become much less necessary if all requests are using HTTPS. But having this simple complement to X-Callback makes it easy when you need it, and may help unify all the different approaches that are all effectively doing the same thing.&lt;/p&gt;
+
+&lt;h3 id='example_callback_flow'&gt;Example Callback Flow&lt;/h3&gt;
+
+&lt;p&gt;Let&amp;#8217;s use all this in an example, showing you the actual HTTP requests. First, we&amp;#8217;re going to register a callback at a particular endpoint:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST /callbacks/register HTTP/1.1
+Host: server-example.com
+X-Callback: &amp;lt;http://example.com/callback&amp;gt;; method=&amp;quot;post&amp;quot;; secret=&amp;quot;opensesame&amp;quot;
+Content-Length: 0&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The server can respond however it likes since X-Callback header doesn&amp;#8217;t specify anything more than how to hand the server a callback. Let&amp;#8217;s assume it returned 200 OK.&lt;/p&gt;
+
+&lt;p&gt;Now, whenever it likes, the server is going to be performing an HTTP POST on the callback URL. Since a secret was provided, the server will be providing a signature using the X-Signature header. Here&amp;#8217;s what one of those requests might look like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST /callback HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Content-Length: 26
+X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
+
+{&amp;quot;payload&amp;quot;: &amp;quot;Hello world&amp;quot;}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&amp;#8217;ll notice we&amp;#8217;ve stayed completely out of the content layer of HTTP. This is quite intentional. This gives implementors lots of flexibility and keeps this a &amp;#8220;pure&amp;#8221; extension to HTTP.&lt;/p&gt;
+
+&lt;h3 id='a_building_block'&gt;A Building Block&lt;/h3&gt;
+
+&lt;p&gt;As I&amp;#8217;ve mentioned, this header is intended to be used in APIs and protocols that use callbacks in different ways. The obvious example is HTTP Subscriptions, which will let you subscribe to events using HTTP callbacks.&lt;/p&gt;
+
+&lt;p&gt;Another example, which I&amp;#8217;ll also talk about soon, is HTTP Response Redirection. Regular &lt;a href='http://en.wikipedia.org/wiki/URL_redirection#HTTP_status_codes_3xx'&gt;HTTP Redirection&lt;/a&gt; lets the server redirect the client&amp;#8217;s request to another URL, whereas Response Redirection lets the client redirect where the server sends the response using an HTTP callback.&lt;/p&gt;
+
+&lt;p&gt;The X-Callback header is simple, focused, and content neutral. Hopefully this makes it a powerful building block for other technologies of the Evented Web.&lt;/p&gt;</content>
+ </entry>
  
  <entry>
    <title>From Webhooks to the Evented Web</title>
@@ -250,7 +334,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;/blockquote&gt;
 
 &lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe height='315' width='560' src='http://www.youtube.com/embed/Fs9NauQ2M6o' frameborder='0'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;center&gt;&lt;iframe width='560' frameborder='0' height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o'&gt; &lt;/iframe&gt;&lt;/center&gt;
 &lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
 
 &lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
