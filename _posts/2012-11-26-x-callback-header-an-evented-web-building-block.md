@@ -5,6 +5,10 @@ description: ""
 category: 
 tags: []
 ---
+<div class="alert alert-info">
+Since this posting, we decided to adopt "best current
+practice" and drop the X- prefix as described in <a href="http://tools.ietf.org/html/rfc6648">RFC 6648</a>. Future posts refer to this as the Callback header.
+</div>
 Webhooks is the simple concept of HTTP callbacks. It expands on the simple request/response model of HTTP, giving you the semantics of [callbacks in programming](http://j.mp/10EitT8). Request/response gives you one response for one request in one synchronous operation. It's like invoking a function and getting a return value. With callbacks, after you register a callback, the callback will receive one or more invocations, perhaps minutes or hours apart. 
 
 Callbacks are a necessary component of any evented or reactor-based system, like Node.js, Twisted, or EventMachine. So, naturally, HTTP callbacks are necessary to achieve [the Evented Web](http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/).
