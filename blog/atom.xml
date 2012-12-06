@@ -4,7 +4,7 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2012-12-01T20:13:30-08:00</updated>
+ <updated>2012-12-06T17:09:42-06:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
@@ -13,11 +13,88 @@
 
  
  <entry>
+   <title>Async HTTP Responses with Response Redirection</title>
+   <link href="http://progrium.com/blog/2012/12/06/async-http-responses-with-response-redirection"/>
+   <updated>2012-12-06T00:00:00-06:00</updated>
+   <id>http://progrium.com/blog/2012/12/06/async-http-responses-with-response-redirection</id>
+   <content type="html">&lt;p&gt;What if you could perform any HTTP request, but get the response back via a webhook? This is the simple goal of Response Redirection, a simple micro-protocol for telling an HTTP server to send the response to a URL. Instead of returning the response in the connection created by the request, the response is returned in HTTP callback fashion.&lt;/p&gt;
+
+&lt;p&gt;The primary use case for this is handling HTTP responses that take longer than you would prefer to keep an open connection. As we build APIs that start interacting with the real world and human processes, you could expect operations that might take hours to days to complete.&lt;/p&gt;
+
+&lt;h3 id='example_of_response_redirection'&gt;Example of Response Redirection&lt;/h3&gt;
+
+&lt;p&gt;Response Redirection is done by performing a regular HTTP request with two additions: a Pragma directive telling the server you want the response to be redirected, and a Callback to be used for the response.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;GET /helloworld HTTP/1.1
+Host: example.com
+Pragma: redirect
+Callback: &amp;lt;http://server.com/callback&amp;gt;; method=&amp;quot;post&amp;quot;; rel=&amp;quot;redirect&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The response to this is a 202 Accepted or an appropriate error code. 202 Accpted is the standard response to give for operations that have been accepted and will be processed or finished later. As soon as the server as processed the request and has rendered a response, it would perform a request:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST /callback HTTP/1.1
+Host: server.com
+Status: 200 OK
+Content-Length: 11
+Content-Type: text/plain
+
+Hello world&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As we talked about with the &lt;a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'&gt;Callback header&lt;/a&gt;, if a &lt;code&gt;secret&lt;/code&gt; parameter was given, it would imply that an HMAC signature be provided in the callback request. We&amp;#8217;ll revisit this again in another post.&lt;/p&gt;
+
+&lt;p&gt;If the server doesn&amp;#8217;t understand &lt;code&gt;Pragma: redirect&lt;/code&gt;, it would return a normal response to the initial request and the client would have to handle it as usual.&lt;/p&gt;
+
+&lt;h3 id='using_pragma'&gt;Using Pragma&lt;/h3&gt;
+
+&lt;p&gt;You&amp;#8217;ll notice we didn&amp;#8217;t invent a header to tell the server to we want to do Response Redirection. You may remember Pragma&amp;#8217;s original use was only for &lt;code&gt;Pragma: no-cache&lt;/code&gt; and was eventually replaced with other cache control headers. However, the semantics of Pragma remain useful. To quote the &lt;a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32'&gt;HTTP 1.1 spec&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The Pragma general-header field is used to include implementation-specific directives that might apply to any recipient along the request/response chain.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Another potential header field would be the &lt;a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20'&gt;Expect header&lt;/a&gt;. The Expect header is designed to let the client specify certain behaviors expected of the server. This would be perfect except for this property:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The Expect mechanism is hop-by-hop: that is, an HTTP/1.1 proxy MUST return a 417 (Expectation Failed) status if it receives a request with an expectation that it cannot meet.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In today&amp;#8217;s world, this renders it useless unless we were talking about changing the behavior of proxies. The Pragma header was designed to be forwarded by proxies and ignored if it doesn&amp;#8217;t know how to fulfill the directive.&lt;/p&gt;
+
+&lt;h3 id='alternate_implementation'&gt;Alternate Implementation&lt;/h3&gt;
+
+&lt;p&gt;In the discussion that followed the Callback header post, not only did we learn that the &lt;code&gt;X-&lt;/code&gt; header prefix &lt;a href='http://tools.ietf.org/html/rfc6648'&gt;is now deprecated&lt;/a&gt;, but there is an RFC draft called &lt;a href='http://tools.ietf.org/html/draft-snell-http-prefer-17'&gt;Prefer Header for HTTP&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It actually addresses the issue with the Expect header, providing an alternative for specifying optional preferences for how the server handles a request. One of the example preferences is for returning the response asynchronously, which is exactly what we&amp;#8217;re achieving with Response Redirection. The only missing element is the callback, which we can easily include with our Callback header. Here we augment an example directly from the spec:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;POST /collection HTTP/1.1
+Host: example.org
+Content-Type: text/plain
+Prefer: respond-async
+Callback: &amp;lt;http://server.com/callback&amp;gt;; rel=&amp;quot;respond-async&amp;quot;
+
+{Data}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The server would respond with 202 Accepted, just as we would have had with the Pragma implementation. It&amp;#8217;s up for discussion which implementation is ideal.&lt;/p&gt;
+
+&lt;h3 id='last_thoughts'&gt;Last Thoughts&lt;/h3&gt;
+
+&lt;p&gt;Granted, there are likely better ways to approach the use case we described at the beginning. Creating a resource immediately and subscribing to state changes might actually be ideal. Perhaps the Response Redirection spec is purely academic. That brings us again to the idea of HTTP Subscriptions, which I&amp;#8217;ll get to posting about soon.&lt;/p&gt;
+
+&lt;p&gt;However, Response Redirection is a great example of a simple protocol built on top of the Callback header. The use of Prefer and Pragma will also set the stage for the design decisions of my initial informal draft of HTTP Subscriptions. It will continue this trend of reusing existing pieces of technology (Pragma, Expect, Prefer, Callback) as building blocks that, from my perspective, were intended to be re-combined to achieve new behavior.&lt;/p&gt;
+
+&lt;p&gt;Let me know what you think in the comments or in the &lt;a href='https://groups.google.com/forum/#!forum/webhooks'&gt;Webhooks Google Group&lt;/a&gt;.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
    <title>X-Callback Header: Evented Web Building Block</title>
    <link href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block"/>
-   <updated>2012-11-26T00:00:00-08:00</updated>
+   <updated>2012-11-26T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block</id>
-   <content type="html">&lt;p&gt;Webhooks is the simple concept of HTTP callbacks. It expands on the simple request/response model of HTTP, giving you the semantics of &lt;a href='http://j.mp/10EitT8'&gt;callbacks in programming&lt;/a&gt;. Request/response gives you one response for one request in one synchronous operation. It&amp;#8217;s like invoking a function and getting a return value. With callbacks, after you register a callback, the callback will receive one or more invocations, perhaps minutes or hours apart.&lt;/p&gt;
+   <content type="html">&lt;div class='alert alert-info'&gt;
+Since this posting, we decided to adopt &quot;best current
+practice&quot; and drop the X- prefix as described in &lt;a href='http://tools.ietf.org/html/rfc6648'&gt;RFC 6648&lt;/a&gt;. Future posts refer to this as the Callback header.
+&lt;/div&gt;
+&lt;p&gt;Webhooks is the simple concept of HTTP callbacks. It expands on the simple request/response model of HTTP, giving you the semantics of &lt;a href='http://j.mp/10EitT8'&gt;callbacks in programming&lt;/a&gt;. Request/response gives you one response for one request in one synchronous operation. It&amp;#8217;s like invoking a function and getting a return value. With callbacks, after you register a callback, the callback will receive one or more invocations, perhaps minutes or hours apart.&lt;/p&gt;
 
 &lt;p&gt;Callbacks are a necessary component of any evented or reactor-based system, like Node.js, Twisted, or EventMachine. So, naturally, HTTP callbacks are necessary to achieve &lt;a href='http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/'&gt;the Evented Web&lt;/a&gt;.&lt;/p&gt;
 
@@ -99,7 +176,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
  <entry>
    <title>From Webhooks to the Evented Web</title>
    <link href="http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web"/>
-   <updated>2012-11-19T00:00:00-08:00</updated>
+   <updated>2012-11-19T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web</id>
    <content type="html">&lt;p&gt;Back in 2007 I started thinking and talking a lot about &lt;a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'&gt;an idea called webhooks&lt;/a&gt;. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; and &lt;a href='http://requestb.in'&gt;RequestBin&lt;/a&gt; (originally PostBin). There were others that might not be around anymore: &lt;a href='http://mailhooks.com'&gt;MailHooks&lt;/a&gt;, &lt;a href='http://clickhooks.com'&gt;ClickHooks&lt;/a&gt;, &lt;a href='http://twitterhooks.com'&gt;TwitterHooks&lt;/a&gt;, &lt;a href='http://scriptlets.org'&gt;Scriptlets&lt;/a&gt;, and a few others.&lt;/p&gt;
 
@@ -149,7 +226,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
  <entry>
    <title>Piping into and out of the cloud with skypipe</title>
    <link href="http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe"/>
-   <updated>2012-09-30T00:00:00-07:00</updated>
+   <updated>2012-09-30T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe</id>
    <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/skypipe'&gt;Skypipe&lt;/a&gt; is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data &lt;em&gt;anywhere&lt;/em&gt;.&lt;/p&gt;
 
@@ -230,7 +307,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
  <entry>
    <title>Let me tell you about my website</title>
    <link href="http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website"/>
-   <updated>2012-09-07T00:00:00-07:00</updated>
+   <updated>2012-09-07T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website</id>
    <content type="html">&lt;p&gt;Since mid-July I&amp;#8217;ve been on vacation traveling around the world. Originally, the only project I allowed myself to work on is my website and blog. I quickly broke that rule with a number of new and existing projects. Nevertheless, as you can see, I did ship this site.&lt;/p&gt;
 
@@ -280,7 +357,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
  <entry>
    <title>Making a local web server public with localtunnel</title>
    <link href="http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel"/>
-   <updated>2010-05-11T00:00:00-07:00</updated>
+   <updated>2010-05-11T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel</id>
    <content type="html">&lt;p&gt;These days it&amp;#8217;s fairly common to run a local environment for web development. Whether you&amp;#8217;re running Apache, Mongrel, or the App Engine SDK, we&amp;#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.&lt;/p&gt;
 
@@ -311,7 +388,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Learning from expectation disparity, aka "failure"</title>
    <link href="http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure"/>
-   <updated>2010-02-02T00:00:00-08:00</updated>
+   <updated>2010-02-02T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure</id>
    <content type="html">&lt;p&gt;I&amp;#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &amp;#8220;Yes, you can learn from failure, but you can also learn from success!&amp;#8221; Only after reading Jason Fried&amp;#8217;s blog post from one year ago, &lt;a href='http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated'&gt;Learning from failure is overrated&lt;/a&gt;, have I realized exactly what&amp;#8217;s wrong. We&amp;#8217;re talking about different kinds of failure.&lt;/p&gt;
 
@@ -327,14 +404,14 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Notify.io brings notifications to the web</title>
    <link href="http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web"/>
-   <updated>2010-01-26T00:00:00-08:00</updated>
+   <updated>2010-01-26T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web</id>
    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe height='315' width='560' src='http://www.youtube.com/embed/Fs9NauQ2M6o' frameborder='0'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;center&gt;&lt;iframe src='http://www.youtube.com/embed/Fs9NauQ2M6o' height='315' frameborder='0' width='560'&gt; &lt;/iframe&gt;&lt;/center&gt;
 &lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
 
 &lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
@@ -407,7 +484,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Hacker Dojo: place of the way of the hacker</title>
    <link href="http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker"/>
-   <updated>2009-12-08T00:00:00-08:00</updated>
+   <updated>2009-12-08T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker</id>
    <content type="html">&lt;p&gt;Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on &lt;a href='http://www.flickr.com/photos/progrium/4017351989/'&gt;the front page&lt;/a&gt; of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.&lt;/p&gt;
 
@@ -437,7 +514,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Why efficiency is not as important as you think</title>
    <link href="http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think"/>
-   <updated>2009-11-05T00:00:00-08:00</updated>
+   <updated>2009-11-05T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think</id>
    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;&amp;#8220;Efficiency is doing things right; effectiveness is doing the right things.&amp;#8221; -Peter Drucker&lt;/p&gt;
@@ -467,7 +544,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Public Open Source Services</title>
    <link href="http://progrium.com/blog/2009/10/29/public-open-source-services"/>
-   <updated>2009-10-29T00:00:00-07:00</updated>
+   <updated>2009-10-29T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/10/29/public-open-source-services</id>
    <content type="html">&lt;p&gt;Last night I went off and put up a wiki about an idea I&amp;#8217;ve been thinking about for a while: &lt;a href='http://poss.gliderlab.com/'&gt;public open source services&lt;/a&gt; or POSS. Think: public services or utilities on the web run as open source.&lt;/p&gt;
 
@@ -495,7 +572,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Why minimalist software wins at workflow</title>
    <link href="http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow"/>
-   <updated>2009-06-26T00:00:00-07:00</updated>
+   <updated>2009-06-26T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow</id>
    <content type="html">&lt;p&gt;Recently I&amp;#8217;ve been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We&amp;#8217;re already married to &lt;a href='http://trac.edgewall.org/'&gt;Trac&lt;/a&gt;, so we&amp;#8217;ve been playing with &lt;a href='http://www.agile42.com/cms/pages/agilo/'&gt;Agilo&lt;/a&gt; and are looking at some of the other agile plugins for Trac. Unfortunately they&amp;#8217;re all so heavyweight, despite some that claim not to be.&lt;/p&gt;
 
@@ -527,7 +604,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Oh no! Hackers!</title>
    <link href="http://progrium.com/blog/2009/06/17/oh-no-hackers"/>
-   <updated>2009-06-17T00:00:00-07:00</updated>
+   <updated>2009-06-17T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/06/17/oh-no-hackers</id>
    <content type="html">&lt;p&gt;That&amp;#8217;s right. Hide your floppies and cover your Ethernet ports. Virus-laden hackers are coming to take over your computer, steal your passwords, and do terrible things! Like hack your MySpace! Oh noes!&lt;/p&gt;
 
@@ -559,7 +636,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Web hooks to revolutionize the web</title>
    <link href="http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web"/>
-   <updated>2007-05-03T00:00:00-07:00</updated>
+   <updated>2007-05-03T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web</id>
    <content type="html">&lt;p&gt;There once was a command line. It was a powerful thing. Not only could you navigate your filesystem and launch applications, but you could program shell scripts to automate tasks and make convenient shortcuts. It also had pipes.&lt;/p&gt;
 

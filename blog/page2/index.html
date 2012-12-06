@@ -53,6 +53,46 @@
 
 <div class="article">
   <div class="date">
+    <span class="month">May</span>
+    <span class="day">11</span><br />
+    <span class="year">2010</span>
+  </div>
+  <h1><a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel">Making a local web server public with localtunnel</a></h1>
+  <p>These days it&#8217;s fairly common to run a local environment for web development. Whether you&#8217;re running Apache, Mongrel, or the App Engine SDK, we&#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.</p>
+
+<p>However, with the growing popularity of callbacks and <a href='http://webhooks.org'>webhooks</a>, you can only really debug if your script is live and on the Internet. There are also other cases where you need to make what are normally private and/or local web servers public, such as various kinds of testing or quick public demos. Demos are a surprisingly common case, especially for multi-user systems (&#8220;Man, I wish I could have you join this chat room app I&#8217;m working on, but it&#8217;s only running on my laptop&#8221;).</p>
+
+<p>The solution is obvious, right? SSH remote forwarding, or reverse tunneling. Use a magical set of options with SSH with a public server you have SSH access to, and set up a tunnel from that machine to your local machine. When people connect to a port on your public machine, it gets forwarded to a local port on your machine, looking as if that port was on a public IP.</p>
+
+<p>The idea is great, but it&#8217;s a hassle to set up. You need to make sure sshd is set up properly in order to make a public tunnel on the remote machine, or you need to set up two tunnels, one from your machine to a private port on the remote machine, and then another on the remote machine from a public port to the private port (that forwards to your machine).</p>
+
+<p>In short, it&#8217;s too much of a hassle to consider it a quick and easy option. Here is the quick and easy option:</p>
+
+<pre><code>$ localtunnel 8080</code></pre>
+
+<p>And you&#8217;re done! With localtunnel, it&#8217;s so simple to set this up, it&#8217;s almost fun to do. What&#8217;s more is that the publicly accessible URL has a nice hostname and uses port 80, no matter what port its on locally. And it tells you what this URL is when you start localtunnel:</p>
+
+<pre><code>$ localtunnel 8080
+Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...</code></pre>
+
+<p>What&#8217;s going on behind the scenes is a web server component running on localtunnel.com. It serves two purposes: a virtual host reverse proxy to the port forward, and a tunnel register API (try going to <a href='http://open.localtunnel.com'>http://open.localtunnel.com</a>). This simple API allocates a port to tunnel on, and gives the localtunnel client command the information it needs to set up an SSH tunnel for you. The localtunnel command just wraps an SSH library and does this register call.</p>
+
+<p>Of course, there&#8217;s also the authentication part. As a free, public service, we don&#8217;t want to just give everybody SSH access to this machine (as it may seem). The user localtunnel on that box is made just for this service. It has no shell. It only has a home directory with an authorized_keys file. We require you to upload a public key for authentication, and we also mark that key with options that say you can only do port forwarding. Although, it can&#8217;t be used for arbitrary port forwarding&#8230; because it&#8217;s only a private port on the remote side, it can only be used with the special reverse proxy.</p>
+
+<p>So there it is. <a href='http://github.com/progrium/localtunnel'>And the code is on GitHub.</a> You might notice the server is in Python and the client in Ruby. Why? It just made sense. Python has Twisted, which I like for server stuff. And Ruby is great for command line scripts, and has a nice SSH library. In the end, it doesn&#8217;t matter what it&#8217;s written in. Ultimately it&#8217;s a Unix program.</p>
+
+<p>Enjoy!</p>
+</div>
+
+<a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
     <span class="month">Feb</span>
     <span class="day">02</span><br />
     <span class="year">2010</span>
@@ -88,7 +128,7 @@
 </blockquote>
 
 <p>In October 2009 I started a project called <a href='http://www.notify.io/'>Notify.io</a> and a month later announced it. I talked about how it will bring notifications to the web. Now that it&#8217;s basically alpha complete, I&#8217;ll give you a quick walkthrough of what makes it so great.</p>
-<center><iframe height='315' width='560' src='http://www.youtube.com/embed/Fs9NauQ2M6o' frameborder='0'> </iframe></center>
+<center><iframe src='http://www.youtube.com/embed/Fs9NauQ2M6o' height='315' frameborder='0' width='560'> </iframe></center>
 <h3 id='overview'>Overview</h3>
 
 <p>At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular <a href='http://growl.info/'>Growl</a> application for OS X (which should honestly just ship with OS X). Only it&#8217;s even better.</p>
@@ -237,43 +277,6 @@
 </div>
 
 <a href="/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">Oct</span>
-    <span class="day">29</span><br />
-    <span class="year">2009</span>
-  </div>
-  <h1><a href="/blog/2009/10/29/public-open-source-services">Public Open Source Services</a></h1>
-  <p>Last night I went off and put up a wiki about an idea I&#8217;ve been thinking about for a while: <a href='http://poss.gliderlab.com/'>public open source services</a> or POSS. Think: public services or utilities on the web run as open source.</p>
-
-<p>Unlike open source software, web services aren&#8217;t just source code. They&#8217;re source code that <em>runs</em>. They have to be maintained in order to keep running, and the resources they consume have to be paid for. This is why most web services are built using a business as the vehicle. This effectively constrains what you can build by framing it as something that needs to turn a profit or support you to work on it. But does it need to be that way? Can web services be built in a way that make it self-sufficient? Not needing some ambivalent leader to take responsibility for it?</p>
-
-<p>I originally blogged about it in February 2007, 6 months after I first wrote about webhooks. Unfortunately my old blog isn&#8217;t online right now. Back then, I was trying to solve the administrative problem. How do you maintain the servers in an open source way? My idea then, was to build a self-managing system using something like cfengine or Puppet, where the recipes and configurations are kept with the publicly available source code. As new configurations are checked in, the server(s) adopt the new directives and continue to self-manage.</p>
-
-<p>The practicality of such a setup is a little far fetched, but seemed pretty feasible for smaller projects. However, since the release of Google App Engine, this concern for simple web applications has disappeared. Google just automates the system administration, and scaling! This means to run the app, you just have to write the code and hit deploy. That&#8217;s a huge step! Administration concerns? Pretty much solved.</p>
-
-<p>The next thing is the financial concern. How do you pay for it? Or rather, how does it pay for itself? This took longer to figure out, but here we are. From the wiki essay:</p>
-
-<blockquote>
-<p>You use the same Google Merchant account that App Engine debits as the one that accepts donations. This way no bank account is involved. Then you track the money that goes into the account (using the Google Merchant IPN equivalent). Then you look at your usage stats from the App Engine panel and predicate future usage trends. Then calculate the cost per month. Then divide the cash in the account by that and you have how long the service will run. You make this visible on all pages (at the bottom, say) that this service will run for X months, &#8220;Pay now to keep it running.&#8221; You accept any amount, but you are completely clear about what the costs are. And this is all automated.</p>
-</blockquote>
-
-<p>Take the humans out of the loop!</p>
-
-<p>Then you rely on the same sort of community approach of open source to contribute to the application. Like a few members of the project community are given certain rights, some will be given permission to deploy the app from time to time for updating the running service.</p>
-
-<p>If the service isn&#8217;t useful, nobody uses it, it&#8217;s not paid for, it disappears. If it is useful, people will pay for it to keep it running. They are assured they are paying operating costs, which are significantly lower than most because it doesn&#8217;t include paying for human resources! Volunteers might need to meddle with settings, but otherwise, the coders are in control and the community accepts or denies changes made by whoever wants them.</p>
-
-<p>So if this is interesting, read the <a href='http://poss.gliderlab.com/'>full essay I wrote up on the wiki</a>. It&#8217;s been my intention to prototype and validate this model with many of my projects.</p>
-</div>
-
-<a href="/blog/2009/10/29/public-open-source-services#disqus_thread">Comments</a>
 <hr />
 
 
