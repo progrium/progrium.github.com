@@ -4,7 +4,7 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2012-12-06T17:14:15-06:00</updated>
+ <updated>2012-12-15T22:25:20-08:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
@@ -13,9 +13,42 @@
 
  
  <entry>
+   <title>Avoiding environmental fallacy with systems thinking</title>
+   <link href="http://progrium.com/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking"/>
+   <updated>2012-12-15T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking</id>
+   <content type="html">&lt;p&gt;In 1905, German chemist Alfred Einhorn invented Novocaine to be used by doctors in surgery as a general anesthetic. Unfortunately, doctors didn&amp;#8217;t find Novocaine to be a suitable general anesthetic. However, dentists were dying to use it as a &lt;em&gt;local&lt;/em&gt; anesthetic. The inventor didn&amp;#8217;t want to sell it for the &amp;#8220;mundane purpose&amp;#8221; of drilling teeth, so he continued marketing to doctors and surgeons. Einhorn persisted until his death, unwilling to let the market dictate the use of his invention. He felt the intrinsic value of Novocaine as a general anesthetic was enough to sell it as such, no matter what extrinsic value was placed on it by actual market demands. Charles West Churchman would call this an &amp;#8220;environmental fallacy.&amp;#8221;&lt;/p&gt;
+
+&lt;p&gt;Environmental fallacy is the blunder of ignoring or not understanding the effects of the environment of a system. Examples of this fallacy are all around us. Anti-drug legislation fails to see long-term, societal implications because they&amp;#8217;re preoccupied by the immediate, localized problems. Efforts to improve a standardized public education are precisely and meticulously solving the wrong problem. Silicon Valley startups spend our brightest intellectual resources on photo sharing and social-whatever, while industries that affect the quality of living for millions are left with bureaucrats.&lt;/p&gt;
+
+&lt;p&gt;One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.&lt;/p&gt;
+
+&lt;p&gt;Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.&lt;/p&gt;
+&lt;center&gt;&lt;img title='Open systems vs Closed systems' src='/images/content/open_vs_closed_sys.png' /&gt;&lt;/center&gt;
+&lt;p&gt;This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don&amp;#8217;t appreciate how little this idea was understood for basically all of human existence up until just a few decades ago.&lt;/p&gt;
+
+&lt;p&gt;Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.&lt;/p&gt;
+
+&lt;p&gt;For the greater part of its life, science has only understood the environment as something to be minimized. This is best shown in laboratories, a symbol of scientific activity, which are specifically designed to exclude the environment. Based on the doctrines of determinism and reductionism, science up until the last 4 or 5 decades has ignored the environment in favor of reductionist explanations focused on internal determinism. At best this only partially describes most actual phenomenon. For example, Galileo&amp;#8217;s equations for freely falling bodies completely ignore air resistance and the rotation of Earth, and Ohm&amp;#8217;s law assumes there will be no dramatic change in surrounding temperature. In both cases, the assumption is no environment.&lt;/p&gt;
+
+&lt;p&gt;This understated handicap of traditional science ended up as the major dilemma in the 1992 film Medicine Man. Sean Connery&amp;#8217;s character finds a miracle cure for cancer in a flower, but in the lab he&amp;#8217;s unable to reproduce it. He eventually finds out the flower itself was not the cure, but that the cure was produced by the flower interacting with another element in its environment. The unintentional moral of the story is about the significance of environment and environmental fallacy.&lt;/p&gt;
+
+&lt;p&gt;Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.&lt;/p&gt;
+
+&lt;p&gt;Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:&lt;/p&gt;
+&lt;img style='float: left;' title='Nested
+environments' src='/images/content/nested_environments.png' /&gt;
+&lt;p&gt;If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality.&lt;/p&gt;
+
+&lt;p&gt;In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920&amp;#8217;s have we begun to accept that reality is just too complicated to fully understand at once.&lt;/p&gt;
+
+&lt;p&gt;Ironically, admitting this has been beneficial to our grasp of reality. It&amp;#8217;s helped us realize new frameworks for thinking and coping with our increasingly complex and interdependent world. Luckily, our world is so globalized and connected today that modern generations are growing up with this reality as a daily experience. Systems theory and systems thinking are tools that can keep the appreciation of openness and the defining power of context as a first class tenet in all our endeavors.&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
    <title>Async HTTP Responses with Response Redirection</title>
    <link href="http://progrium.com/blog/2012/12/06/async-http-responses-with-response-redirection"/>
-   <updated>2012-12-06T00:00:00-06:00</updated>
+   <updated>2012-12-06T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2012/12/06/async-http-responses-with-response-redirection</id>
    <content type="html">&lt;p&gt;What if you could perform any HTTP request, but get the response back via a webhook? This is the simple goal of Response Redirection, a simple micro-protocol for telling an HTTP server to send the response to a URL. Instead of returning the response in the connection created by the request, the response is returned in HTTP callback fashion.&lt;/p&gt;
 
@@ -88,7 +121,7 @@ Callback: &amp;lt;http://server.com/callback&amp;gt;; rel=&amp;quot;respond-asyn
  <entry>
    <title>X-Callback Header: Evented Web Building Block</title>
    <link href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block"/>
-   <updated>2012-11-26T00:00:00-06:00</updated>
+   <updated>2012-11-26T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block</id>
    <content type="html">&lt;div class='alert alert-info'&gt;
 Since this posting, we decided to adopt &quot;best current
@@ -176,7 +209,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
  <entry>
    <title>From Webhooks to the Evented Web</title>
    <link href="http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web"/>
-   <updated>2012-11-19T00:00:00-06:00</updated>
+   <updated>2012-11-19T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web</id>
    <content type="html">&lt;p&gt;Back in 2007 I started thinking and talking a lot about &lt;a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'&gt;an idea called webhooks&lt;/a&gt;. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; and &lt;a href='http://requestb.in'&gt;RequestBin&lt;/a&gt; (originally PostBin). There were others that might not be around anymore: &lt;a href='http://mailhooks.com'&gt;MailHooks&lt;/a&gt;, &lt;a href='http://clickhooks.com'&gt;ClickHooks&lt;/a&gt;, &lt;a href='http://twitterhooks.com'&gt;TwitterHooks&lt;/a&gt;, &lt;a href='http://scriptlets.org'&gt;Scriptlets&lt;/a&gt;, and a few others.&lt;/p&gt;
 
@@ -226,7 +259,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
  <entry>
    <title>Piping into and out of the cloud with skypipe</title>
    <link href="http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe"/>
-   <updated>2012-09-30T00:00:00-05:00</updated>
+   <updated>2012-09-30T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe</id>
    <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/skypipe'&gt;Skypipe&lt;/a&gt; is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data &lt;em&gt;anywhere&lt;/em&gt;.&lt;/p&gt;
 
@@ -307,7 +340,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
  <entry>
    <title>Let me tell you about my website</title>
    <link href="http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website"/>
-   <updated>2012-09-07T00:00:00-05:00</updated>
+   <updated>2012-09-07T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website</id>
    <content type="html">&lt;p&gt;Since mid-July I&amp;#8217;ve been on vacation traveling around the world. Originally, the only project I allowed myself to work on is my website and blog. I quickly broke that rule with a number of new and existing projects. Nevertheless, as you can see, I did ship this site.&lt;/p&gt;
 
@@ -357,7 +390,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
  <entry>
    <title>Making a local web server public with localtunnel</title>
    <link href="http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel"/>
-   <updated>2010-05-11T00:00:00-05:00</updated>
+   <updated>2010-05-11T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel</id>
    <content type="html">&lt;p&gt;These days it&amp;#8217;s fairly common to run a local environment for web development. Whether you&amp;#8217;re running Apache, Mongrel, or the App Engine SDK, we&amp;#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.&lt;/p&gt;
 
@@ -388,7 +421,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Learning from expectation disparity, aka "failure"</title>
    <link href="http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure"/>
-   <updated>2010-02-02T00:00:00-06:00</updated>
+   <updated>2010-02-02T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure</id>
    <content type="html">&lt;p&gt;I&amp;#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &amp;#8220;Yes, you can learn from failure, but you can also learn from success!&amp;#8221; Only after reading Jason Fried&amp;#8217;s blog post from one year ago, &lt;a href='http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated'&gt;Learning from failure is overrated&lt;/a&gt;, have I realized exactly what&amp;#8217;s wrong. We&amp;#8217;re talking about different kinds of failure.&lt;/p&gt;
 
@@ -404,14 +437,14 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Notify.io brings notifications to the web</title>
    <link href="http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web"/>
-   <updated>2010-01-26T00:00:00-06:00</updated>
+   <updated>2010-01-26T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web</id>
    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe height='315' frameborder='0' src='http://www.youtube.com/embed/Fs9NauQ2M6o' width='560'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;center&gt;&lt;iframe width='560' frameborder='0' height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o'&gt; &lt;/iframe&gt;&lt;/center&gt;
 &lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
 
 &lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
@@ -484,7 +517,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Hacker Dojo: place of the way of the hacker</title>
    <link href="http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker"/>
-   <updated>2009-12-08T00:00:00-06:00</updated>
+   <updated>2009-12-08T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker</id>
    <content type="html">&lt;p&gt;Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on &lt;a href='http://www.flickr.com/photos/progrium/4017351989/'&gt;the front page&lt;/a&gt; of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.&lt;/p&gt;
 
@@ -514,7 +547,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Why efficiency is not as important as you think</title>
    <link href="http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think"/>
-   <updated>2009-11-05T00:00:00-06:00</updated>
+   <updated>2009-11-05T00:00:00-08:00</updated>
    <id>http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think</id>
    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;&amp;#8220;Efficiency is doing things right; effectiveness is doing the right things.&amp;#8221; -Peter Drucker&lt;/p&gt;
@@ -544,7 +577,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Public Open Source Services</title>
    <link href="http://progrium.com/blog/2009/10/29/public-open-source-services"/>
-   <updated>2009-10-29T00:00:00-05:00</updated>
+   <updated>2009-10-29T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2009/10/29/public-open-source-services</id>
    <content type="html">&lt;p&gt;Last night I went off and put up a wiki about an idea I&amp;#8217;ve been thinking about for a while: &lt;a href='http://poss.gliderlab.com/'&gt;public open source services&lt;/a&gt; or POSS. Think: public services or utilities on the web run as open source.&lt;/p&gt;
 
@@ -572,7 +605,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Why minimalist software wins at workflow</title>
    <link href="http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow"/>
-   <updated>2009-06-26T00:00:00-05:00</updated>
+   <updated>2009-06-26T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow</id>
    <content type="html">&lt;p&gt;Recently I&amp;#8217;ve been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We&amp;#8217;re already married to &lt;a href='http://trac.edgewall.org/'&gt;Trac&lt;/a&gt;, so we&amp;#8217;ve been playing with &lt;a href='http://www.agile42.com/cms/pages/agilo/'&gt;Agilo&lt;/a&gt; and are looking at some of the other agile plugins for Trac. Unfortunately they&amp;#8217;re all so heavyweight, despite some that claim not to be.&lt;/p&gt;
 
@@ -604,7 +637,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Oh no! Hackers!</title>
    <link href="http://progrium.com/blog/2009/06/17/oh-no-hackers"/>
-   <updated>2009-06-17T00:00:00-05:00</updated>
+   <updated>2009-06-17T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2009/06/17/oh-no-hackers</id>
    <content type="html">&lt;p&gt;That&amp;#8217;s right. Hide your floppies and cover your Ethernet ports. Virus-laden hackers are coming to take over your computer, steal your passwords, and do terrible things! Like hack your MySpace! Oh noes!&lt;/p&gt;
 
@@ -636,7 +669,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Web hooks to revolutionize the web</title>
    <link href="http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web"/>
-   <updated>2007-05-03T00:00:00-05:00</updated>
+   <updated>2007-05-03T00:00:00-07:00</updated>
    <id>http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web</id>
    <content type="html">&lt;p&gt;There once was a command line. It was a powerful thing. Not only could you navigate your filesystem and launch applications, but you could program shell scripts to automate tasks and make convenient shortcuts. It also had pipes.&lt;/p&gt;
 
