@@ -4,7 +4,7 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2012-12-15T22:25:20-08:00</updated>
+ <updated>2012-12-15T22:27:01-08:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
@@ -24,7 +24,7 @@
 &lt;p&gt;One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.&lt;/p&gt;
 
 &lt;p&gt;Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.&lt;/p&gt;
-&lt;center&gt;&lt;img title='Open systems vs Closed systems' src='/images/content/open_vs_closed_sys.png' /&gt;&lt;/center&gt;
+&lt;center&gt;&lt;img src='/images/content/open_vs_closed_sys.png' title='Open systems vs Closed systems' /&gt;&lt;/center&gt;
 &lt;p&gt;This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don&amp;#8217;t appreciate how little this idea was understood for basically all of human existence up until just a few decades ago.&lt;/p&gt;
 
 &lt;p&gt;Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.&lt;/p&gt;
@@ -36,8 +36,8 @@
 &lt;p&gt;Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.&lt;/p&gt;
 
 &lt;p&gt;Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:&lt;/p&gt;
-&lt;img style='float: left;' title='Nested
-environments' src='/images/content/nested_environments.png' /&gt;
+&lt;img style='float: left;' src='/images/content/nested_environments.png' title='Nested
+environments' /&gt;
 &lt;p&gt;If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality.&lt;/p&gt;
 
 &lt;p&gt;In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920&amp;#8217;s have we begun to accept that reality is just too complicated to fully understand at once.&lt;/p&gt;
@@ -444,7 +444,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;/blockquote&gt;
 
 &lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe width='560' frameborder='0' height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;center&gt;&lt;iframe frameborder='0' height='315' width='560' src='http://www.youtube.com/embed/Fs9NauQ2M6o'&gt; &lt;/iframe&gt;&lt;/center&gt;
 &lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
 
 &lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
