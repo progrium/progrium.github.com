@@ -54,6 +54,47 @@
 <div class="article">
   <div class="date">
     <span class="month">Dec</span>
+    <span class="day">17</span><br />
+    <span class="year">2012</span>
+  </div>
+  <h1><a href="/blog/2012/12/17/http-signatures-with-content-hmac">HTTP Signatures with Content-HMAC</a></h1>
+  <p>Today I wanted to propose another header. It would be used for signing HTTP content with HMAC, and is appropriately called Content-HMAC. In <a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'>a previous post</a> about the Callback header, I mentioned using an X-Signature header in callback requests to sign the payload of the callback. It looked like this:</p>
+
+<pre><code>X-Signature: sha1=&lt;hexdigest of sha1 hmac&gt;</code></pre>
+
+<p>The HMAC would be built with just the content of the request (i.e., no headers, no query params) and a secret key. <a href='http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.3.html#authednotify'>This was borrowed directly from the PubSubHubbub spec</a>, but the general idea of using HMAC to sign callback requests has become pretty standard in the world of webhooks. Here are details on how <a href='http://code.google.com/p/support/wiki/PostCommitWebHooks#Authentication'>Google</a> and <a href='http://www.twilio.com/docs/security#validating-requests'>Twilio</a> use them.</p>
+
+<p>Each of these providers is using their own header for basically the same use case. It would seem like there is an opportunity to standardize on a common header format for it. There&#8217;s been a number of proposals for a general Signature header to sign an entire request. There was a fairly comprehensive one proposed called <a href='http://tools.ietf.org/html/draft-burke-content-signature-00'>Content-Signature</a>. With signing, the difficulty is often getting the input string correct. Most signing mechanisms need to normalize their input. If you&#8217;ve ever had to deal with OAuth or AWS signatures, you&#8217;ll know what I&#8217;m talking about. With request signing, the headers pose a particularly tricky situation with signing since they often change as the request goes through proxies.</p>
+
+<p>The idea of Content-HMAC is to focus on a simpler goal of signing just the content payload, since it&#8217;s normally treated as-is, and is not altered when going through proxies. The X-Signature proposal I had was a decent one, as is almost any cowpath-based proposal, but I realized it would probably be a good idea to limit the implied scope to what it&#8217;s really doing: providing an HMAC for request (or response) content.</p>
+
+<p>It turns out there&#8217;s a similar header that&#8217;s not used that often anymore called Content-MD5. It was a simple mechanism to provide an MD5 digest of the content. My current proposal is to take this existing pattern and apply it to HMAC, giving us the Content-HMAC header:</p>
+
+<pre><code>Content-HMAC: &lt;hash mechanism&gt; &lt;base64 encoded binary HMAC&gt;</code></pre>
+
+<p>Here&#8217;s an example:</p>
+
+<pre><code>Content-HMAC: sha1 f1wOnLLwcTexwCSRCNXEAKPDm+U=</code></pre>
+
+<p>This proposal borrows its naming convention from Content-MD5, but the format is more similar to Authorization. The Authorization header allows multiple authorization schemes to be used. You define the scheme followed by a space and then the actual authorization data. Since HMAC allows different hashing techniques to be used, we use that pattern here to let you specify the hashing technique. We also take the existing pattern of base64 encoding used in several HTTP headers to make it conform even more to existing standards.</p>
+
+<p>Content-HMAC was created for callback requests, but it&#8217;s a useful way to sign any HTTP request or response payload. For requests, it&#8217;s worth mentioning it only applies when there is a content payload, so for example it&#8217;s meaningless with GET requests.</p>
+
+<p>It&#8217;s also very worth mentioning that the need for content signing is unnecessary when using HTTPS. It currently looks like the future will eventually be 100% SSL encrypted HTTP, but until then, there will always be situations where HTTPS is not available. Content-HMAC is perhaps a stop-gap until we reach that ideal. Until then, I think Content-HMAC is a good, standard way to add authorization to callback requests.</p>
+
+<p>Let me know if you have any questions or feedback on this proposal. Further discussion is likely to happen on the <a href='https://groups.google.com/forum/#!forum/webhooks'>Webhooks Google Group</a>.</p>
+</div>
+
+<a href="/blog/2012/12/17/http-signatures-with-content-hmac#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Dec</span>
     <span class="day">15</span><br />
     <span class="year">2012</span>
   </div>
@@ -65,7 +106,7 @@
 <p>One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.</p>
 
 <p>Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.</p>
-<center><img src='/images/content/open_vs_closed_sys.png' title='Open systems vs Closed systems' /></center>
+<center><img title='Open systems vs Closed systems' src='/images/content/open_vs_closed_sys.png' /></center>
 <p>This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don&#8217;t appreciate how little this idea was understood for basically all of human existence up until just a few decades ago.</p>
 
 <p>Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.</p>
@@ -77,8 +118,8 @@
 <p>Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.</p>
 
 <p>Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:</p>
-<img style='float: left;' src='/images/content/nested_environments.png' title='Nested
-environments' />
+<img title='Nested
+environments' src='/images/content/nested_environments.png' style='float: left;' />
 <p>If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality.</p>
 
 <p>In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920&#8217;s have we begun to accept that reality is just too complicated to fully understand at once.</p>
@@ -325,96 +366,6 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
 </div>
 
 <a href="/blog/2012/11/19/from-webhooks-to-the-evented-web#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">Sep</span>
-    <span class="day">30</span><br />
-    <span class="year">2012</span>
-  </div>
-  <h1><a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe">Piping into and out of the cloud with skypipe</a></h1>
-  <p><a href='https://github.com/progrium/skypipe'>Skypipe</a> is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data <em>anywhere</em>.</p>
-
-<p>I built it while on vacation the last couple months. I wasn&#8217;t intending to write software while on my trip, but I just couldn&#8217;t help myself.</p>
-
-<p>Skypipe is conceptually similar to named pipes or netcat, but with more power and a simpler interface. Here is a basic example using skypipe as you would a regular named pipe to gzip a file across shells:</p>
-
-<pre><code>$ skypipe | gzip -9 -c &gt; out.gz</code></pre>
-
-<p>Your skypipe is now ready to receive some data from another shell process:</p>
-
-<pre><code>$ cat file | skypipe</code></pre>
-
-<p>Unlike named pipes, however, <em>this will work across any machines connected to the Internet</em>. You don&#8217;t have to specify a host address or set up &#8220;listen mode&#8221; like you would with netcat. In fact, unlike netcat, which is point to point, you could use skypipe for log aggregation. Here we&#8217;ll used named skypipes. Run this on several hosts:</p>
-
-<pre><code>$ tail -f /var/log/somefile | skypipe logs</code></pre>
-
-<p>Then run this on a single machine:</p>
-
-<pre><code>$ skypipe logs &gt; /var/log/aggregate</code></pre>
-
-<p>This can also broadcast to multiple hosts. With the above, you can &#8220;listen in&#8221; by running this from your laptop, even while behind a NAT:</p>
-
-<pre><code>$ skypipe logs</code></pre>
-
-<p>You can also temporarily store data or files in the pipe, even several files, until you pull them out. On one machine load some files into a named skypipe:</p>
-
-<pre><code>$ cat file_a | skypipe files
-$ cat file_b | skypipe files</code></pre>
-
-<p>Now, from somewhere else, pull them out in order:</p>
-
-<pre><code>$ skypipe files &gt; new_file_a
-$ skypipe files &gt; new_file_b</code></pre>
-
-<p>Lastly, you can use skypipe like the channel primitive in Go for coordinating between shell scripts. As a simple example, we&#8217;ll use skypipe to wait for an event triggered by another script:</p>
-
-<pre><code>#!/bin/bash
-echo &quot;I&#39;m going to wait until triggered&quot;
-skypipe trigger
-echo &quot;I was triggered!&quot;</code></pre>
-
-<p>Triggering is just sending an EOF over the pipe, causing the listening skypipe to terminate. We can do this with a simple idiom:</p>
-
-<pre><code>$ echo | skypipe trigger</code></pre>
-
-<h3 id='how_does_this_magic_work'>How does this magic work?</h3>
-
-<p>You&#8217;ll need a free <a href='https://www.dotcloud.com/'>Dotcloud</a> account to use skypipe, but you don&#8217;t need to know anything about using Dotcloud to use skypipe.</p>
-
-<p>When you first use skypipe it will want you to run a setup command (<code>skypipe --setup</code>). This will deploy a very simple messaging server to Dotcloud. From then on, skypipe will use your account to transparently find and use this server, no matter where you are. The server is managed automatically and runs on Dotcloud free of charge, so you never need to think about it.</p>
-
-<h3 id='software_with_a_service'>Software with a service!</h3>
-
-<p>This is a new paradigm of creating tools that transparently leverage the cloud to create magical experiences. It&#8217;s not quite software as a service, it&#8217;s software <em>with</em> a service. Nobody is using a shared, central server, and no one needs to setup or manage their own server. The <em>software</em> deploys and manages its own server for you.</p>
-
-<p>Thanks to platforms like Heroku and Dotcloud, we can now build software leveraging features of software as a service that is <em>packaged and distributed like normal open source software</em>.</p>
-
-<p>I&#8217;m excited to see what else can be done with this pattern. Naturally, I&#8217;m already thinking about a number of other potential uses.</p>
-
-<h3 id='using_skypipe_and_getting_involved'>Using skypipe and getting involved</h3>
-
-<p>Skypipe is still an alpha piece of software. Be warned, there are some rough edges. That said, you can install skypipe with pip:</p>
-
-<pre><code>$ pip install skypipe</code></pre>
-
-<p>The user experience is not yet entirely optimized. One of the biggest issues is that it needs to check for the server on every use. This can be done less often and cached, which would make it much snappier and on par with most command line utilities.</p>
-
-<p>This and a few other issues are already tracked in <a href='https://github.com/progrium/skypipe/issues'>Github Issues</a>; feel free to take a whack at them. The codebase is intentionally small, documented, and written to be read, although there are no tests yet.</p>
-
-<p>The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I&#8217;d like to find a way to package skypipe in a way that includes all its dependencies. Perhaps <a href='http://www.pyinstaller.org/'>PyInstaller</a> can help with this.</p>
-
-<p>Another feature I&#8217;m sure a lot of people will want (or complain about) is being able to run your own server and ignore the software with a service aspect. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen.</p>
-
-<p>Contribution ideas aside, I&#8217;m hoping skypipe will be useful to others besides myself. I was really going for a magical tool. I think a big part of this magic is the use of software with a service, which I consider a bit novel in itself. What do you think?</p>
-</div>
-
-<a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe#disqus_thread">Comments</a>
 <hr />
 
 
