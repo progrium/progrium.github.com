@@ -9,7 +9,7 @@ A few years back, I released [Localtunnel](http://localtunnel.com) to make it su
 
 With the release of [Localtunnel v2](http://j.mp/localtunnel-v2), it will not only remain competitive with similar services, but continue to be the innovator of the group. I'll post more on this later.
 
-For now, let's talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will marked as deprecated. This means you should be making the switch to v2.
+For now, let's talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will be marked as deprecated. This means you should be making the switch to v2.
 
 Besides the fact v1 will eventually be shutdown, there are a number of reasons to switch to v2. Here are some of the major ones:
 
