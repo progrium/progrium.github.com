@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>HTTP Signatures with Content-HMAC :: Jeff Lindsay
+    <title>Localtunnel v2 available in beta :: Jeff Lindsay
       </title>
 
     
@@ -51,7 +51,7 @@
   <h6>Related Posts</h6>
   <ul>
     
-    <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta">Localtunnel v2 available in beta</a></li>
+    <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac">HTTP Signatures with Content-HMAC</a></li>
     
     <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking">Avoiding environmental fallacy with systems thinking</a></li>
     
@@ -80,35 +80,61 @@
 <div class="article">
   <div class="date">
     <span class="month">Dec</span>
-    <span class="day">17</span><br />
+    <span class="day">25</span><br />
     <span class="year">2012</span>
   </div>
-  <h1><a href="/blog/2012/12/17/http-signatures-with-content-hmac">HTTP Signatures with Content-HMAC</a></h1>
-  <p>Today I wanted to propose another header. It would be used for signing HTTP content with HMAC, and is appropriately called Content-HMAC. In <a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'>a previous post</a> about the Callback header, I mentioned using an X-Signature header in callback requests to sign the payload of the callback. It looked like this:</p>
+  <h1><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta">Localtunnel v2 available in beta</a></h1>
+  <p>A few years back, I released <a href='http://localtunnel.com'>Localtunnel</a> to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it&#8217;s gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source.</p>
 
-<pre><code>X-Signature: sha1=&lt;hexdigest of sha1 hmac&gt;</code></pre>
+<p>With the release of <a href='http://j.mp/localtunnel-v2'>Localtunnel v2</a>, it will not only remain competitive with similar services, but continue to be the innovator of the group. I&#8217;ll post more on this later.</p>
 
-<p>The HMAC would be built with just the content of the request (i.e., no headers, no query params) and a secret key. <a href='http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.3.html#authednotify'>This was borrowed directly from the PubSubHubbub spec</a>, but the general idea of using HMAC to sign callback requests has become pretty standard in the world of webhooks. Here are details on how <a href='http://code.google.com/p/support/wiki/PostCommitWebHooks#Authentication'>Google</a> and <a href='http://www.twilio.com/docs/security#validating-requests'>Twilio</a> use them.</p>
+<p>For now, let&#8217;s talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will marked as deprecated. This means you should be making the switch to v2.</p>
 
-<p>Each of these providers is using their own header for basically the same use case. It would seem like there is an opportunity to standardize on a common header format for it. There&#8217;s been a number of proposals for a general Signature header to sign an entire request. There was a fairly comprehensive one proposed called <a href='http://tools.ietf.org/html/draft-burke-content-signature-00'>Content-Signature</a>. With signing, the difficulty is often getting the input string correct. Most signing mechanisms need to normalize their input. If you&#8217;ve ever had to deal with OAuth or AWS signatures, you&#8217;ll know what I&#8217;m talking about. With request signing, the headers pose a particularly tricky situation with signing since they often change as the request goes through proxies.</p>
+<p>Besides the fact v1 will eventually be shutdown, there are a number of reasons to switch to v2. Here are some of the major ones:</p>
 
-<p>The idea of Content-HMAC is to focus on a simpler goal of signing just the content payload, since it&#8217;s normally treated as-is, and is not altered when going through proxies. The X-Signature proposal I had was a decent one, as is almost any cowpath-based proposal, but I realized it would probably be a good idea to limit the implied scope to what it&#8217;s really doing: providing an HMAC for request (or response) content.</p>
+<ul>
+<li>It&#8217;s actively maintained. Bug reports, pull requests, and service interruptions are dealt with promptly.</li>
 
-<p>It turns out there&#8217;s a similar header that&#8217;s not used that often anymore called Content-MD5. It was a simple mechanism to provide an MD5 digest of the content. My current proposal is to take this existing pattern and apply it to HMAC, giving us the Content-HMAC header:</p>
+<li>No more mysterious requests from old tunnels. The subdomain namespace is much larger.</li>
 
-<pre><code>Content-HMAC: &lt;hash mechanism&gt; &lt;base64 encoded binary HMAC&gt;</code></pre>
+<li>Custom subdomains. The new client lets you pick a tunnel name on a first come, first served basis.</li>
 
-<p>Here&#8217;s an example:</p>
+<li>Supports long-polling, HTTP streaming, and WebSocket upgrades. Soon general TCP tunneling.</li>
 
-<pre><code>Content-HMAC: sha1 f1wOnLLwcTexwCSRCNXEAKPDm+U=</code></pre>
+<li>No SSH key to start using it. A minor annoyance setting up v1, but it doesn&#8217;t exist in v2.</li>
+</ul>
 
-<p>This proposal borrows its naming convention from Content-MD5, but the format is more similar to Authorization. The Authorization header allows multiple authorization schemes to be used. You define the scheme followed by a space and then the actual authorization data. Since HMAC allows different hashing techniques to be used, we use that pattern here to let you specify the hashing technique. We also take the existing pattern of base64 encoding used in several HTTP headers to make it conform even more to existing standards.</p>
+<p>One implementation detail that affects users is that the client is now written in Python. This means you won&#8217;t use Rubygems to install it. Instead, you can use <code>easy_install</code> or <code>pip</code>.</p>
 
-<p>Content-HMAC was created for callback requests, but it&#8217;s a useful way to sign any HTTP request or response payload. For requests, it&#8217;s worth mentioning it only applies when there is a content payload, so for example it&#8217;s meaningless with GET requests.</p>
+<pre><code>$ easy_install localtunnel</code></pre>
 
-<p>It&#8217;s also very worth mentioning that the need for content signing is unnecessary when using HTTPS. It currently looks like the future will eventually be 100% SSL encrypted HTTP, but until then, there will always be situations where HTTPS is not available. Content-HMAC is perhaps a stop-gap until we reach that ideal. Until then, I think Content-HMAC is a good, standard way to add authorization to callback requests.</p>
+<p>On some systems, you may need to run this with <code>sudo</code>. If you don&#8217;t have <code>easy_install</code>, first make sure you have Python installed:</p>
 
-<p>Let me know if you have any questions or feedback on this proposal. Further discussion is likely to happen on the <a href='https://groups.google.com/forum/#!forum/webhooks'>Webhooks Google Group</a>.</p>
+<pre><code>$ python --version</code></pre>
+
+<p>Localtunnel requires Python 2.6 or later, which comes standard on most systems. If you don&#8217;t have Python, you can <a href='http://wiki.python.org/moin/BeginnersGuide/Download'>install it for your platform</a>. If <code>easy_install</code> isn&#8217;t available after you install Python, you can install it with this bootstrap script:</p>
+
+<pre><code>$ curl http://peak.telecommunity.com/dist/ez_setup.py | python</code></pre>
+
+<p>Once you&#8217;ve installed Localtunnel with <code>easy_install</code>, it will be available as <code>localtunnel-beta</code>. This lets you keep the old client to use in case anything goes wrong with v2 during the beta. Eventually, it will be installed as <code>localtunnel</code>, but only after v1 is shutdown.</p>
+
+<p>Using <code>localtunnel-beta</code> is pretty much the same as before:</p>
+
+<pre><code>$ localtunnel-beta 8000
+  Thanks for trying localtunnel v2 beta!
+
+  Port 8000 is now accessible from http://fb0322605126.v2.localtunnel.com ...</code></pre>
+
+<p>Like I mentioned earlier, you can use a custom tunnel name if it&#8217;s not being used:</p>
+
+<pre><code>$ localtunnel-beta -n foobar 8000
+  Thanks for trying localtunnel v2 beta!
+
+  Port 8000 is now accessible from http://foobar.v2.localtunnel.com ...</code></pre>
+
+<p>Keep in mind v2 is in active development. There might be some downtime while I work out operational bugs, but you can always use the old version if you run into problems.</p>
+
+<p>If you do run into any problems, you can <a href='http://twitter.com/progrium'>ping me on Twitter</a>. If you get traceback you can <a href='https://github.com/progrium/localtunnel/issues'>create an issue on Github</a>. If you have more in-depth questions or want to get involved in development, check out the <a href='https://groups.google.com/forum/#!forum/localtunnel'>Localtunnel Google Group</a>.</p>
 </div>
 
 <hr />
