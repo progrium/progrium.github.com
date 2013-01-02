@@ -4,13 +4,49 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2012-12-25T02:08:08-08:00</updated>
+ <updated>2013-01-01T20:59:29-08:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
    <email>progrium@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Where did Localtunnel come from?</title>
+   <link href="http://progrium.com/blog/2013/01/01/where-did-localtunnel-come-from"/>
+   <updated>2013-01-01T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2013/01/01/where-did-localtunnel-come-from</id>
+   <content type="html">&lt;p&gt;Five years ago, async network programming scared me. I was a web developer. Working with the high level tools and frameworks of HTTP seemed much easier than any sort of serious low level networking. Especially since network programming would often also mean some kind of concurrent programming with threads or callbacks. I had mostly avoided multithreading and had no idea what an event loop was. I came from PHP.&lt;/p&gt;
+
+&lt;p&gt;Around 2007, I was starting to think about webhooks. One motivator was how you could use webhooks to let web developers, like me, build systems that used other protocols without them having to work with that protocol. For example, one of my first projects with webhooks was called Mailhooks. I wanted to accept email in my application, but I didn&amp;#8217;t want to deal with email servers. I wanted to get an HTTP POST when an email came in with all the email fields nicely provided as POST parameters.&lt;/p&gt;
+
+&lt;p&gt;This is how I started working with Twisted. Twisted became my main tool to build webhook adapters for existing protocols. I even tried to generalize that idea in a project called Protocol Droid. Slowly I started to grok, and not fear, this kind of programming.&lt;/p&gt;
+
+&lt;p&gt;It&amp;#8217;s funny how my desire to work with abstractions that didn&amp;#8217;t exist yet to avoid a certain kind of programming was directly responsible for me eventually becoming an expert in that kind of programming.&lt;/p&gt;
+
+&lt;p&gt;Then in late 2009, I had another idea while thinking about webhooks. It would be great if I could expose a local web server to the Internet with a friendly URL. It should just be a simple command. There would have to be a server, but there could just be a public server that you didn&amp;#8217;t even have to think about.&lt;/p&gt;
+
+&lt;p&gt;I committed &lt;a href='https://github.com/progrium/localtunnel/tree/prototype'&gt;the first prototype of Localtunnel&lt;/a&gt; to Github in January 2010. It was written entirely in Twisted. It also didn&amp;#8217;t actually work. I really recommend taking a look because it was terrible. One of the challenges was multiplexing the HTTP requests into a single tunnel connection. My approach was so naive it just didn&amp;#8217;t work. As soon as you made more than one request at a time, it broke.&lt;/p&gt;
+
+&lt;p&gt;A few months later, I decided to take a different approach. Instead of doing my own protocol, client, and server, I&amp;#8217;d just make a wrapper around what I knew already worked: SSH tunneling. This was pretty quick to make happen, and that version is basically what&amp;#8217;s been in production to this day.&lt;/p&gt;
+
+&lt;p&gt;This shortcut came with a lot of weird quirks. For example, the easiest way I found to implement an SSH tunnel client was a Ruby library, so I implemented the client in Ruby. The server, though, was in Python because I still only really knew Twisted for evented programming.&lt;/p&gt;
+
+&lt;p&gt;Actually, using SSH was the source of most of the quirks and annoyances. I was pretty bothered that it slowed down the initial user experience by requiring a public key to be uploaded. But most of the pain was operational. The server, sshd, would create a process for every tunnel. Localtunnel also needed its own user and to pretty much own the SSH configuration for that machine. Then, on occasion, something weird would happen where a tunnel would die and the process would go crazy eating up CPU. It would have to be manually killed or it would eventually bring the server to a halt. And, eventually, the authorized_keys file would become enormous from all the keys uploaded.&lt;/p&gt;
+
+&lt;p&gt;On top of all this, SSH is pretty opaque. It&amp;#8217;s been around for so long and used so much that it certainly just works &amp;#8230; you just don&amp;#8217;t really know how. I still don&amp;#8217;t know how SSH does tunneling or what the protocol looks like, even after trying to read the RFC for it.&lt;/p&gt;
+
+&lt;p&gt;By mid-2011, I was working at Twilio building distributed, real-time messaging systems at scale. I certainly came a long way from fearing async network programming. Localtunnel was still running the implementation based on SSH. By then it had quite a large user base and collected a number of bugs and feature requests. I also had my own operations and user experience wish list. With such a huge list of new requirements, so many problems with the current implementation, and a drastically different experience level and mindset, I decided to redesign Localtunnel from the ground up.&lt;/p&gt;
+
+&lt;p&gt;Since I was pretty consumed by Twilio, I didn&amp;#8217;t have a lot of time to work on Localtunnel. I thought the biggest bang for buck in the long term would be to slowly work on the new version. They say software is never done, but I personally believe software can be finished. It just requires an aggressive drive for simplicity, and the &lt;em&gt;only&lt;/em&gt; way you can make significant advances in simplicity is through redesign.&lt;/p&gt;
+
+&lt;p&gt;In the meantime, users continued to experience issues with the current implementation. These problems only got worse as it became more popular. For example, the biggest issue was that the namespace for tunnel names was too small. Users would get requests from old tunnels, and in rare cases tunnel names would get pulled out from under you while using them. This created confusion and a lot of emails and issue tickets, but it still worked with the occasional restart.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#8217;ve used this constant stream of complaints, which has been going on for almost two years, to make sure I keep making progress on the new version. In fact, I&amp;#8217;m pretty sure I needed it because of my lifestyle of abundant projects.&lt;/p&gt;
+
+&lt;p&gt;Last week I finally &lt;a href='http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta/'&gt;released a beta of the new version&lt;/a&gt;. What&amp;#8217;s interesting is that it&amp;#8217;s a completely different architecture from what I started out with for the redesign. After the original unreleased prototype, there&amp;#8217;s been 3 major approaches to implementation. In the coming weeks I&amp;#8217;m going to share a more technical history of the architecture of Localtunnel, leading up to a deep exploration of what I hope will be its final form.&lt;/p&gt;</content>
+ </entry>
  
  <entry>
    <title>Localtunnel v2 available in beta</title>
@@ -534,7 +570,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;/blockquote&gt;
 
 &lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe height='315' width='560' frameborder='0' src='http://www.youtube.com/embed/Fs9NauQ2M6o'&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;center&gt;&lt;iframe width='560' height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o' frameborder='0'&gt; &lt;/iframe&gt;&lt;/center&gt;
 &lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
 
 &lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
