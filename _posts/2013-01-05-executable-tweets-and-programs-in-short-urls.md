@@ -123,13 +123,12 @@ installing apps in Tweets? Building an `apptweet` program like Joel
 imagined would actually be pretty straightforward. But I wanted to build
 it in and install it with these weird programs-in-short-URLs. 
 
-The first obstacle was figuring out how to get it to install something.
-Normally this isn't an obstable because this is usually what curl-pipe-bash URLs are used for. They'd usually
-install a downloaded program into your `PATH`. But I didn't want to
-install a bunch of files on your computer. Instead I just wanted to
-install a temporary Bash function that would disappear when you leave
-your shell session. In order to do this, I had to do a variant of the
-curl-pipe-bash technique using eval:
+The first obstacle was figuring out how to get it to modify your current
+environment. Normally curl-pipe-bash URLs install a downloaded program
+into your `PATH`. But I didn't want to install a bunch of files on your
+computer. Instead I just wanted to install a temporary Bash function
+that would disappear when you leave your shell session. In order to do
+this, I had to do a variant of the curl-pipe-bash technique using eval:
 
     $ eval $(curl -Ls http://j.mp/setup-fetchtweet)
     $ fetchtweet 279072855206031360
