@@ -53,6 +53,88 @@
 
 <div class="article">
   <div class="date">
+    <span class="month">Dec</span>
+    <span class="day">06</span><br />
+    <span class="year">2012</span>
+  </div>
+  <h1><a href="/blog/2012/12/06/async-http-responses-with-response-redirection">Async HTTP Responses with Response Redirection</a></h1>
+  <p>What if you could perform any HTTP request, but get the response back via a webhook? This is the simple goal of Response Redirection, a simple micro-protocol for telling an HTTP server to send the response to a URL. Instead of returning the response in the connection created by the request, the response is returned in HTTP callback fashion.</p>
+
+<p>The primary use case for this is handling HTTP responses that take longer than you would prefer to keep an open connection. As we build APIs that start interacting with the real world and human processes, you could expect operations that might take hours to days to complete.</p>
+
+<h3 id='example_of_response_redirection'>Example of Response Redirection</h3>
+
+<p>Response Redirection is done by performing a regular HTTP request with two additions: a Pragma directive telling the server you want the response to be redirected, and a Callback to be used for the response.</p>
+
+<pre><code>GET /helloworld HTTP/1.1
+Host: example.com
+Pragma: redirect
+Callback: &lt;http://server.com/callback&gt;; method=&quot;post&quot;; rel=&quot;redirect&quot;</code></pre>
+
+<p>The response to this is a 202 Accepted or an appropriate error code. 202 Accpted is the standard response to give for operations that have been accepted and will be processed or finished later. As soon as the server as processed the request and has rendered a response, it would perform a request:</p>
+
+<pre><code>POST /callback HTTP/1.1
+Host: server.com
+Status: 200 OK
+Content-Length: 11
+Content-Type: text/plain
+
+Hello world</code></pre>
+
+<p>As we talked about with the <a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'>Callback header</a>, if a <code>secret</code> parameter was given, it would imply that an HMAC signature be provided in the callback request. We&#8217;ll revisit this again in another post.</p>
+
+<p>If the server doesn&#8217;t understand <code>Pragma: redirect</code>, it would return a normal response to the initial request and the client would have to handle it as usual.</p>
+
+<h3 id='using_pragma'>Using Pragma</h3>
+
+<p>You&#8217;ll notice we didn&#8217;t invent a header to tell the server to we want to do Response Redirection. You may remember Pragma&#8217;s original use was only for <code>Pragma: no-cache</code> and was eventually replaced with other cache control headers. However, the semantics of Pragma remain useful. To quote the <a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32'>HTTP 1.1 spec</a>:</p>
+
+<blockquote>
+<p>The Pragma general-header field is used to include implementation-specific directives that might apply to any recipient along the request/response chain.</p>
+</blockquote>
+
+<p>Another potential header field would be the <a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20'>Expect header</a>. The Expect header is designed to let the client specify certain behaviors expected of the server. This would be perfect except for this property:</p>
+
+<blockquote>
+<p>The Expect mechanism is hop-by-hop: that is, an HTTP/1.1 proxy MUST return a 417 (Expectation Failed) status if it receives a request with an expectation that it cannot meet.</p>
+</blockquote>
+
+<p>In today&#8217;s world, this renders it useless unless we were talking about changing the behavior of proxies. The Pragma header was designed to be forwarded by proxies and ignored if it doesn&#8217;t know how to fulfill the directive.</p>
+
+<h3 id='alternate_implementation'>Alternate Implementation</h3>
+
+<p>In the discussion that followed the Callback header post, not only did we learn that the <code>X-</code> header prefix <a href='http://tools.ietf.org/html/rfc6648'>is now deprecated</a>, but there is an RFC draft called <a href='http://tools.ietf.org/html/draft-snell-http-prefer-17'>Prefer Header for HTTP</a>.</p>
+
+<p>It actually addresses the issue with the Expect header, providing an alternative for specifying optional preferences for how the server handles a request. One of the example preferences is for returning the response asynchronously, which is exactly what we&#8217;re achieving with Response Redirection. The only missing element is the callback, which we can easily include with our Callback header. Here we augment an example directly from the spec:</p>
+
+<pre><code>POST /collection HTTP/1.1
+Host: example.org
+Content-Type: text/plain
+Prefer: respond-async
+Callback: &lt;http://server.com/callback&gt;; rel=&quot;respond-async&quot;
+
+{Data}</code></pre>
+
+<p>The server would respond with 202 Accepted, just as we would have had with the Pragma implementation. It&#8217;s up for discussion which implementation is ideal.</p>
+
+<h3 id='last_thoughts'>Last Thoughts</h3>
+
+<p>Granted, there are likely better ways to approach the use case we described at the beginning. Creating a resource immediately and subscribing to state changes might actually be ideal. Perhaps the Response Redirection spec is purely academic. That brings us again to the idea of HTTP Subscriptions, which I&#8217;ll get to posting about soon.</p>
+
+<p>However, Response Redirection is a great example of a simple protocol built on top of the Callback header. The use of Prefer and Pragma will also set the stage for the design decisions of my initial informal draft of HTTP Subscriptions. It will continue this trend of reusing existing pieces of technology (Pragma, Expect, Prefer, Callback) as building blocks that, from my perspective, were intended to be re-combined to achieve new behavior.</p>
+
+<p>Let me know what you think in the comments or in the <a href='https://groups.google.com/forum/#!forum/webhooks'>Webhooks Google Group</a>.</p>
+</div>
+
+<a href="/blog/2012/12/06/async-http-responses-with-response-redirection#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
     <span class="month">Nov</span>
     <span class="day">26</span><br />
     <span class="year">2012</span>
@@ -350,46 +432,6 @@ echo &quot;I was triggered!&quot;</code></pre>
 </div>
 
 <a href="/blog/2012/09/07/let-me-tell-you-about-my-website#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">May</span>
-    <span class="day">11</span><br />
-    <span class="year">2010</span>
-  </div>
-  <h1><a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel">Making a local web server public with localtunnel</a></h1>
-  <p>These days it&#8217;s fairly common to run a local environment for web development. Whether you&#8217;re running Apache, Mongrel, or the App Engine SDK, we&#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.</p>
-
-<p>However, with the growing popularity of callbacks and <a href='http://webhooks.org'>webhooks</a>, you can only really debug if your script is live and on the Internet. There are also other cases where you need to make what are normally private and/or local web servers public, such as various kinds of testing or quick public demos. Demos are a surprisingly common case, especially for multi-user systems (&#8220;Man, I wish I could have you join this chat room app I&#8217;m working on, but it&#8217;s only running on my laptop&#8221;).</p>
-
-<p>The solution is obvious, right? SSH remote forwarding, or reverse tunneling. Use a magical set of options with SSH with a public server you have SSH access to, and set up a tunnel from that machine to your local machine. When people connect to a port on your public machine, it gets forwarded to a local port on your machine, looking as if that port was on a public IP.</p>
-
-<p>The idea is great, but it&#8217;s a hassle to set up. You need to make sure sshd is set up properly in order to make a public tunnel on the remote machine, or you need to set up two tunnels, one from your machine to a private port on the remote machine, and then another on the remote machine from a public port to the private port (that forwards to your machine).</p>
-
-<p>In short, it&#8217;s too much of a hassle to consider it a quick and easy option. Here is the quick and easy option:</p>
-
-<pre><code>$ localtunnel 8080</code></pre>
-
-<p>And you&#8217;re done! With localtunnel, it&#8217;s so simple to set this up, it&#8217;s almost fun to do. What&#8217;s more is that the publicly accessible URL has a nice hostname and uses port 80, no matter what port its on locally. And it tells you what this URL is when you start localtunnel:</p>
-
-<pre><code>$ localtunnel 8080
-Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...</code></pre>
-
-<p>What&#8217;s going on behind the scenes is a web server component running on localtunnel.com. It serves two purposes: a virtual host reverse proxy to the port forward, and a tunnel register API (try going to <a href='http://open.localtunnel.com'>http://open.localtunnel.com</a>). This simple API allocates a port to tunnel on, and gives the localtunnel client command the information it needs to set up an SSH tunnel for you. The localtunnel command just wraps an SSH library and does this register call.</p>
-
-<p>Of course, there&#8217;s also the authentication part. As a free, public service, we don&#8217;t want to just give everybody SSH access to this machine (as it may seem). The user localtunnel on that box is made just for this service. It has no shell. It only has a home directory with an authorized_keys file. We require you to upload a public key for authentication, and we also mark that key with options that say you can only do port forwarding. Although, it can&#8217;t be used for arbitrary port forwarding&#8230; because it&#8217;s only a private port on the remote side, it can only be used with the special reverse proxy.</p>
-
-<p>So there it is. <a href='http://github.com/progrium/localtunnel'>And the code is on GitHub.</a> You might notice the server is in Python and the client in Ruby. Why? It just made sense. Python has Twisted, which I like for server stuff. And Ruby is great for command line scripts, and has a nice SSH library. In the end, it doesn&#8217;t matter what it&#8217;s written in. Ultimately it&#8217;s a Unix program.</p>
-
-<p>Enjoy!</p>
-</div>
-
-<a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel#disqus_thread">Comments</a>
 <hr />
 
 

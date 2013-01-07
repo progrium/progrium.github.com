@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Executable Tweets and Programs in Short URLs :: Jeff Lindsay
+      </title>
+
+    
+    <meta name="description" content="" />
+    
+    <meta name="author" content="Jeff Lindsay" />
+
+    <script type="text/javascript" src="/scripts/jquery-1.7.2.min.js"></script>
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />
+    <link href="http://fonts.googleapis.com/css?family=VT323" rel="stylesheet" type="text/css" />
+
+
+    <link rel="stylesheet" type="text/css" href="/style/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/pager.min.css" />
+    <link rel="stylesheet" type="text/css" href="/style/alerts.min.css" />
+    <link rel="stylesheet/less" type="text/css" href="/style/progrium.less" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/images/JeffLindsayDeluxe.png" /> 
+
+    <script type="text/javascript" src="/scripts/less-1.3.0.min.js"></script>
+
+    <link rel="me" href="http://www.google.com/profiles/progrium" />
+  </head>
+  <body>
+    <div id="header">
+      <div class="container">
+        <div id="tree"></div>
+        <h2><a href="/" title="Pragmatic idealist. Builder. Thought explorer."><span>Jeff Li</span>nds<span>ay</span></a></h2>
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="http://github.com/progrium">Projects</a></li>
+          <!--li>Blueprints</li-->
+          <li><a href="/about.html">About</a></li>
+          <li id="hire"><a href="mailto:progrium+hire@gmail.com">Hire Me</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="content">
+      <div class="container">
+        <div class="sidebar">
+  <div class="portrait">
+    <img src="/images/JeffLindsayDeluxe.png" width="150" height="150" />
+  </div>
+  <div class="button"><a href="/blog/atom.xml">Subscribe to Blog</a></div>
+  <h6>Related Posts</h6>
+  <ul>
+    
+    <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from">Where did Localtunnel come from?</a></li>
+    
+    <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta">Localtunnel v2 available in beta</a></li>
+    
+    <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac">HTTP Signatures with Content-HMAC</a></li>
+    
+    <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking">Avoiding environmental fallacy with systems thinking</a></li>
+    
+    <li><a href="/blog/2012/12/06/async-http-responses-with-response-redirection">Async HTTP Responses with Response Redirection</a></li>
+    
+    <li><a href="/blog/2012/11/26/x-callback-header-an-evented-web-building-block">X-Callback Header: Evented Web Building Block</a></li>
+    
+    <li><a href="/blog/2012/11/19/from-webhooks-to-the-evented-web">From Webhooks to the Evented Web</a></li>
+    
+    <li><a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe">Piping into and out of the cloud with skypipe</a></li>
+    
+    <li><a href="/blog/2012/09/07/let-me-tell-you-about-my-website">Let me tell you about my website</a></li>
+    
+    <li><a href="/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel">Making a local web server public with localtunnel</a></li>
+    
+  </ul>
+</div>
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Jan</span>
+    <span class="day">05</span><br />
+    <span class="year">2013</span>
+  </div>
+  <h1><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls">Executable Tweets and Programs in Short URLs</a></h1>
+  <p>A few weeks ago I was completely consumed for the better part of a day that I would have otherwise spent on more practical work.</p>
+<blockquote class='twitter-tweet tw-align-center'><p>Let's reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T07:01:11+00:00' href='https://twitter.com/progrium/status/279118756561711104'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>Yeah, what? Weird, right? It started from a Twitter conversation earlier that day with my friend Joel:</p>
+<blockquote class='twitter-tweet tw-align-center'><p>$ for app in `heroku apps | grep -v '='`; do echo <a href='https://twitter.com/search/$app'>$app</a>; heroku ps --app <a href='https://twitter.com/search/$app'>$app</a>; done # how to figure out what you have running on heroku</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:10:20+00:00' href='https://twitter.com/jf/status/279030460674347008'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279030460674347008'><p>@<a href='https://twitter.com/jf'>jf</a> reminds me of yet another app i need to build</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T01:10:56+00:00' href='https://twitter.com/progrium/status/279030609345667072'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279030609345667072'><p>@<a href='https://twitter.com/progrium'>progrium</a> I just wrote and launched a "client side" "bash app" right there. Bam.</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:15:47+00:00' href='https://twitter.com/jf/status/279031831809097728'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279031831809097728'><p>@<a href='https://twitter.com/jf'>jf</a> app tweets. an app in a tweet.</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T01:16:53+00:00' href='https://twitter.com/progrium/status/279032107265839104'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279032107265839104'><p>@<a href='https://twitter.com/progrium'>progrium</a> $ apptweet install id:279030460674347008</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:19:10+00:00' href='https://twitter.com/jf/status/279032681373790208'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>This wishful brainstorming inspired me to start building exactly that. But first, a digression.</p>
+
+<p>The idea reminded me of an idea I got from <a href='https://twitter.com/rndmcnlly'>Adam Smith</a> back when I was working on Scriptlets. If you can execute code from a URL, you could &#8220;store&#8221; a program in a shortened URL. I decided to combine this with the curl-pipe-bash technique that&#8217;s been starting to get popular to bootstrap installs. If you&#8217;re unfamiliar, take this Gist of a Bash script:</p>
+<script src='https://gist.github.com/4464431.js'> </script>
+<p>Given the &#8220;view raw&#8221; URL for that Gist, you can curl it and pipe it into Bash to execute it right there in your shell. It would look like this:</p>
+
+<pre><code>$ curl -s https://gist.github.com/raw/4464431/gistfile1.txt | bash
+Hello world</code></pre>
+
+<p>Instead of having Gist store the program, how could we make it so the source would just live within the URL? Well in the case of curl-pipe-bash, we just need that source to be returned in the body of a URL. So I built a simple app to run on Heroku that takes the query string and outputs it in the body, a sort of echo service.</p>
+<script src='https://gist.github.com/4464442.js'> </script>
+<p>Letting you do this:</p>
+
+<pre><code>$ curl &quot;http://queryecho.herokuapp.com?Hello+world&quot;
+Hello world</code></pre>
+
+<p>Which you could conceal and shorten with a URL shortener, like Bitly. I prefer the j.mp domain Bitly has. And since they&#8217;re just redirecting you to the long URL, you&#8217;d use the <code>-L</code> option in curl to make it follow redirects:</p>
+
+<pre><code>$ curl -L http://j.mp/RyUN03
+Hello world</code></pre>
+
+<p>When you make a short URL from the bitly website, they conveniently make sure the query string is properly URL encoded. So if I just typed <code>queryecho.herokuapp.com/?echo &quot;Hello world&quot;</code> into bitly, it would give me a short URL with a properly URL encoded version of that URL that would return <code>echo &quot;Hello world&quot;</code>. This URL we could then curl-pipe into Bash:</p>
+
+<pre><code>$ curl -Ls http://j.mp/VGgI3o | bash
+Hello world</code></pre>
+
+<p>See what&#8217;s going on there? We wrote a simple Hello world program in Bash that effectively lives in that short URL. And we can run it with the curl-pipe-bash technique.</p>
+
+<p>Later in our conversation, Joel suggests an example &#8220;app tweet&#8221; that if executed in Bash given a URL argument, it would tell you where it redirects. So if you gave it a short URL, it would tell you the long URL.</p>
+<blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279032107265839104'><p>@<a href='https://twitter.com/progrium'>progrium</a> $ echo "$1"; curl -IL --silent "$1" | grep Location | grep -o 'http.*' # this is a URL "unshortener"</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:23:08+00:00' href='https://twitter.com/jf/status/279033679592951809'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>Just so you know what it would look like, if you put that program in a shell script and ran it against a short URL that redirected to www.google.com, this is what you would see:</p>
+
+<pre><code>$ ./unshortener.sh http://j.mp/www-google-com
+http://j.mp/www-google-com
+http://www.google.com/</code></pre>
+
+<p>It prints the URL you gave it and then resolves the URL and prints the long URL. Pretty simple.</p>
+
+<p>So I decided to put this program in a short URL. Here we have <a href='http://j.mp/TaHyRh'>j.mp/TaHyRh</a> which will resolve to:</p>
+
+<pre><code>http://queryecho.herokuapp.com/?echo%20%22$url%22;%20curl%20-ILs%20%22$url%22%20|%20grep%20Location%20|%20grep%20-o%20&#39;http.*&#39;</code></pre>
+
+<p>Luckily I didn&#8217;t have to do all that URL encoding. I just pasted his code in after <code>queryecho.herokuapp.com/?</code> and bitly took care of it. What&#8217;s funny is that this example program is made to run on short URLs, so when I told him about it, my example ran on the short URL that contained the program itself:</p>
+
+<pre><code>$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/TaHyRh bash
+http://j.mp/TaHyRh
+http://queryecho.herokuapp.com/?echo &quot;$url&quot;; curl -ILs &quot;$url&quot; | grep Location | grep -o &#39;http.*&#39;</code></pre>
+
+<p>You may have noticed my version of the program uses <code>$url</code> instead of <code>$1</code> because we have to use environment variables to provide input to curl-pipe-bash scripts. For reference, to run my URL script against the google.com short URL we made before, it would look like this:</p>
+
+<pre><code>$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/www-google-com bash
+http://j.mp/www-google-com
+http://www.google.com/</code></pre>
+
+<p>Okay, so we can now put Bash scripts in short URLs. What happened to installing apps in Tweets? Building an <code>apptweet</code> program like Joel imagined would actually be pretty straightforward. But I wanted to build it in and install it with these weird programs-in-short-URLs.</p>
+
+<p>The first obstacle was figuring out how to get it to install something. Normally this isn&#8217;t an obstable because this is usually what curl-pipe-bash URLs are used for. They&#8217;d usually install a downloaded program into your <code>PATH</code>. But I didn&#8217;t want to install a bunch of files on your computer. Instead I just wanted to install a temporary Bash function that would disappear when you leave your shell session. In order to do this, I had to do a variant of the curl-pipe-bash technique using eval:</p>
+
+<pre><code>$ eval $(curl -Ls http://j.mp/setup-fetchtweet)
+$ fetchtweet 279072855206031360
+@jf you asked for it... Jeff Lindsay (@progrium) December 13, 2012</code></pre>
+
+<p>As you can see by inspecting that URL, it just defines a Bash function that runs a Python script from a Gist. I cheated and used Gist for some reason. That Python script uses the Twitter embed endpoint (same one used for the embedded Tweets in this post) to get the contents of a Tweet without authentication.</p>
+
+<p>The next thing I built installed and used fetchtweet to get a Tweet, parse it, put it in a Bash function named by the string after an <code>#exectweet</code> hashtag (which happens to also start a comment in Bash). So here we have a Tweet with a program in it:</p>
+<blockquote class='twitter-tweet tw-align-center'><p>echo Hello world <a href='https://twitter.com/search/%23exectweet'>#exectweet</a> helloworld</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T04:57:28+00:00' href='https://twitter.com/progrium/status/279087620145958912'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>To install it, we&#8217;d run this:</p>
+
+<pre><code>$ id=279087620145958912 eval $(curl -Ls http://j.mp/install-tweet)
+Installed helloworld from Tweet 279087620145958912
+$ helloworld
+Hello world</code></pre>
+
+<p>We just installed a program from a Tweet and ran it! Then I wrapped this up into a command you could install. To install the installer. This time it would let you give it the URL to a Tweet:</p>
+
+<pre><code>$ eval $(curl -Ls http://j.mp/install-exectweet) 
+Installed exectweet
+$ exectweet https://twitter.com/progrium/status/279087620145958912
+Installed helloworld from Tweet 279087620145958912
+$ helloworld
+Hello world</code></pre>
+
+<p>Where would I go from there? An app that calls itself into a loop, of course!</p>
+<blockquote class='twitter-tweet tw-align-center'><p>exectweet <a href='http://t.co/ri0XTprA' title='http://j.mp/recursive-app'>j.mp/recursive-app</a> ; recursive-app <a href='https://twitter.com/search/%23exectweet'>#exectweet</a> recursive-app</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T07:20:12+00:00' href='https://twitter.com/progrium/status/279123541054595074'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<pre><code>$ exectweet https://twitter.com/progrium/status/279123541054595074 &amp;&amp; recursive-app
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+...</code></pre>
+
+<p>Obviously, this whole project was just a ridiculous, mind-bending exploration. I shared most of these examples on Twitter as I was making them. Here was my favorite response.</p>
+<blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279087620145958912'><p>@<a href='https://twitter.com/progrium'>progrium</a> End of the world, brought to you by Jeff Lindsay, via the Internet collapsing in on itself and taking the world with it.</p>&mdash; Matt Mechtley (@biphenyl) <a data-datetime='2012-12-13T05:00:44+00:00' href='https://twitter.com/biphenyl/status/279088441084497922'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>You may have noticed, it just happened to be 12/12/2012 that day.</p>
+<style type='text/css'>
+.twitter-tweet-rendered {
+  clear: none!important;
+}
+.twt-reply {
+  display: none!important;
+}
+</style>
+</div>
+
+<hr />
+ <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'progrium'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+      </div>
+      <div id="roots">
+        <img src="/images/roots.png" />
+      </div>
+    </div>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+        try {
+        var pageTracker = _gat._getTracker("UA-6824126-1");
+        pageTracker._trackPageview();
+        } catch(err) {}</script>
+  </body>
+</html>

@@ -54,6 +54,128 @@
 <div class="article">
   <div class="date">
     <span class="month">Jan</span>
+    <span class="day">05</span><br />
+    <span class="year">2013</span>
+  </div>
+  <h1><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls">Executable Tweets and Programs in Short URLs</a></h1>
+  <p>A few weeks ago I was completely consumed for the better part of a day that I would have otherwise spent on more practical work.</p>
+<blockquote class='twitter-tweet tw-align-center'><p>Let's reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T07:01:11+00:00' href='https://twitter.com/progrium/status/279118756561711104'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>Yeah, what? Weird, right? It started from a Twitter conversation earlier that day with my friend Joel:</p>
+<blockquote class='twitter-tweet tw-align-center'><p>$ for app in `heroku apps | grep -v '='`; do echo <a href='https://twitter.com/search/$app'>$app</a>; heroku ps --app <a href='https://twitter.com/search/$app'>$app</a>; done # how to figure out what you have running on heroku</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:10:20+00:00' href='https://twitter.com/jf/status/279030460674347008'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279030460674347008'><p>@<a href='https://twitter.com/jf'>jf</a> reminds me of yet another app i need to build</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T01:10:56+00:00' href='https://twitter.com/progrium/status/279030609345667072'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279030609345667072'><p>@<a href='https://twitter.com/progrium'>progrium</a> I just wrote and launched a "client side" "bash app" right there. Bam.</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:15:47+00:00' href='https://twitter.com/jf/status/279031831809097728'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279031831809097728'><p>@<a href='https://twitter.com/jf'>jf</a> app tweets. an app in a tweet.</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T01:16:53+00:00' href='https://twitter.com/progrium/status/279032107265839104'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script><blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279032107265839104'><p>@<a href='https://twitter.com/progrium'>progrium</a> $ apptweet install id:279030460674347008</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:19:10+00:00' href='https://twitter.com/jf/status/279032681373790208'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>This wishful brainstorming inspired me to start building exactly that. But first, a digression.</p>
+
+<p>The idea reminded me of an idea I got from <a href='https://twitter.com/rndmcnlly'>Adam Smith</a> back when I was working on Scriptlets. If you can execute code from a URL, you could &#8220;store&#8221; a program in a shortened URL. I decided to combine this with the curl-pipe-bash technique that&#8217;s been starting to get popular to bootstrap installs. If you&#8217;re unfamiliar, take this Gist of a Bash script:</p>
+<script src='https://gist.github.com/4464431.js'> </script>
+<p>Given the &#8220;view raw&#8221; URL for that Gist, you can curl it and pipe it into Bash to execute it right there in your shell. It would look like this:</p>
+
+<pre><code>$ curl -s https://gist.github.com/raw/4464431/gistfile1.txt | bash
+Hello world</code></pre>
+
+<p>Instead of having Gist store the program, how could we make it so the source would just live within the URL? Well in the case of curl-pipe-bash, we just need that source to be returned in the body of a URL. So I built a simple app to run on Heroku that takes the query string and outputs it in the body, a sort of echo service.</p>
+<script src='https://gist.github.com/4464442.js'> </script>
+<p>Letting you do this:</p>
+
+<pre><code>$ curl &quot;http://queryecho.herokuapp.com?Hello+world&quot;
+Hello world</code></pre>
+
+<p>Which you could conceal and shorten with a URL shortener, like Bitly. I prefer the j.mp domain Bitly has. And since they&#8217;re just redirecting you to the long URL, you&#8217;d use the <code>-L</code> option in curl to make it follow redirects:</p>
+
+<pre><code>$ curl -L http://j.mp/RyUN03
+Hello world</code></pre>
+
+<p>When you make a short URL from the bitly website, they conveniently make sure the query string is properly URL encoded. So if I just typed <code>queryecho.herokuapp.com/?echo &quot;Hello world&quot;</code> into bitly, it would give me a short URL with a properly URL encoded version of that URL that would return <code>echo &quot;Hello world&quot;</code>. This URL we could then curl-pipe into Bash:</p>
+
+<pre><code>$ curl -Ls http://j.mp/VGgI3o | bash
+Hello world</code></pre>
+
+<p>See what&#8217;s going on there? We wrote a simple Hello world program in Bash that effectively lives in that short URL. And we can run it with the curl-pipe-bash technique.</p>
+
+<p>Later in our conversation, Joel suggests an example &#8220;app tweet&#8221; that if executed in Bash given a URL argument, it would tell you where it redirects. So if you gave it a short URL, it would tell you the long URL.</p>
+<blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279032107265839104'><p>@<a href='https://twitter.com/progrium'>progrium</a> $ echo "$1"; curl -IL --silent "$1" | grep Location | grep -o 'http.*' # this is a URL "unshortener"</p>&mdash; Joël Franusic (@jf) <a data-datetime='2012-12-13T01:23:08+00:00' href='https://twitter.com/jf/status/279033679592951809'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>Just so you know what it would look like, if you put that program in a shell script and ran it against a short URL that redirected to www.google.com, this is what you would see:</p>
+
+<pre><code>$ ./unshortener.sh http://j.mp/www-google-com
+http://j.mp/www-google-com
+http://www.google.com/</code></pre>
+
+<p>It prints the URL you gave it and then resolves the URL and prints the long URL. Pretty simple.</p>
+
+<p>So I decided to put this program in a short URL. Here we have <a href='http://j.mp/TaHyRh'>j.mp/TaHyRh</a> which will resolve to:</p>
+
+<pre><code>http://queryecho.herokuapp.com/?echo%20%22$url%22;%20curl%20-ILs%20%22$url%22%20|%20grep%20Location%20|%20grep%20-o%20&#39;http.*&#39;</code></pre>
+
+<p>Luckily I didn&#8217;t have to do all that URL encoding. I just pasted his code in after <code>queryecho.herokuapp.com/?</code> and bitly took care of it. What&#8217;s funny is that this example program is made to run on short URLs, so when I told him about it, my example ran on the short URL that contained the program itself:</p>
+
+<pre><code>$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/TaHyRh bash
+http://j.mp/TaHyRh
+http://queryecho.herokuapp.com/?echo &quot;$url&quot;; curl -ILs &quot;$url&quot; | grep Location | grep -o &#39;http.*&#39;</code></pre>
+
+<p>You may have noticed my version of the program uses <code>$url</code> instead of <code>$1</code> because we have to use environment variables to provide input to curl-pipe-bash scripts. For reference, to run my URL script against the google.com short URL we made before, it would look like this:</p>
+
+<pre><code>$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/www-google-com bash
+http://j.mp/www-google-com
+http://www.google.com/</code></pre>
+
+<p>Okay, so we can now put Bash scripts in short URLs. What happened to installing apps in Tweets? Building an <code>apptweet</code> program like Joel imagined would actually be pretty straightforward. But I wanted to build it in and install it with these weird programs-in-short-URLs.</p>
+
+<p>The first obstacle was figuring out how to get it to install something. Normally this isn&#8217;t an obstable because this is usually what curl-pipe-bash URLs are used for. They&#8217;d usually install a downloaded program into your <code>PATH</code>. But I didn&#8217;t want to install a bunch of files on your computer. Instead I just wanted to install a temporary Bash function that would disappear when you leave your shell session. In order to do this, I had to do a variant of the curl-pipe-bash technique using eval:</p>
+
+<pre><code>$ eval $(curl -Ls http://j.mp/setup-fetchtweet)
+$ fetchtweet 279072855206031360
+@jf you asked for it... Jeff Lindsay (@progrium) December 13, 2012</code></pre>
+
+<p>As you can see by inspecting that URL, it just defines a Bash function that runs a Python script from a Gist. I cheated and used Gist for some reason. That Python script uses the Twitter embed endpoint (same one used for the embedded Tweets in this post) to get the contents of a Tweet without authentication.</p>
+
+<p>The next thing I built installed and used fetchtweet to get a Tweet, parse it, put it in a Bash function named by the string after an <code>#exectweet</code> hashtag (which happens to also start a comment in Bash). So here we have a Tweet with a program in it:</p>
+<blockquote class='twitter-tweet tw-align-center'><p>echo Hello world <a href='https://twitter.com/search/%23exectweet'>#exectweet</a> helloworld</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T04:57:28+00:00' href='https://twitter.com/progrium/status/279087620145958912'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>To install it, we&#8217;d run this:</p>
+
+<pre><code>$ id=279087620145958912 eval $(curl -Ls http://j.mp/install-tweet)
+Installed helloworld from Tweet 279087620145958912
+$ helloworld
+Hello world</code></pre>
+
+<p>We just installed a program from a Tweet and ran it! Then I wrapped this up into a command you could install. To install the installer. This time it would let you give it the URL to a Tweet:</p>
+
+<pre><code>$ eval $(curl -Ls http://j.mp/install-exectweet) 
+Installed exectweet
+$ exectweet https://twitter.com/progrium/status/279087620145958912
+Installed helloworld from Tweet 279087620145958912
+$ helloworld
+Hello world</code></pre>
+
+<p>Where would I go from there? An app that calls itself into a loop, of course!</p>
+<blockquote class='twitter-tweet tw-align-center'><p>exectweet <a href='http://t.co/ri0XTprA' title='http://j.mp/recursive-app'>j.mp/recursive-app</a> ; recursive-app <a href='https://twitter.com/search/%23exectweet'>#exectweet</a> recursive-app</p>&mdash; Jeff Lindsay (@progrium) <a data-datetime='2012-12-13T07:20:12+00:00' href='https://twitter.com/progrium/status/279123541054595074'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<pre><code>$ exectweet https://twitter.com/progrium/status/279123541054595074 &amp;&amp; recursive-app
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+...</code></pre>
+
+<p>Obviously, this whole project was just a ridiculous, mind-bending exploration. I shared most of these examples on Twitter as I was making them. Here was my favorite response.</p>
+<blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279087620145958912'><p>@<a href='https://twitter.com/progrium'>progrium</a> End of the world, brought to you by Jeff Lindsay, via the Internet collapsing in on itself and taking the world with it.</p>&mdash; Matt Mechtley (@biphenyl) <a data-datetime='2012-12-13T05:00:44+00:00' href='https://twitter.com/biphenyl/status/279088441084497922'>December 12, 2012</a></blockquote><script charset='utf-8' src='//platform.twitter.com/widgets.js'> </script>
+<p>You may have noticed, it just happened to be 12/12/2012 that day.</p>
+<style type='text/css'>
+.twitter-tweet-rendered {
+  clear: none!important;
+}
+.twt-reply {
+  display: none!important;
+}
+</style>
+</div>
+
+<a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Jan</span>
     <span class="day">01</span><br />
     <span class="year">2013</span>
   </div>
@@ -218,7 +340,7 @@
 <p>One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.</p>
 
 <p>Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.</p>
-<center><img title='Open systems vs Closed systems' src='/images/content/open_vs_closed_sys.png' /></center>
+<center><img src='/images/content/open_vs_closed_sys.png' title='Open systems vs Closed systems' /></center>
 <p>This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don&#8217;t appreciate how little this idea was understood for basically all of human existence up until just a few decades ago.</p>
 
 <p>Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.</p>
@@ -230,8 +352,8 @@
 <p>Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.</p>
 
 <p>Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:</p>
-<img title='Nested
-environments' style='float: left;' src='/images/content/nested_environments.png' />
+<img src='/images/content/nested_environments.png' title='Nested
+environments' style='float: left;' />
 <p>If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality.</p>
 
 <p>In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920&#8217;s have we begun to accept that reality is just too complicated to fully understand at once.</p>
@@ -240,88 +362,6 @@ environments' style='float: left;' src='/images/content/nested_environments.png'
 </div>
 
 <a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">Dec</span>
-    <span class="day">06</span><br />
-    <span class="year">2012</span>
-  </div>
-  <h1><a href="/blog/2012/12/06/async-http-responses-with-response-redirection">Async HTTP Responses with Response Redirection</a></h1>
-  <p>What if you could perform any HTTP request, but get the response back via a webhook? This is the simple goal of Response Redirection, a simple micro-protocol for telling an HTTP server to send the response to a URL. Instead of returning the response in the connection created by the request, the response is returned in HTTP callback fashion.</p>
-
-<p>The primary use case for this is handling HTTP responses that take longer than you would prefer to keep an open connection. As we build APIs that start interacting with the real world and human processes, you could expect operations that might take hours to days to complete.</p>
-
-<h3 id='example_of_response_redirection'>Example of Response Redirection</h3>
-
-<p>Response Redirection is done by performing a regular HTTP request with two additions: a Pragma directive telling the server you want the response to be redirected, and a Callback to be used for the response.</p>
-
-<pre><code>GET /helloworld HTTP/1.1
-Host: example.com
-Pragma: redirect
-Callback: &lt;http://server.com/callback&gt;; method=&quot;post&quot;; rel=&quot;redirect&quot;</code></pre>
-
-<p>The response to this is a 202 Accepted or an appropriate error code. 202 Accpted is the standard response to give for operations that have been accepted and will be processed or finished later. As soon as the server as processed the request and has rendered a response, it would perform a request:</p>
-
-<pre><code>POST /callback HTTP/1.1
-Host: server.com
-Status: 200 OK
-Content-Length: 11
-Content-Type: text/plain
-
-Hello world</code></pre>
-
-<p>As we talked about with the <a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'>Callback header</a>, if a <code>secret</code> parameter was given, it would imply that an HMAC signature be provided in the callback request. We&#8217;ll revisit this again in another post.</p>
-
-<p>If the server doesn&#8217;t understand <code>Pragma: redirect</code>, it would return a normal response to the initial request and the client would have to handle it as usual.</p>
-
-<h3 id='using_pragma'>Using Pragma</h3>
-
-<p>You&#8217;ll notice we didn&#8217;t invent a header to tell the server to we want to do Response Redirection. You may remember Pragma&#8217;s original use was only for <code>Pragma: no-cache</code> and was eventually replaced with other cache control headers. However, the semantics of Pragma remain useful. To quote the <a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32'>HTTP 1.1 spec</a>:</p>
-
-<blockquote>
-<p>The Pragma general-header field is used to include implementation-specific directives that might apply to any recipient along the request/response chain.</p>
-</blockquote>
-
-<p>Another potential header field would be the <a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20'>Expect header</a>. The Expect header is designed to let the client specify certain behaviors expected of the server. This would be perfect except for this property:</p>
-
-<blockquote>
-<p>The Expect mechanism is hop-by-hop: that is, an HTTP/1.1 proxy MUST return a 417 (Expectation Failed) status if it receives a request with an expectation that it cannot meet.</p>
-</blockquote>
-
-<p>In today&#8217;s world, this renders it useless unless we were talking about changing the behavior of proxies. The Pragma header was designed to be forwarded by proxies and ignored if it doesn&#8217;t know how to fulfill the directive.</p>
-
-<h3 id='alternate_implementation'>Alternate Implementation</h3>
-
-<p>In the discussion that followed the Callback header post, not only did we learn that the <code>X-</code> header prefix <a href='http://tools.ietf.org/html/rfc6648'>is now deprecated</a>, but there is an RFC draft called <a href='http://tools.ietf.org/html/draft-snell-http-prefer-17'>Prefer Header for HTTP</a>.</p>
-
-<p>It actually addresses the issue with the Expect header, providing an alternative for specifying optional preferences for how the server handles a request. One of the example preferences is for returning the response asynchronously, which is exactly what we&#8217;re achieving with Response Redirection. The only missing element is the callback, which we can easily include with our Callback header. Here we augment an example directly from the spec:</p>
-
-<pre><code>POST /collection HTTP/1.1
-Host: example.org
-Content-Type: text/plain
-Prefer: respond-async
-Callback: &lt;http://server.com/callback&gt;; rel=&quot;respond-async&quot;
-
-{Data}</code></pre>
-
-<p>The server would respond with 202 Accepted, just as we would have had with the Pragma implementation. It&#8217;s up for discussion which implementation is ideal.</p>
-
-<h3 id='last_thoughts'>Last Thoughts</h3>
-
-<p>Granted, there are likely better ways to approach the use case we described at the beginning. Creating a resource immediately and subscribing to state changes might actually be ideal. Perhaps the Response Redirection spec is purely academic. That brings us again to the idea of HTTP Subscriptions, which I&#8217;ll get to posting about soon.</p>
-
-<p>However, Response Redirection is a great example of a simple protocol built on top of the Callback header. The use of Prefer and Pragma will also set the stage for the design decisions of my initial informal draft of HTTP Subscriptions. It will continue this trend of reusing existing pieces of technology (Pragma, Expect, Prefer, Callback) as building blocks that, from my perspective, were intended to be re-combined to achieve new behavior.</p>
-
-<p>Let me know what you think in the comments or in the <a href='https://groups.google.com/forum/#!forum/webhooks'>Webhooks Google Group</a>.</p>
-</div>
-
-<a href="/blog/2012/12/06/async-http-responses-with-response-redirection#disqus_thread">Comments</a>
 <hr />
 
 
