@@ -68,7 +68,7 @@ end # task :page
 
 desc "Launch preview environment"
 task :preview do
-  system "jekyll --auto --server"
+  system "bundle exec jekyll --auto --server"
 end # task :preview
 
 desc "Generate static site and publish with Github Pages"
@@ -77,7 +77,7 @@ task :publish do
     puts "You have changes to commit first"
   else
     sh "git push origin source"
-    sh "jekyll --no-server --no-auto"
+    sh "bundle exec jekyll --no-server --no-auto"
     sh "git checkout master"
     sh "cp -r _site/* . && rm -rf _site/ && touch .nojekyll"
     sh "git add ."
