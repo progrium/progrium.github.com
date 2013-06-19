@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>Why efficiency is not as important as you think :: Jeff Lindsay
+    <title>Dokku: The smallest PaaS implementation you've ever seen :: Jeff Lindsay
       </title>
 
     
@@ -51,8 +51,6 @@
   <h6>Related Posts</h6>
   <ul>
     
-    <li><a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen">Dokku: The smallest PaaS implementation you've ever seen</a></li>
-    
     <li><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls">Executable Tweets and Programs in Short URLs</a></li>
     
     <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from">Where did Localtunnel come from?</a></li>
@@ -71,6 +69,8 @@
     
     <li><a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe">Piping into and out of the cloud with skypipe</a></li>
     
+    <li><a href="/blog/2012/09/07/let-me-tell-you-about-my-website">Let me tell you about my website</a></li>
+    
   </ul>
 </div>
 
@@ -79,34 +79,27 @@
 
 <div class="article">
   <div class="date">
-    <span class="month">Nov</span>
-    <span class="day">05</span><br />
-    <span class="year">2009</span>
+    <span class="month">Jun</span>
+    <span class="day">19</span><br />
+    <span class="year">2013</span>
   </div>
-  <h1><a href="/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think">Why efficiency is not as important as you think</a></h1>
-  <blockquote>
-<p>&#8220;Efficiency is doing things right; effectiveness is doing the right things.&#8221; -Peter Drucker</p>
-</blockquote>
+  <h1><a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen">Dokku: The smallest PaaS implementation you've ever seen</a></h1>
+  <p><a href='https://github.com/progrium/dokku'>Dokku</a> is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it&#8217;s set up on a host, you can push Heroku-compatible applications to it via Git. They&#8217;ll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.</p>
 
-<p>When people, usually analytical people, want to improve a situation, they tend to optimize efficiency: achieve maximum output for input. &#8220;Let&#8217;s reduce waste! Let&#8217;s simplify! Let&#8217;s make things smoother! Let&#8217;s try and get more out of the system!&#8221; I suppose the obsession with efficiency is explained in the Drucker quote: that efficiency is &#8220;doing things right.&#8221; Who wouldn&#8217;t want to do things right?</p>
+<p>Dokku is under 100 lines because it&#8217;s built out of several components that do most of the heavy lifting: Docker, Buildstep, and gitreceive.</p>
 
-<p>The problem with efficiency is that it has nothing to do with whether or not what you are currently doing is the right thing to do. Whereas effectiveness is about achieving the right result, or being on the right path.</p>
+<ul>
+<li><a href='http://www.docker.io/'>Docker</a> is a container runtime for Linux. This is a high-level container primitive that gives you a similar technology to what powers Heroku Dynos. It provides the heart of Dokku.</li>
 
-<p>Too many people assume a system is on the right path. If there is a problem, they address it by smoothing things out and making the process more efficient without questioning the larger system they were produced in. But if the system is going in the wrong direction, that&#8217;s only going to make the real problem worse. The push for more standardized testing in public education comes to mind.</p>
+<li><a href='https://github.com/progrium/buildstep'>Buildstep</a> uses Heroku&#8217;s open source buildpacks and is responsible for building the base images that applications are built on. You can think of it as producing the &#8220;stack&#8221; for Dokku, to borrow a concept from Heroku.</li>
 
-<p>What&#8217;s really important is effectiveness. In the end, it doesn&#8217;t matter if your business is spending the least amount possible or your computer program running as fast as possible or your lifestyle entirely streamlined. If it&#8217;s effective, it achieves the desired goal. Your business is producing value, your program is functionally useful, your lifestyle is making you happy. Effectiveness is qualitative. Efficiency is quantitative, which is why I think it&#8217;s so big with analytical people. Probably intelligent people in general.</p>
+<li><a href='https://github.com/progrium/gitreceive'>Gitreceive</a> is a project that provides you with a git user that you can push repositories to. It also triggers a script to handle that push. This provides the push mechanism that you might be familiar with from Heroku.</li>
+</ul>
 
-<p>If you think about it, intelligence, especially knowledge, is mostly concerned with efficiency. It&#8217;s more about how to solve problems, less so with what problems to solve. Knowledge is a tool. It&#8217;s neutral. To what ends do you actually use it for? That requires values and intention&#8212;the realm of wisdom. A wise person tends to be an effective person.</p>
+<p>There are a few other projects being developed to support Dokku and expand its functionality without inflating its line count. Each project is independently useful, but I&#8217;ll share more about these as they&#8217;re integrated into Dokku.</p>
 
-<p>When approaching a problem, wisdom and pragmatism must frame intelligence. Before you start thinking about efficiency, you should step back and think about effectiveness. In computer engineering this idea spread with Donald Knuth&#8217;s quote &#8220;premature optimization is the root of all evil.&#8221; His argument being that 97% of efficiency optimizations are unnecessary to achieve functionality, at which point you can determine which optimizations will be the most effective improvements of efficiency.</p>
-
-<p>In a way, it&#8217;s a look before you leap argument. Don&#8217;t get me wrong with all this. Efficiency is terribly valuable and can improve a situation, but only if you&#8217;re on the right path. Just because a system is currently working or was previously working doesn&#8217;t mean it should be, or will in the future. You should always consider effectiveness before efficiency, even in &#8220;working&#8221; systems. Here&#8217;s why:</p>
-
-<p>Effectiveness opens the door for efficiency, but efficiency can change the requirements for effectiveness.</p>
-
-<p>Quantitative improvements can qualitatively change the situation if taken far enough. The game can change. For example, you can become so efficient at producing cars that production isn&#8217;t the problem anymore. Then it&#8217;s a question of variety, like choice of color. &#8220;You can have any color as long as that color is black,&#8221; Ford said, and soon after lost the lead in car manufacturing. Perhaps when business slowed, they tried to make their sales and marketing or administrative organization more efficient. They didn&#8217;t re-asses whether the thing they were doing so right (building cars so efficiently)&#8230; was the right thing. The effective thing.</p>
-
-<p>Efficiency is important, but powerless without effectiveness. Always keep an eye on effectiveness.</p>
+<p>For now, here&#8217;s a screencast that shows how to set up Dokku, along with a quick walk-through of the code.</p>
+<iframe allowFullScreen='allowFullScreen' frameborder='0' height='394' mozallowfullscreen='mozallowfullscreen' src='http://player.vimeo.com/video/68631325' webkitAllowFullScreen='webkitAllowFullScreen' width='700'>No iFrames?</iframe>
 </div>
 
 <hr />
