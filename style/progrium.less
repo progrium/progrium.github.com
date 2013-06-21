@@ -23,6 +23,7 @@ table {
 
 body {
   background-image: url(/images/stripes.png);
+  padding: 0 !important;
 }
 
 h2, h3 {
@@ -86,6 +87,7 @@ code {
   padding-bottom: 3px !important;
   font-size: 18px !important;
   .rounded-corners(6px);
+  display: inline-block !important;
 }
 
 #header {
@@ -128,12 +130,25 @@ code {
   li {
     color: @white;
     display: inline;
-    font-weight: 100;
+    font-weight: 500;
     font-size: 24px;
     padding-left: 20px;
   }
 }
 
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 #content {
   .container {
     padding-top: 35px; 
@@ -163,7 +178,6 @@ code {
 }
 
 .article {
-  width: 700px;
   padding-top: 3px;
 
   h1 {
@@ -177,6 +191,8 @@ code {
 .sidebar {
   float: right;
   width: 210px;
+  margin-left: 15px !important;
+  margin-bottom: 15px !important;
 
   h6 {
     margin-top: 10px;
@@ -213,3 +229,57 @@ code {
   margin-bottom: 20px;
 }
 
+@media (max-width: 600px) {
+  body { font-size: 14px !important; }
+  #header h2 { top: 20px; position: relative; margin-left: 20px; }
+  #header ul { position: absolute; top: 55px; margin: 0; float: none; }
+  #header li { font-size: 18px; }
+  #hire { padding-left: 7px; padding-right: 7px; }
+  .sidebar { width: 150px; }
+  .portrait, #about-photo {
+    margin-bottom: 10px;
+  }
+  #about-photo, #portrait {
+    width: 150px;
+    height: 150px;
+  }
+  .button, .portrait { padding: 10px; }
+}
+
+@media (max-width: 400px) {
+  #header h2 { font-size: 30px; top: 8px; margin-left: 0px; }
+  #header ul { top: 45px; margin-left: -20px; }
+  #content .container { padding: 10px; }
+  #hire { margin-top: 5px; }
+
+  .sidebar { 
+    display: block;
+    float: none;
+    padding-bottom: 10px;
+    margin: 0 auto!important;
+  }
+  .sidebar .button { font-size: 16px; padding: 7px;}
+  .portrait { padding: 0; background-color: transparent;}
+}
+
+@media (max-width: 999px) {
+  h1 { font-size: 24px !important; line-height: 28px !important; }
+  .date {
+    margin-left: 0px !important;
+    margin-top: 10px;
+    width: 20px;
+    padding: 0 10px 10px 0 !important;
+    float: none;
+    display: inline-block;
+    border-left: 3px solid @magenta;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 999px) {
+  .article { width: 500px; }
+}
+
+@media (min-width: 1000px) {
+  .container { width: 940px; }
+  .article { width: 700px; }
+}
