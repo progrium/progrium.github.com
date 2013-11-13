@@ -54,6 +54,95 @@
 
 <div class="article">
   <div class="date">
+    <span class="month">Jan</span>
+    <span class="day">26</span><br />
+    <span class="year">2010</span>
+  </div>
+  <h1><a href="/blog/2010/01/26/notifyio-brings-notifications-to-the-web">Notify.io brings notifications to the web</a></h1>
+  <blockquote>
+<p><strong>Update:</strong> Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.</p>
+</blockquote>
+
+<p>In October 2009 I started a project called <a href='http://www.notify.io/'>Notify.io</a> and a month later announced it. I talked about how it will bring notifications to the web. Now that it&#8217;s basically alpha complete, I&#8217;ll give you a quick walkthrough of what makes it so great.</p>
+<center><iframe frameborder='0' height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o' width='560'> </iframe></center>
+<h3 id='overview'>Overview</h3>
+
+<p>At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular <a href='http://growl.info/'>Growl</a> application for OS X (which should honestly just ship with OS X). Only it&#8217;s even better.</p>
+
+<h3 id='desktop_notifications'>Desktop Notifications</h3>
+
+<p>The original inspiration for Notify.io was to make Growl more useful by fixing its ability to receive notifications from the Internet. Out of the box, Growl is effectively only good for notifications from sources running on your machine. If you wanted to get notifications from a web app, you&#8217;d have to wait for them to release a desktop notifier, which hopefully would use Growl to actually display the notifications. So you end up with all these desktop notifiers running for some apps, and have no option of desktop notifications for others.</p>
+
+<p>This is probably the killer feature of Notify.io: it lets you get desktop notifications from any web app that supports it, which is an order of magnatude easier for them to do than build their own desktop notifier.</p>
+
+<h3 id='sources_and_outlets'>Sources and Outlets</h3>
+
+<p>The language of Notify.io is based around Sources and Outlets. Sources are pretty straightforward. They&#8217;re a source of notifications. They could represent an application, script, company, person (or perhaps object?) that can send you notifications.</p>
+
+<p>Outlets repesent the other major feature of Notify.io. They&#8217;re ways you can get a notification. The Desktop Notifier is your first and default outlet, but is just one of several options. Currently supported Outlets besides Desktop Notifier are Email, Jabber IM, and Webhooks. Outlets to look forward to are SMS, Twitter, IRC, and perhaps telephone.</p>
+
+<p>The magic is in routing notifications from Sources to Outlets. Currently this is a simple mapping of Source to Outlet. For example, you can get notifications from Source A on your desktop, while notifications from Source B go to IM. This simplistic routing is just the beginning. We&#8217;ll talk about how we&#8217;ll do advanced routing when we get to the Roadmap.</p>
+
+<h3 id='the_nio_client'>The Nio Client</h3>
+
+<p>For developers, it&#8217;s worth mentioning that the pipe for our Desktop Notifier is really just a Comet HTTP stream. It can be consumed by pretty much anything. We were originally talking with Growl and authors of other desktop notifiers of direct integration. This is still a possibility, but just so we could move forward, we built our own client for OS X. Clients for other systems are available (but not yet &#8220;officially&#8221; supported) or are in progress, including Windows and Android.</p>
+
+<p>Our OS X client is called Nio, short for Notify.io, so you can pronounce it N-I-O, but I tend to pronounce it &#8220;neo&#8221;. It&#8217;s basically just an application that sits in your menu bar listening to HTTP streams (yes, plural) for notifications and pipes them into Growl.</p>
+
+<p>For ease of installing streams, we made it handle files of the extension ListenURL. Once Nio is installed, you can download a ListenURL file containing a URL and it gets installed by Nio. The URL we give you is basically a &#8220;capability URL&#8221; or secret URL. This means streams are not super secure, but this is by design. If you wanted, you could share your URL with somebody so you both get notifications sent to that Outlet. You can always delete the Outlet and make another to disable that URL.</p>
+
+<p>The other cool thing about our client is that it has a shell script notification hook. This means you can have notifications trigger a shell script that&#8217;s passed the notification details. This is pretty powerful because it means you can do things like create your own local logging, hear your notifications with text-to-speech, or make certain notifications trigger a more obstrusive means of notifying you, such as Quicksilver&#8217;s Large Type feature. This kind of programmability is central to our approach to design, as you&#8217;ll see later on in the Roadmap.</p>
+
+<h3 id='simple_api_and_approval_model'>Simple API and Approval Model</h3>
+
+<p>For proper adoption, we need web apps to integrate Notify.io, so we have a super simple API for Sources. It&#8217;s a simple REST API based on an endpoint constructed by the target of your notification. Like <a href='http://en.gravatar.com/'>Gravatar</a>, we use an MD5 hash of a user&#8217;s email address to identify targets. For example, to send a notification to test@example.com, you&#8217;d do an HTTP POST to this URL:</p>
+
+<pre><code>http://api.notify.io/v1/notify/55502f40dc8b7c769880b10874abc9d0</code></pre>
+
+<p>You&#8217;d pass a few parameters, with at least your API key (meaning you need an account) and the text you want to send, and optionally an icon URL, link URL, title text and whether the notification should be &#8220;sticky&#8221;. That&#8217;s it. The request should respond immediately so it may be quick enough to be done inline in your app, but we recommend it be done asynchronously.</p>
+
+<p>Then what happens is the first notification you send actually triggers a notification to that user that you want to send them notifications. If they accept, future notifications will be sent and your previous notifications will show up in their history. This may change to replay previous notifications on approval, but the point here is the user has to approve notifications before they get them. In this way, it&#8217;s similar to Jabber&#8217;s approval model and helps avoid spammers.</p>
+
+<h3 id='public_service_software'>Public Service Software</h3>
+
+<p><a href='http://code.google.com/p/notify-io/'>Notify.io and its clients are open source</a>. The service is free. Or rather, it&#8217;s not-for-profit donationware. Notify.io is being run under a model I&#8217;m developing called POSS, the goal of which is to automate/abstract away the maintainence and funding of its operation. The end result should be: the service exists, it&#8217;s open source, and some in the developer community can deploy changes. But no single person is financially responsible for it, and it&#8217;s run on maintained cloud infrastructure. In this case it&#8217;s mostly App Engine.</p>
+
+<p>This means that Notify.io is not a startup. It&#8217;s public infrastructure. Ideally, I&#8217;m not even in the loop. It should be a self-sustaining public service. This is not fully realized, but it will be as it starts to consume more resources. For more information, you can <a href='http://blogrium.wordpress.com/2009/10/29/public-open-source-services/'>read more</a> on POSS or <a href='http://groups.google.com/group/poss-talk'>join our discussion group</a>.</p>
+
+<p>For now, the important thing is that Notify.io is open source. This means anybody can contribute bug fixes, new outlets, new desktop clients, etc.</p>
+
+<h3 id='roadmap'>Roadmap</h3>
+
+<p>Okay, sure, Notify.io is pretty cool now. But here are some of the major things that will be coming soon. Hopefully with your help!</p>
+
+<p><em>Advanced Routing and Filters</em><br /> From the beginning, I wanted really powerful routing and filtering. My evangelism of webhooks has given me the obvious answer to this, but in a more integrated way. Basically, how do you allow any routing scheme imagineable by users? Let them write code. Originally it was going to be powered by <a href='http://www.scriptlets.org/'>Scriptlets</a>, but since I split the eval engine out as <a href='http://github.com/progrium/DrEval'>DrEval</a>, it will be based on that.</p>
+
+<p>Basically, just a imagine a UI with a little textarea for writing JavaScript that can make web calls. Route notifications based on your IM status, your location, what music you&#8217;re listening to, arbitrary time schedules, or anything you can code.</p>
+
+<p><em>More Outlets</em><br /> Obviously, more Outlets are good. Obvious ones are IRC, SMS, and Twitter DM. With Twilio we can do voice call notifications. Integration with push clients like the iPhone&#8217;s Prowl app would be easy to do. Our outlet system is very simple, so you can <a href='http://github.com/progrium/notify-io/blob/master/www/outlet_types.py'>look at the source of our existing ones</a>, write an outlet and it&#8217;s likely we&#8217;ll deploy it.</p>
+
+<p><em>OpenID Support</em><br /> Right now, you authenticate with Google. I don&#8217;t believe in creating authentication systems, and Google was the quickest given the platform. It&#8217;s also pretty popular and ensures you have an email address we can use. However, there are plenty of people that don&#8217;t like the idea of using their Google Account, so at some point we&#8217;ll support OpenID login and then go from there.</p>
+
+<p><em>Multiple Email Support</em><br /> Ideally, a web app can use whatever email address you used to register with them to send you notifications. However, unless Gmail is your primary email you use for registration, they&#8217;ll still need to ask you for your email. It&#8217;s the Gravatar model. So like Gravatar, we&#8217;ll need to let you add multiple emails to your account, allowing web applications to be able to send notifications based on any of them.</p>
+
+<p><em>Convenience Libraries</em><br /> Our API is simple, but people are lazy. We&#8217;re currently working on convenience libraries for popular langauges that it make that much easier to integrate with Notify.io. If you use a neat language, you should make a libnio package for it!</p>
+
+<p><em>Ad-hoc Sources</em><br /> Sources require an account, which is a bit heavyweight. Sometimes you want to create your own distinct sources to share with others or use in your scripts to easily send yourself notifications. This is the idea of Ad-hoc Sources, inspired by David Reid and capability URLs. The idea is simple: create an ad-hoc source and you get a secret URL. This URL acts just like the notify API endpoint, only you don&#8217;t need an API key. You can use this in public scripts or give it to others to send you notifications, and if it&#8217;s ever abused or falls in the wrong hands, just delete it and make another.</p>
+
+<p><em>More Supported Clients</em><br /> A developer in Japan started a Windows client based on Nio that we&#8217;re planning to support as our primary Windows client. Another developer is working on an Android client. iPhone users have Prowl, so once there is a Prowl outlet, you can get them on your iPhone. But Prowl is not free, so perhaps it would be helpful if we had our own iPhone client. There are the beginnings of a Linux/libnotify client. These are all ways you can start contributing to Notify.io. ;)</p>
+
+<p>That&#8217;s about it. You can probably see why I describe Notify.io as the open notification platform of the web. It&#8217;s simple, powerful, and open source. It&#8217;s come a long way in just 3 months thanks to the contributions of Abimanyu Raja, Amanda Wixted, Mike Lundy, David Reid, Christopher Lobay, Hunter Gillane, Nakamatsu Shinji, and everybody that&#8217;s given user feedback so far.</p>
+</div>
+
+<a href="/blog/2010/01/26/notifyio-brings-notifications-to-the-web#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
     <span class="month">Dec</span>
     <span class="day">08</span><br />
     <span class="year">2009</span>
@@ -202,47 +291,6 @@
 </div>
 
 <a href="/blog/2009/06/26/why-minimalist-software-wins-at-workflow#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">Jun</span>
-    <span class="day">17</span><br />
-    <span class="year">2009</span>
-  </div>
-  <h1><a href="/blog/2009/06/17/oh-no-hackers">Oh no! Hackers!</a></h1>
-  <p>That&#8217;s right. Hide your floppies and cover your Ethernet ports. Virus-laden hackers are coming to take over your computer, steal your passwords, and do terrible things! Like hack your MySpace! Oh noes!</p>
-
-<p>I guess I&#8217;m getting over the fact that we probably won&#8217;t be able to undo the damage done with the public&#8217;s perception of what a &#8220;hacker&#8221; is. Perhaps, though, we can overload it to the point of ambiguity, so there&#8217;s at least some question of context whether it&#8217;s the good kind or the bad kind.</p>
-
-<p>The problem is that positive connotations aren&#8217;t enough. The people that would venture to understand &#8220;hackers&#8221; the slightest bit more than what they hear in the headlines are going to pretty quickly find the &#8220;good hackers&#8221; &#8230; they&#8217;re white hats, right?</p>
-
-<p>The other day I was questioned by somebody (that should know better) if I hacked somebody&#8217;s website that was recently compromised. Seriously? My response was &#8220;I barely have enough time to do important things, let alone something that would be a waste of my time.&#8221;</p>
-
-<p>I self-identify as a hacker. I invite my friends over to &#8220;hack.&#8221; I started a party for &#8220;hackers and thinkers&#8221; (a very intentional choice of words). I&#8217;m co-founding a community center called Hacker Dojo. What are we doing at all these functions? Building and learning.</p>
-
-<p>We use the term perhaps too liberally, but always implying tribute to the true hackers that, as Steven Levy put it, &#8220;regard computing as the most important thing in the world.&#8221;</p>
-
-<p>These people push the envelope of what&#8217;s possible through hands-on exploration, driven by relentless curiosity and a desire to challenge the status quo. Steve Wozniak, Lee Felsenstein, Linus Torvalds, Tim Berners-Lee, John Carmack&#8230;</p>
-
-<p>Hell, there&#8217;s something big behind this idea, why stop at computing? Buckminster Fuller, Nikola Tesla, Richard Feynman, Alfred Kinsey, Ben Franklin&#8230;</p>
-
-<p>Perhaps we&#8217;re generalizing too far. Perhaps we&#8217;re rendering &#8220;hacker&#8221; meaningless. Or are we giving it more meaning? Getting down to its essence. I wouldn&#8217;t be defending this idea so strongly if I didn&#8217;t think it had some great significance to humanity.</p>
-
-<p>What upsets me is that many who would identify as hackers in this sense seem to be afraid to claim it. Most likely in fear of confusing the layman that has the media&#8217;s myopic view of hackers. You&#8217;ve never heard of the canonical conference for real hackers. No, it&#8217;s not DefCon. (Just get up and leave.) It&#8217;s a conference called Hackers. You&#8217;ve never heard of it because they keep it secret!</p>
-
-<p>This conference was started to gather everybody together that was mentioned in Steven Levy&#8217;s book <a href='http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511/ref=sr_1_2?ie=UTF8&amp;s=books&amp;qid=1245307316&amp;sr=8-2'>Hackers: Heroes of the Computer Revolution</a> (one of the last good publication on hackers, and it came out in 1984!). This conference holds all the values of true hackerism and it&#8217;s been happening for 25 years. But they won&#8217;t promote it! It goes by a fake name and even has all mentions of &#8220;hacker&#8221; on their website replaced with an image so it won&#8217;t be indexed. Seriously??</p>
-
-<p>Trying to supplant public perception of hackers by just saying they&#8217;re something different and providing a better name nobody uses (&#8220;crackers&#8221;) is not going to work. It hasn&#8217;t worked. They need something to replace those visions of crackers with. We need tangible examples and stories. We need heroes. Heroes willing to wear the title.</p>
-
-<p>Luckily, we have a new generation of hackers. One that has started a global movement called <a href='http://hackerspaces.org/'>hackerspaces</a>, probably one of the biggest things for hackers in years. Our local hackerscene fostered by Silicon Valley culture and events like <a href='http://devhouse.org'>SuperHappyDevHouse</a> have led to a hackerspace we hope will have a big impact. One that proudly wears the name hacker: <a href='http://hackerdojo.com'>Hacker Dojo</a>.</p>
-</div>
-
-<a href="/blog/2009/06/17/oh-no-hackers#disqus_thread">Comments</a>
 <hr />
 
 

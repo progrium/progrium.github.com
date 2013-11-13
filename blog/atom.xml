@@ -4,13 +4,32 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2013-08-18T11:48:35-07:00</updated>
+ <updated>2013-11-13T11:14:14-08:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
    <email>progrium@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Viewdocs: Hosted Markdown project documentation (finally!)</title>
+   <link href="http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation"/>
+   <updated>2013-11-13T00:00:00-08:00</updated>
+   <id>http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation</id>
+   <content type="html">&lt;p&gt;A huge part of the user experience for open source software is the documentation. When writing new software to be adopted, I&amp;#8217;ve learned it&amp;#8217;s more important to first write decent docs than tests. And when I forget, &lt;a href='https://github.com/kennethreitz'&gt;Kenneth Reitz&lt;/a&gt; is there to remind me.&lt;/p&gt;
+
+&lt;p&gt;When I&amp;#8217;ve outgrown a README on Github, I only consider two options for providing documentation: &lt;a href='http://pages.github.com/'&gt;Github Pages&lt;/a&gt; and &lt;a href='https://readthedocs.org/'&gt;Read the Docs&lt;/a&gt;. Unfortunately, I have problems with both of them. Chiefly, Read the Docs makes me use reStructured Text, and Github Pages means maintaining a separate orphan branch and using a static page generator.&lt;/p&gt;
+
+&lt;p&gt;What I&amp;#8217;ve really wanted is something like &lt;a href='http://gist.io/'&gt;Gist.io&lt;/a&gt;, but for my repository. Nobody has stepped up, so I built it.&lt;/p&gt;
+
+&lt;p&gt;I call it &lt;a href='http://progrium.viewdocs.io/viewdocs'&gt;Viewdocs&lt;/a&gt;. It renders static pages on-demand from Markdown in your project&amp;#8217;s docs directory. There&amp;#8217;s no setup, just follow the conventions and it works. It may even already be working for you, since Markdown in a docs directory is not that uncommon. And keeping your documentation in the same branch as your code means it&amp;#8217;s easier for people to contribute docs with their pull requests.&lt;/p&gt;
+
+&lt;p&gt;The default layout is borrowed from Gist.io, giving you a clean, elegant documentation site. All you have to do is write some Markdown. That&amp;#8217;s about all there is to it.&lt;/p&gt;
+
+&lt;p&gt;You can read more on the &lt;a href='http://progrium.viewdocs.io/viewdocs'&gt;homepage for Viewdocs&lt;/a&gt;, which is powered by Viewdocs. Or here&amp;#8217;s a quick video introduction:&lt;/p&gt;
+&lt;iframe allowFullScreen='allowFullScreen' frameborder='0' height='394' mozallowfullscreen='mozallowfullscreen' src='http://player.vimeo.com/video/79066808' webkitAllowFullScreen='webkitAllowFullScreen' width='700'&gt;No iFrames?&lt;/iframe&gt;</content>
+ </entry>
  
  <entry>
    <title>Hacker Dojo: Community Trading Zone</title>

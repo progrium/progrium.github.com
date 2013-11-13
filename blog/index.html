@@ -54,6 +54,34 @@
 
 <div class="article">
   <div class="date">
+    <span class="month">Nov</span>
+    <span class="day">13</span><br />
+    <span class="year">2013</span>
+  </div>
+  <h1><a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation">Viewdocs: Hosted Markdown project documentation (finally!)</a></h1>
+  <p>A huge part of the user experience for open source software is the documentation. When writing new software to be adopted, I&#8217;ve learned it&#8217;s more important to first write decent docs than tests. And when I forget, <a href='https://github.com/kennethreitz'>Kenneth Reitz</a> is there to remind me.</p>
+
+<p>When I&#8217;ve outgrown a README on Github, I only consider two options for providing documentation: <a href='http://pages.github.com/'>Github Pages</a> and <a href='https://readthedocs.org/'>Read the Docs</a>. Unfortunately, I have problems with both of them. Chiefly, Read the Docs makes me use reStructured Text, and Github Pages means maintaining a separate orphan branch and using a static page generator.</p>
+
+<p>What I&#8217;ve really wanted is something like <a href='http://gist.io/'>Gist.io</a>, but for my repository. Nobody has stepped up, so I built it.</p>
+
+<p>I call it <a href='http://progrium.viewdocs.io/viewdocs'>Viewdocs</a>. It renders static pages on-demand from Markdown in your project&#8217;s docs directory. There&#8217;s no setup, just follow the conventions and it works. It may even already be working for you, since Markdown in a docs directory is not that uncommon. And keeping your documentation in the same branch as your code means it&#8217;s easier for people to contribute docs with their pull requests.</p>
+
+<p>The default layout is borrowed from Gist.io, giving you a clean, elegant documentation site. All you have to do is write some Markdown. That&#8217;s about all there is to it.</p>
+
+<p>You can read more on the <a href='http://progrium.viewdocs.io/viewdocs'>homepage for Viewdocs</a>, which is powered by Viewdocs. Or here&#8217;s a quick video introduction:</p>
+<iframe allowFullScreen='allowFullScreen' frameborder='0' height='394' mozallowfullscreen='mozallowfullscreen' src='http://player.vimeo.com/video/79066808' webkitAllowFullScreen='webkitAllowFullScreen' width='700'>No iFrames?</iframe>
+</div>
+
+<a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
     <span class="month">Aug</span>
     <span class="day">18</span><br />
     <span class="year">2013</span>
@@ -290,73 +318,6 @@ Installed recursive-app from Tweet 279123541054595074
 </div>
 
 <a href="/blog/2013/01/01/where-did-localtunnel-come-from#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">Dec</span>
-    <span class="day">25</span><br />
-    <span class="year">2012</span>
-  </div>
-  <h1><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta">Localtunnel v2 available in beta</a></h1>
-  <p>A few years back, I released <a href='http://localtunnel.com'>Localtunnel</a> to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it&#8217;s gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source.</p>
-
-<p>With the release of <a href='http://j.mp/localtunnel-v2'>Localtunnel v2</a>, it will not only remain competitive with similar services, but continue to be the innovator of the group. I&#8217;ll post more on this later.</p>
-
-<p>For now, let&#8217;s talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will be marked as deprecated. This means you should be making the switch to v2.</p>
-
-<p>Besides the fact v1 will eventually be shutdown, there are a number of reasons to switch to v2. Here are some of the major ones:</p>
-
-<ul>
-<li>It&#8217;s actively maintained. Bug reports, pull requests, and service interruptions are dealt with promptly.</li>
-
-<li>No more mysterious requests from old tunnels. The subdomain namespace is much larger.</li>
-
-<li>Custom subdomains. The new client lets you pick a tunnel name on a first come, first served basis.</li>
-
-<li>Supports long-polling, HTTP streaming, and WebSocket upgrades. Soon general TCP tunneling.</li>
-
-<li>No SSH key to start using it. A minor annoyance setting up v1, but it doesn&#8217;t exist in v2.</li>
-</ul>
-
-<p>One implementation detail that affects users is that the client is now written in Python. This means you won&#8217;t use Rubygems to install it. Instead, you can use <code>easy_install</code> or <code>pip</code>.</p>
-
-<pre><code>$ easy_install localtunnel</code></pre>
-
-<p>On some systems, you may need to run this with <code>sudo</code>. If you don&#8217;t have <code>easy_install</code>, first make sure you have Python installed:</p>
-
-<pre><code>$ python --version</code></pre>
-
-<p>Localtunnel requires Python 2.6 or later, which comes standard on most systems. If you don&#8217;t have Python, you can <a href='http://wiki.python.org/moin/BeginnersGuide/Download'>install it for your platform</a>. If <code>easy_install</code> isn&#8217;t available after you install Python, you can install it with this bootstrap script:</p>
-
-<pre><code>$ curl http://peak.telecommunity.com/dist/ez_setup.py | python</code></pre>
-
-<p>Once you&#8217;ve installed Localtunnel with <code>easy_install</code>, it will be available as <code>localtunnel-beta</code>. This lets you keep the old client to use in case anything goes wrong with v2 during the beta. Eventually, it will be installed as <code>localtunnel</code>, but only after v1 is shutdown.</p>
-
-<p>Using <code>localtunnel-beta</code> is pretty much the same as before:</p>
-
-<pre><code>$ localtunnel-beta 8000
-  Thanks for trying localtunnel v2 beta!
-
-  Port 8000 is now accessible from http://fb0322605126.v2.localtunnel.com ...</code></pre>
-
-<p>Like I mentioned earlier, you can use a custom tunnel name if it&#8217;s not being used:</p>
-
-<pre><code>$ localtunnel-beta -n foobar 8000
-  Thanks for trying localtunnel v2 beta!
-
-  Port 8000 is now accessible from http://foobar.v2.localtunnel.com ...</code></pre>
-
-<p>Keep in mind v2 is in active development. There might be some downtime while I work out operational bugs, but you can always use the old version if you run into problems.</p>
-
-<p>If you do run into any problems, you can <a href='http://twitter.com/progrium'>ping me on Twitter</a>. If you get traceback you can <a href='https://github.com/progrium/localtunnel/issues'>create an issue on Github</a>. If you have more in-depth questions or want to get involved in development, check out the <a href='https://groups.google.com/forum/#!forum/localtunnel'>Localtunnel Google Group</a>.</p>
-</div>
-
-<a href="/blog/2012/12/25/localtunnel-v2-available-in-beta#disqus_thread">Comments</a>
 <hr />
 
 

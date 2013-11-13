@@ -55,6 +55,73 @@
 <div class="article">
   <div class="date">
     <span class="month">Dec</span>
+    <span class="day">25</span><br />
+    <span class="year">2012</span>
+  </div>
+  <h1><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta">Localtunnel v2 available in beta</a></h1>
+  <p>A few years back, I released <a href='http://localtunnel.com'>Localtunnel</a> to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it&#8217;s gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source.</p>
+
+<p>With the release of <a href='http://j.mp/localtunnel-v2'>Localtunnel v2</a>, it will not only remain competitive with similar services, but continue to be the innovator of the group. I&#8217;ll post more on this later.</p>
+
+<p>For now, let&#8217;s talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will be marked as deprecated. This means you should be making the switch to v2.</p>
+
+<p>Besides the fact v1 will eventually be shutdown, there are a number of reasons to switch to v2. Here are some of the major ones:</p>
+
+<ul>
+<li>It&#8217;s actively maintained. Bug reports, pull requests, and service interruptions are dealt with promptly.</li>
+
+<li>No more mysterious requests from old tunnels. The subdomain namespace is much larger.</li>
+
+<li>Custom subdomains. The new client lets you pick a tunnel name on a first come, first served basis.</li>
+
+<li>Supports long-polling, HTTP streaming, and WebSocket upgrades. Soon general TCP tunneling.</li>
+
+<li>No SSH key to start using it. A minor annoyance setting up v1, but it doesn&#8217;t exist in v2.</li>
+</ul>
+
+<p>One implementation detail that affects users is that the client is now written in Python. This means you won&#8217;t use Rubygems to install it. Instead, you can use <code>easy_install</code> or <code>pip</code>.</p>
+
+<pre><code>$ easy_install localtunnel</code></pre>
+
+<p>On some systems, you may need to run this with <code>sudo</code>. If you don&#8217;t have <code>easy_install</code>, first make sure you have Python installed:</p>
+
+<pre><code>$ python --version</code></pre>
+
+<p>Localtunnel requires Python 2.6 or later, which comes standard on most systems. If you don&#8217;t have Python, you can <a href='http://wiki.python.org/moin/BeginnersGuide/Download'>install it for your platform</a>. If <code>easy_install</code> isn&#8217;t available after you install Python, you can install it with this bootstrap script:</p>
+
+<pre><code>$ curl http://peak.telecommunity.com/dist/ez_setup.py | python</code></pre>
+
+<p>Once you&#8217;ve installed Localtunnel with <code>easy_install</code>, it will be available as <code>localtunnel-beta</code>. This lets you keep the old client to use in case anything goes wrong with v2 during the beta. Eventually, it will be installed as <code>localtunnel</code>, but only after v1 is shutdown.</p>
+
+<p>Using <code>localtunnel-beta</code> is pretty much the same as before:</p>
+
+<pre><code>$ localtunnel-beta 8000
+  Thanks for trying localtunnel v2 beta!
+
+  Port 8000 is now accessible from http://fb0322605126.v2.localtunnel.com ...</code></pre>
+
+<p>Like I mentioned earlier, you can use a custom tunnel name if it&#8217;s not being used:</p>
+
+<pre><code>$ localtunnel-beta -n foobar 8000
+  Thanks for trying localtunnel v2 beta!
+
+  Port 8000 is now accessible from http://foobar.v2.localtunnel.com ...</code></pre>
+
+<p>Keep in mind v2 is in active development. There might be some downtime while I work out operational bugs, but you can always use the old version if you run into problems.</p>
+
+<p>If you do run into any problems, you can <a href='http://twitter.com/progrium'>ping me on Twitter</a>. If you get traceback you can <a href='https://github.com/progrium/localtunnel/issues'>create an issue on Github</a>. If you have more in-depth questions or want to get involved in development, check out the <a href='https://groups.google.com/forum/#!forum/localtunnel'>Localtunnel Google Group</a>.</p>
+</div>
+
+<a href="/blog/2012/12/25/localtunnel-v2-available-in-beta#disqus_thread">Comments</a>
+<hr />
+
+
+
+
+
+<div class="article">
+  <div class="date">
+    <span class="month">Dec</span>
     <span class="day">17</span><br />
     <span class="year">2012</span>
   </div>
@@ -308,65 +375,6 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
 </div>
 
 <a href="/blog/2012/11/26/x-callback-header-an-evented-web-building-block#disqus_thread">Comments</a>
-<hr />
-
-
-
-
-
-<div class="article">
-  <div class="date">
-    <span class="month">Nov</span>
-    <span class="day">19</span><br />
-    <span class="year">2012</span>
-  </div>
-  <h1><a href="/blog/2012/11/19/from-webhooks-to-the-evented-web">From Webhooks to the Evented Web</a></h1>
-  <p>Back in 2007 I started thinking and talking a lot about <a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'>an idea called webhooks</a>. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including <a href='http://localtunnel.com'>Localtunnel</a> and <a href='http://requestb.in'>RequestBin</a> (originally PostBin). There were others that might not be around anymore: <a href='http://mailhooks.com'>MailHooks</a>, <a href='http://clickhooks.com'>ClickHooks</a>, <a href='http://twitterhooks.com'>TwitterHooks</a>, <a href='http://scriptlets.org'>Scriptlets</a>, and a few others.</p>
-
-<p>Webhooks wasn&#8217;t really a new technology in the sense that there was a specification or tangible piece of software. It was more of an architectural pattern, and a loose one at that. To me it was just a different way to think about web applications, and it opened up a lot of new possibilities.</p>
-
-<p>I was really excited by those possibilities, so I started telling people about it. The only problem was that it was this semi-vague idea. I often spoke in high-level notions. It was hard for some people to understand at the time. I think some people mostly got it, but a lot of people didn&#8217;t get it and thought they did.</p>
-
-<h3 id='confusion'>Confusion</h3>
-
-<p>For example, the name &#8220;webhooks&#8221; was more about the pattern than any specific part of how it works. Webhooks involve two parts: an application that triggers a URL, and a handler at that URL. If you were to ask &#8220;where is the webhook?&#8221; different people will answer you differently. Some say it&#8217;s the trigger side. Some say it&#8217;s the handler side. For me, &#8220;a webhook&#8221; is the combination of both a trigger and a handler.</p>
-
-<p>It also didn&#8217;t help that there was never a spec. I always avoided a spec because there were a lot of different implementations already out there, and you might implement it slightly different for different use cases. It made sense to me to just keep it a general pattern and not limit what was possible.</p>
-
-<p>I didn&#8217;t want to say, &#8220;Well, if you want to implement webhooks, it&#8217;s got to be JSON. And use this payload structure. And this is the API for registering them. Otherwise, it&#8217;s not webhooks.&#8221; Because if you didn&#8217;t do those things in a particular way, they&#8217;d still be webhooks to me.</p>
-
-<h3 id='mild_success'>Mild Success</h3>
-
-<p>After a while, the idea got out there and companies like Google, Facebook, Wordpress, GitHub, Twilio, and other startups started implementing it. Five years later and I still often run into new applications or open source projects using the term webhooks. But even after all this time, there&#8217;s still a lot of cool stuff that I wanted to emerge that hasn&#8217;t really happened yet.</p>
-
-<p>Some of it is starting to happen, though. For example, how do you write these handlers script? I really didn&#8217;t believe in being able to just plug apps together like pipes. That&#8217;s something that could come later and would definitely need a spec. Instead, I wanted people to actually write handler scripts with code. That way they could make something that did whatever they wanted, exactly how they wanted.</p>
-
-<p>To facilitate that, I wanted a service that would let you write and it would host for you these little handler scripts for processing HTTP webhook requests. I actually built a prototype of this called Scriptlets. It was a web app where you could write JavaScript, hit save, and then you&#8217;d have a little script at a URL that you could use for webhooks.</p>
-
-<p>Scriptlets didn&#8217;t get very popular, though I didn&#8217;t push it very hard. There was a lot I wanted to do with it but there wasn&#8217;t enough demand to drive development, and I was so busy that it eventually became defunct.</p>
-
-<p>Four years later, we actually have a service like this. I discovered it about a week ago. It&#8217;s called <a href='http://webscript.io'>Webscript</a>. It&#8217;s basically Scriptlets done right. Webscript is a web app where you can write Lua, hit save, and then you&#8217;ve got little web service. It has basically everything you need to write webhook handler scripts.</p>
-
-<h3 id='the_ecosystem'>The Ecosystem</h3>
-
-<p>Slowly, people <em>are</em> building out pieces of the ecosystem. You could say that the webhooks paradigm was really about this ecosystem. At some point I realized this and decided to give that ecosystem a name. It turned out the ecosystem was really what I was getting at with webhooks. That&#8217;s where the magic was.</p>
-
-<p>I started calling this ecosystem the Evented Web. Like the Semantic Web and &#8220;programmable web,&#8221; it&#8217;s an umbrella term for a family of technologies coupled with a vision of what the world could be like. The Evented Web envisions a world where the programmable web that we have today of traditional web APIs is complemented by APIs that produce events through webhooks. Adding a callback mechanism to web APIs makes the web more like a giant evented framework.</p>
-
-<p>Just like with Node.js, perhaps the most popular evented framework, there&#8217;s all kinds of innovation happening in the community. It&#8217;s a new way of thinking about things. Pipes and streams come up a lot in the Node.js world now, and similar sorts of things can be done across web applications with an Evented Web.</p>
-
-<p>By the time I started talking more about the Evented Web instead of just webhooks, I was already pretty tired of talking about it all. I was sort of &#8220;over it&#8221; and I started to not care if people didn&#8217;t see or share this vision. I continued to think it was cool, but I started to move on to other interests.</p>
-
-<h3 id='the_future'>The Future</h3>
-
-<p>These days, the people that really get it are starting to build some really neat things. Webhooks have spread enough that you can at least reference them or the idea of HTTP callbacks and not have to explain yourself. Now is maybe the perfect time for me to put a few specific projects into motion that could at least provide a tangible foundation for building out the Evented Web. Not just vague notions.</p>
-
-<p>The most immediate thing is a lightweight spec for implementing webhooks. Specifically I mean registering a callback URL and invoking the callback URL. I&#8217;ve intentionally put this off for a lot of reasons. I didn&#8217;t want to get it wrong. I didn&#8217;t want to leave people out. I wanted to capture best practices, which for the longest time we hadn&#8217;t them figured out. But now might be the perfect time because there is a lot on the verge of happening.</p>
-
-<p>Stay tuned for my proposal for HTTP Subscriptions. It will be the first of several really cool developments for the Evented Web, from me and from others.</p>
-</div>
-
-<a href="/blog/2012/11/19/from-webhooks-to-the-evented-web#disqus_thread">Comments</a>
 <hr />
 
 
