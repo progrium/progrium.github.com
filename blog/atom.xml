@@ -4,7 +4,7 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2013-11-13T11:14:14-08:00</updated>
+ <updated>2014-02-07T00:29:52-06:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
@@ -13,9 +13,99 @@
 
  
  <entry>
+   <title>The Start of the Age of Flynn</title>
+   <link href="http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn"/>
+   <updated>2014-02-06T00:00:00-06:00</updated>
+   <id>http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn</id>
+   <content type="html">&lt;p&gt;For about the past six months, I&amp;#8217;ve been working on an open source project called &lt;a href='https://flynn.io/'&gt;Flynn&lt;/a&gt;. It&amp;#8217;s gotten a lot of attention, but I haven&amp;#8217;t written much about it. I&amp;#8217;ve been hoping to start a series discussing the design and development behind Flynn, but it seems appropriate to at least introduce the project and provide some context.&lt;/p&gt;
+
+&lt;h2 id='what_is_flynn'&gt;What is Flynn?&lt;/h2&gt;
+
+&lt;p&gt;Before development, I started writing the official &lt;a href='https://github.com/flynn/flynn-guide'&gt;Flynn Guide&lt;/a&gt;. There I explained Flynn like this:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Flynn has been marketed as an open source Heroku-like Platform as a Service (PaaS), however the real answer is more subtle. &lt;br /&gt;&lt;br /&gt; Flynn is two things: &lt;br /&gt;&lt;br /&gt; 1) a &amp;#8220;distribution&amp;#8221; of components that out-of-the-box gives companies a reasonable starting point for an internal &amp;#8220;platform&amp;#8221; for running their applications and services, &lt;br /&gt;&lt;br /&gt; 2) the banner for a collection of independent projects that together make up a toolkit or loose framework for building distributed systems. &lt;br /&gt;&lt;br /&gt; Flynn is both a whole and many parts, depending on what is most useful for you. The common goal is to democratize years of experience and best practices in building distributed systems. It is the software layer between operators and developers that makes both their lives easier.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It&amp;#8217;s easy right now to describe Flynn as another, better, modern open source PaaS. But it&amp;#8217;s really much more than that. I usually need to underline this in discussions because in most people&amp;#8217;s mind, a PaaS is a black box system that you deploy and configure and then you have something like Heroku. Like you can deploy OpenStack Nova and get something like EC2.&lt;/p&gt;
+
+&lt;p&gt;Flynn can be that, but it&amp;#8217;s designed so it can be used as an open system, or framework, to build a service-oriented application operating environment. The truth is, if you&amp;#8217;re building and operating any sort of software as a service, you&amp;#8217;re not just building an application, you&amp;#8217;re building a &lt;em&gt;system&lt;/em&gt; to support your application and the processes around it.&lt;/p&gt;
+
+&lt;p&gt;You might be tempted to call Flynn a tool for &amp;#8220;devops&amp;#8221;. While that might be true, remember that the original ideas around devops were about organization-wide systemic understanding of your application, its lifecycle, and its operation. In reality, Flynn is designed for this type of thinking and should hopefully blur the line between operations and engineering, encouraging both to work together and think about the &lt;em&gt;entire&lt;/em&gt; system you&amp;#8217;re building.&lt;/p&gt;
+
+&lt;h2 id='why_build_flynn_how_did_it_come_about'&gt;Why build Flynn, how did it come about?&lt;/h2&gt;
+
+&lt;p&gt;This is a long story, but it provides context for the vision of Flynn, what problems inspired it, and shows just how long the idea has been stirring. Though keep in mind Flynn is a collaboration and this is just my half of the story.&lt;/p&gt;
+
+&lt;h3 id='falling_in_love_with_paas'&gt;Falling in love with PaaS&lt;/h3&gt;
+
+&lt;p&gt;For years I was obsessed with improving the usefulness and programmability of our collective macro distributed system of web services and APIs. Think webhooks. Circa 2006 I was also building lots of little standalone web utilities and APIs for fun. I quickly learned that using technologies like App Engine and Heroku was imperative to sanely operate so many of these free services, and keep costs near zero for what I considered public utilities.&lt;/p&gt;
+
+&lt;p&gt;It turns out, for the exact same reasons of cost and automation, these PaaS providers were slowly revolutionizing a subset of commercial application development. The idea of generic managed applications (&amp;#8220;NoOps&amp;#8221;) and streamlining the delivery pipeline (necessary for Continuous Delivery) has always had huge implications for web apps and their businesses. For me, even though PaaS providers couldn&amp;#8217;t have come soon enough, I seemed to always want more than what they could provide. I constantly struggled with the limitations of App Engine, Heroku, and dotCloud. Originally it was limited to certain languages, certain types of computation, certain types of protocols. In fact, there still isn&amp;#8217;t a great PaaS provider that lets you build or deploy a non-HTTP service, like say, an SMTP server or custom SSH server.&lt;/p&gt;
+
+&lt;h3 id='the_divide_between_paas_and_hostbased_infrastructure'&gt;The divide between PaaS and host-based infrastructure&lt;/h3&gt;
+
+&lt;p&gt;For all the systems and design knowledge, best practices, and solutions to important problems that Heroku, dotCloud, App Engine, and others have figured out, if for some reason you cannot use them, you get none if it. If it&amp;#8217;s too expensive, or your system is just too complicated, or you need to use a protocol they don&amp;#8217;t support, you just get EC2 or bare metal hosts and have to work from there. If you&amp;#8217;re lucky or smart, depending on who makes these decisions, you get to use Chef or Puppet.&lt;/p&gt;
+
+&lt;p&gt;But I&amp;#8217;ll be honest, the Chef and EC2 combo is still a huge step down from what a system like Heroku can offer. What&amp;#8217;s more is that large scale organizations like Google and Twitter have it pretty well figured out, but they have it figured out for them. The rest of us are left with a myriad of powerful if not mystical solutions to building our distributed systems like Mesos and Zookeeper. If we&amp;#8217;re lucky enough to discover and understand those projects, we often avoid them until absolutely necessary and only then figure out how to integrate them into our already complex systems. Most of which we had to build ourselves because the baseline starting point has always been &amp;#8220;a Linux server&amp;#8221;.&lt;/p&gt;
+
+&lt;h3 id='twilio_and_serviceoriented_architectures'&gt;Twilio and service-oriented architectures&lt;/h3&gt;
+
+&lt;p&gt;For me, a lot of this was learned at &lt;a href='https://www.twilio.com/'&gt;Twilio&lt;/a&gt;, which was a perfect place to think about this space. The Twilio system, behind that wonderfully simple API, is a highly complex service-oriented system. When I left a couple years ago, it involved roughly 200 different types of services to operate. Some were off-the-shelf open source services, like databases or caches. Most of them were custom services that spoke to each other. Some were written in Python, some in PHP, some in Java, others in C. Lots of protocols were used, both internally and publicly facing. Primarily HTTP, but also SIP, RTP, custom TCP protocols, even a little ZeroMQ. Most people forget that databases also add protocols to the list.&lt;/p&gt;
+
+&lt;p&gt;I can&amp;#8217;t tell you how many problems come with a system that complicated. Though it did its job quite well, the system was effectively untestable, had an atrocious delivery pipeline, was incredibly inefficient in terms of EC2 instances, and nobody really understood the whole system. A lot of these are common problems, but they&amp;#8217;re compounded by the scale and complexity of the system.&lt;/p&gt;
+
+&lt;p&gt;The first half my time at Twilio was spent building scalable, distributed, highly-available messaging infrastructure. What a great way to learn distributed systems. However, I ran into so many problems and was so frustrated by the rest of the system, that I dedicated the second half of my time at Twilio to improving the infrastructure and helped form the Platform team. The idea being that we were to provide a service platform for the rest of the engineering organization to use. Unfortunately it never really became more than a glorified operations and systems engineering team, but we did briefly get the chance to really think through the ideal system. If we could build an ideal internal platform, what would it look like? We knew it looked a lot like Heroku, but we needed more. What we ended up with looked a lot like Flynn. But it never got started.&lt;/p&gt;
+
+&lt;p&gt;I remember very clearly working out sketches for a primitive that I thought was central to the whole system. It was a &amp;#8220;dyno manager&amp;#8221; to me, which gave you a utility to manage the equivalent of Heroku dynos on a single host. These were basically fancy Linux containers. Again, though, not important to Twilio at the time. Eventually, I left Twilio and started contracting.&lt;/p&gt;
+
+&lt;h3 id='more_history_with_cloud_infrastructure'&gt;More history with cloud infrastructure&lt;/h3&gt;
+
+&lt;p&gt;First, I worked with some old friends back from the &lt;a href='http://bit.ly/1fBtien'&gt;NASA Nebula&lt;/a&gt; days. I forgot to mention, in 2009, before Twilio, I worked at NASA building open source cloud infrastructure. The plan was to implement an EC2, then a sort of App Engine on top of it, and then specifically for purposes at NASA, lots of high level application modules. Turns out the first part was hard enough. We started using Eucalyptus, but realized it was not going to cut it. Eventually the team wrote their own version from what they learned using Eucalyptus, called it Nova, partnered with Rackspace, and that&amp;#8217;s how &lt;a href='https://www.openstack.org/'&gt;OpenStack&lt;/a&gt; was born.&lt;/p&gt;
+
+&lt;p&gt;I was on the project pre-OpenStack to actually work on the open source PaaS back then in 2009, but we never got to that before I left. Probably for the best in terms of timing. Another reason I was there was because we also wanted to provide project hosting infrastructure at NASA. This was before Github was popular, and in fact, I was running a competing startup called DevjaVu since 2006 that productized Trac and SVN. As Github got more popular and I was distracted with other projects, I decided to shutdown DevjaVu, admitting that Github was doing it right. But my experience meant I could easily throw together what was originally going to be code.nasa.gov.&lt;/p&gt;
+
+&lt;p&gt;Fast forward to my contracting after Twilio, I worked with my friends at &lt;a href='http://www.pistoncloud.com/'&gt;Piston Cloud&lt;/a&gt;, one of the OpenStack startups that fell out of the NASA Nebula project. My task wasn&amp;#8217;t OpenStack related, it was actually to automate the deployment of &lt;a href='http://www.cloudfoundry.com/'&gt;CloudFoundry&lt;/a&gt; on top of OpenStack for a client. CloudFoundry was one of the first open source PaaS projects. It popped up in 2011. This gave me a taste of CloudFoundry, and boy it was a bad one. Ignoring anything about CloudFoundry itself, just deploying it from scratch, while 100% automated, would take 2 &lt;em&gt;hours&lt;/em&gt; to complete. Nevertheless, there are still some aspects of the project I admire.&lt;/p&gt;
+
+&lt;h3 id='docker_and_dokku'&gt;Docker and Dokku&lt;/h3&gt;
+
+&lt;p&gt;My next big client turned out to be an old user of DevjaVu, but I never realized it until I started talking with them. It was a company called dotCloud. Quickly hitting it off with Solomon Hykes, we tried to find a project to collaborate on. I mentioned my &amp;#8220;dyno manager&amp;#8221; concept, and he brought up their next-gen container technology. Soon I was working on a prototype called &lt;a href='http://www.docker.io/'&gt;Docker&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;While the final project was mostly a product of the mind of Solomon and the team, while working on the prototype I made sure that it could be used for the systems I was envisioning. In my mind it was just one piece of a larger system, though a very powerful piece with many other uses and applications. Solomon and I knew this, and would often say it was the next big thing, but it&amp;#8217;s still a bit crazy to see that it&amp;#8217;s turning out to be true.&lt;/p&gt;
+
+&lt;p&gt;Not long after Docker was released, Solomon and I went to give a talk at GlueCon to preach this great new truth. The day before the talk, I spent 6 hours hacking together a demo for the talk that would demonstrate how you could &amp;#8220;easily&amp;#8221; build a PaaS with Docker. I later released this as &lt;a href='https://github.com/progrium/dokku'&gt;Dokku&lt;/a&gt;, a Docker powered mini-Heroku.&lt;/p&gt;
+
+&lt;p&gt;Dokku intentionally left out anything having to do with distributed systems. It was meant for a single host. I thought maybe it would be good for personal use or for building internal tools. Turns it was, and it got pretty popular. I had a note in the readme that said it intentionally does not scale to multiple hosts, and that perhaps this could be done as a separate project that I referred to as &amp;#8220;Super Dokku&amp;#8221;. That&amp;#8217;s what I imagined Flynn as at the time.&lt;/p&gt;
+
+&lt;h3 id='flynn_takes_shape'&gt;Flynn takes shape&lt;/h3&gt;
+
+&lt;p&gt;Now, back around the time I was working on the Docker prototype in Winter 2012, I was approached by two guys, Daniel Siders and Jonathan Rudenberg, that had been working on the Tent protocol and its reference implementation. They wanted to build a fully distributed, enterprise grade, open source platform service. They said they were going to be working on it soon, and they wanted to work on it with me. The only problem is they didn&amp;#8217;t have the money, and they&amp;#8217;d get back to me after a few funding meetings.&lt;/p&gt;
+
+&lt;p&gt;Later, I think around the time I released Dokku mid-2013, Daniel and Jonathan approached me again. They were serious about this platform service project and had the idea to crowdfund it with company sponsorships. You&amp;#8217;d think I&amp;#8217;d be rather dubious about the idea, but given the growing interest in Docker, the great response from Dokku, and basically testimonial after testimonial of companies wanting something like this, I figured it could work.&lt;/p&gt;
+
+&lt;p&gt;We decided to call the project Flynn, and got to work comparing notes and remote whiteboarding the project. I was very lucky that they were very like-minded, and we were already thinking of very similar architectures and would generally agree on approaches. We put together the Flynn Guide and the website copy and funding campaign using &lt;a href='http://selfstarter.us/'&gt;Selfstarter&lt;/a&gt;, then let it loose.&lt;/p&gt;
+
+&lt;p&gt;We quickly met our funding goal for the year and then spent the rest of the year working on Flynn. Unfortunately, the budget only covered part-time, but we had planned to have a working development release by January 2014.&lt;/p&gt;
+
+&lt;h2 id='what_now'&gt;What now?&lt;/h2&gt;
+
+&lt;p&gt;It&amp;#8217;s now February 2014, so let&amp;#8217;s take a look at where we are.&lt;/p&gt;
+
+&lt;p&gt;Like most software schedules, ours fell behind a little. While the project has been in the open on Github from the beginning, we planned to share a rough but usable developer release last month. We&amp;#8217;re &lt;em&gt;so&lt;/em&gt; close.&lt;/p&gt;
+
+&lt;p&gt;What makes it difficult is we&amp;#8217;re out of our 2013 budget! This affects my contribution more than Jonathan&amp;#8217;s. I&amp;#8217;ve been putting time into it here and there, but it no longer pays my bills. That could change soon, but until then it might move a little bit slower until our initial release. Only after the release can we can go for another sponsorship campaign, so you can see how right now is just a little frustrating.&lt;/p&gt;
+
+&lt;p&gt;That said, there&amp;#8217;s still more and more interest in the project, we already have a few brave souls that have been contributing to the project components, and like I said, hopefully the money situation will sort itself out soon. A few things are in the works.&lt;/p&gt;
+
+&lt;p&gt;In the meantime, although I&amp;#8217;m not as active on it at this moment, I do feel compelled to use this time to write about it here on my blog. Hopefully catch everybody up on the architecture, discuss design decisions, talk about the future, and then a lot of that should be useable for official project documentation.&lt;/p&gt;
+
+&lt;p&gt;And hell, if I can&amp;#8217;t work on Flynn for some reason, after all this, hopefully the writing will allow somebody to continue my work. :)&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
    <title>Viewdocs: Hosted Markdown project documentation (finally!)</title>
    <link href="http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation"/>
-   <updated>2013-11-13T00:00:00-08:00</updated>
+   <updated>2013-11-13T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation</id>
    <content type="html">&lt;p&gt;A huge part of the user experience for open source software is the documentation. When writing new software to be adopted, I&amp;#8217;ve learned it&amp;#8217;s more important to first write decent docs than tests. And when I forget, &lt;a href='https://github.com/kennethreitz'&gt;Kenneth Reitz&lt;/a&gt; is there to remind me.&lt;/p&gt;
 
@@ -34,7 +124,7 @@
  <entry>
    <title>Hacker Dojo: Community Trading Zone</title>
    <link href="http://progrium.com/blog/2013/08/18/hacker-dojo-community-trading-zone"/>
-   <updated>2013-08-18T00:00:00-07:00</updated>
+   <updated>2013-08-18T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2013/08/18/hacker-dojo-community-trading-zone</id>
    <content type="html">&lt;p&gt;I recently came out of a Hacker Dojo board meeting, as I do every month, but this time with a renewed sense of excitement for Hacker Dojo. We began with the usual board meeting stuff &amp;#8212; finances, staff benefits, etc &amp;#8212; but there was one final item to discuss that&amp;#8217;s more in tune with the reason I&amp;#8217;m even on the board. There has been an increasingly pressing issue around what Hacker Dojo is. We used to know what it was and had a reasonable idea of what we always wanted it to be, but we&amp;#8217;ve grown, we&amp;#8217;ve learned, and our model has to adapt. This discussion led to a rethinking of the conceptual structure of Hacker Dojo.&lt;/p&gt;
 
@@ -70,7 +160,7 @@
  <entry>
    <title>Dokku: The smallest PaaS implementation you've ever seen</title>
    <link href="http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen"/>
-   <updated>2013-06-19T00:00:00-07:00</updated>
+   <updated>2013-06-19T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen</id>
    <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/dokku'&gt;Dokku&lt;/a&gt; is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it&amp;#8217;s set up on a host, you can push Heroku-compatible applications to it via Git. They&amp;#8217;ll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.&lt;/p&gt;
 
@@ -93,7 +183,7 @@
  <entry>
    <title>Executable Tweets and Programs in Short URLs</title>
    <link href="http://progrium.com/blog/2013/01/05/executable-tweets-and-programs-in-short-urls"/>
-   <updated>2013-01-05T00:00:00-08:00</updated>
+   <updated>2013-01-05T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2013/01/05/executable-tweets-and-programs-in-short-urls</id>
    <content type="html">&lt;p&gt;A few weeks ago I was completely consumed for the better part of a day that I would have otherwise spent on more practical work.&lt;/p&gt;
 &lt;blockquote class='twitter-tweet tw-align-center'&gt;&lt;p&gt;Let's reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime='2012-12-13T07:01:11+00:00' href='https://twitter.com/progrium/status/279118756561711104'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
@@ -206,7 +296,7 @@ Installed recursive-app from Tweet 279123541054595074
  <entry>
    <title>Where did Localtunnel come from?</title>
    <link href="http://progrium.com/blog/2013/01/01/where-did-localtunnel-come-from"/>
-   <updated>2013-01-01T00:00:00-08:00</updated>
+   <updated>2013-01-01T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2013/01/01/where-did-localtunnel-come-from</id>
    <content type="html">&lt;p&gt;Five years ago, async network programming scared me. I was a web developer. Working with the high level tools and frameworks of HTTP seemed much easier than any sort of serious low level networking. Especially since network programming would often also mean some kind of concurrent programming with threads or callbacks. I had mostly avoided multithreading and had no idea what an event loop was. I came from PHP.&lt;/p&gt;
 
@@ -242,7 +332,7 @@ Installed recursive-app from Tweet 279123541054595074
  <entry>
    <title>Localtunnel v2 available in beta</title>
    <link href="http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta"/>
-   <updated>2012-12-25T00:00:00-08:00</updated>
+   <updated>2012-12-25T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta</id>
    <content type="html">&lt;p&gt;A few years back, I released &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it&amp;#8217;s gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source.&lt;/p&gt;
 
@@ -300,7 +390,7 @@ Installed recursive-app from Tweet 279123541054595074
  <entry>
    <title>HTTP Signatures with Content-HMAC</title>
    <link href="http://progrium.com/blog/2012/12/17/http-signatures-with-content-hmac"/>
-   <updated>2012-12-17T00:00:00-08:00</updated>
+   <updated>2012-12-17T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/12/17/http-signatures-with-content-hmac</id>
    <content type="html">&lt;p&gt;Today I wanted to propose another header. It would be used for signing HTTP content with HMAC, and is appropriately called Content-HMAC. In &lt;a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'&gt;a previous post&lt;/a&gt; about the Callback header, I mentioned using an X-Signature header in callback requests to sign the payload of the callback. It looked like this:&lt;/p&gt;
 
@@ -332,7 +422,7 @@ Installed recursive-app from Tweet 279123541054595074
  <entry>
    <title>Avoiding environmental fallacy with systems thinking</title>
    <link href="http://progrium.com/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking"/>
-   <updated>2012-12-15T00:00:00-08:00</updated>
+   <updated>2012-12-15T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking</id>
    <content type="html">&lt;p&gt;In 1905, German chemist Alfred Einhorn invented Novocaine to be used by doctors in surgery as a general anesthetic. Unfortunately, doctors didn&amp;#8217;t find Novocaine to be a suitable general anesthetic. However, dentists were dying to use it as a &lt;em&gt;local&lt;/em&gt; anesthetic. The inventor didn&amp;#8217;t want to sell it for the &amp;#8220;mundane purpose&amp;#8221; of drilling teeth, so he continued marketing to doctors and surgeons. Einhorn persisted until his death, unwilling to let the market dictate the use of his invention. He felt the intrinsic value of Novocaine as a general anesthetic was enough to sell it as such, no matter what extrinsic value was placed on it by actual market demands. Charles West Churchman would call this an &amp;#8220;environmental fallacy.&amp;#8221;&lt;/p&gt;
 
@@ -365,7 +455,7 @@ environments' /&gt;
  <entry>
    <title>Async HTTP Responses with Response Redirection</title>
    <link href="http://progrium.com/blog/2012/12/06/async-http-responses-with-response-redirection"/>
-   <updated>2012-12-06T00:00:00-08:00</updated>
+   <updated>2012-12-06T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/12/06/async-http-responses-with-response-redirection</id>
    <content type="html">&lt;p&gt;What if you could perform any HTTP request, but get the response back via a webhook? This is the simple goal of Response Redirection, a simple micro-protocol for telling an HTTP server to send the response to a URL. Instead of returning the response in the connection created by the request, the response is returned in HTTP callback fashion.&lt;/p&gt;
 
@@ -438,7 +528,7 @@ Callback: &amp;lt;http://server.com/callback&amp;gt;; rel=&amp;quot;respond-asyn
  <entry>
    <title>X-Callback Header: Evented Web Building Block</title>
    <link href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block"/>
-   <updated>2012-11-26T00:00:00-08:00</updated>
+   <updated>2012-11-26T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block</id>
    <content type="html">&lt;div class='alert alert-info'&gt;
 Since this posting, we decided to adopt &quot;best current
@@ -526,7 +616,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
  <entry>
    <title>From Webhooks to the Evented Web</title>
    <link href="http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web"/>
-   <updated>2012-11-19T00:00:00-08:00</updated>
+   <updated>2012-11-19T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web</id>
    <content type="html">&lt;p&gt;Back in 2007 I started thinking and talking a lot about &lt;a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'&gt;an idea called webhooks&lt;/a&gt;. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; and &lt;a href='http://requestb.in'&gt;RequestBin&lt;/a&gt; (originally PostBin). There were others that might not be around anymore: &lt;a href='http://mailhooks.com'&gt;MailHooks&lt;/a&gt;, &lt;a href='http://clickhooks.com'&gt;ClickHooks&lt;/a&gt;, &lt;a href='http://twitterhooks.com'&gt;TwitterHooks&lt;/a&gt;, &lt;a href='http://scriptlets.org'&gt;Scriptlets&lt;/a&gt;, and a few others.&lt;/p&gt;
 
@@ -576,7 +666,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
  <entry>
    <title>Piping into and out of the cloud with skypipe</title>
    <link href="http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe"/>
-   <updated>2012-09-30T00:00:00-07:00</updated>
+   <updated>2012-09-30T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe</id>
    <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/skypipe'&gt;Skypipe&lt;/a&gt; is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data &lt;em&gt;anywhere&lt;/em&gt;.&lt;/p&gt;
 
@@ -657,7 +747,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
  <entry>
    <title>Let me tell you about my website</title>
    <link href="http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website"/>
-   <updated>2012-09-07T00:00:00-07:00</updated>
+   <updated>2012-09-07T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2012/09/07/let-me-tell-you-about-my-website</id>
    <content type="html">&lt;p&gt;Since mid-July I&amp;#8217;ve been on vacation traveling around the world. Originally, the only project I allowed myself to work on is my website and blog. I quickly broke that rule with a number of new and existing projects. Nevertheless, as you can see, I did ship this site.&lt;/p&gt;
 
@@ -707,7 +797,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
  <entry>
    <title>Making a local web server public with localtunnel</title>
    <link href="http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel"/>
-   <updated>2010-05-11T00:00:00-07:00</updated>
+   <updated>2010-05-11T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel</id>
    <content type="html">&lt;p&gt;These days it&amp;#8217;s fairly common to run a local environment for web development. Whether you&amp;#8217;re running Apache, Mongrel, or the App Engine SDK, we&amp;#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.&lt;/p&gt;
 
@@ -738,7 +828,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Learning from expectation disparity, aka "failure"</title>
    <link href="http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure"/>
-   <updated>2010-02-02T00:00:00-08:00</updated>
+   <updated>2010-02-02T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure</id>
    <content type="html">&lt;p&gt;I&amp;#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &amp;#8220;Yes, you can learn from failure, but you can also learn from success!&amp;#8221; Only after reading Jason Fried&amp;#8217;s blog post from one year ago, &lt;a href='http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated'&gt;Learning from failure is overrated&lt;/a&gt;, have I realized exactly what&amp;#8217;s wrong. We&amp;#8217;re talking about different kinds of failure.&lt;/p&gt;
 
@@ -754,7 +844,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Notify.io brings notifications to the web</title>
    <link href="http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web"/>
-   <updated>2010-01-26T00:00:00-08:00</updated>
+   <updated>2010-01-26T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2010/01/26/notifyio-brings-notifications-to-the-web</id>
    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.&lt;/p&gt;
@@ -834,7 +924,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Hacker Dojo: place of the way of the hacker</title>
    <link href="http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker"/>
-   <updated>2009-12-08T00:00:00-08:00</updated>
+   <updated>2009-12-08T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker</id>
    <content type="html">&lt;p&gt;Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on &lt;a href='http://www.flickr.com/photos/progrium/4017351989/'&gt;the front page&lt;/a&gt; of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.&lt;/p&gt;
 
@@ -864,7 +954,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Why efficiency is not as important as you think</title>
    <link href="http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think"/>
-   <updated>2009-11-05T00:00:00-08:00</updated>
+   <updated>2009-11-05T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2009/11/05/why-efficiency-is-not-as-important-as-you-think</id>
    <content type="html">&lt;blockquote&gt;
 &lt;p&gt;&amp;#8220;Efficiency is doing things right; effectiveness is doing the right things.&amp;#8221; -Peter Drucker&lt;/p&gt;
@@ -894,7 +984,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Public Open Source Services</title>
    <link href="http://progrium.com/blog/2009/10/29/public-open-source-services"/>
-   <updated>2009-10-29T00:00:00-07:00</updated>
+   <updated>2009-10-29T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/10/29/public-open-source-services</id>
    <content type="html">&lt;p&gt;Last night I went off and put up a wiki about an idea I&amp;#8217;ve been thinking about for a while: &lt;a href='http://poss.gliderlab.com/'&gt;public open source services&lt;/a&gt; or POSS. Think: public services or utilities on the web run as open source.&lt;/p&gt;
 
@@ -922,7 +1012,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Why minimalist software wins at workflow</title>
    <link href="http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow"/>
-   <updated>2009-06-26T00:00:00-07:00</updated>
+   <updated>2009-06-26T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow</id>
    <content type="html">&lt;p&gt;Recently I&amp;#8217;ve been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We&amp;#8217;re already married to &lt;a href='http://trac.edgewall.org/'&gt;Trac&lt;/a&gt;, so we&amp;#8217;ve been playing with &lt;a href='http://www.agile42.com/cms/pages/agilo/'&gt;Agilo&lt;/a&gt; and are looking at some of the other agile plugins for Trac. Unfortunately they&amp;#8217;re all so heavyweight, despite some that claim not to be.&lt;/p&gt;
 
@@ -954,7 +1044,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Oh no! Hackers!</title>
    <link href="http://progrium.com/blog/2009/06/17/oh-no-hackers"/>
-   <updated>2009-06-17T00:00:00-07:00</updated>
+   <updated>2009-06-17T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/06/17/oh-no-hackers</id>
    <content type="html">&lt;p&gt;That&amp;#8217;s right. Hide your floppies and cover your Ethernet ports. Virus-laden hackers are coming to take over your computer, steal your passwords, and do terrible things! Like hack your MySpace! Oh noes!&lt;/p&gt;
 
@@ -986,7 +1076,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
  <entry>
    <title>Web hooks to revolutionize the web</title>
    <link href="http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web"/>
-   <updated>2007-05-03T00:00:00-07:00</updated>
+   <updated>2007-05-03T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web</id>
    <content type="html">&lt;p&gt;There once was a command line. It was a powerful thing. Not only could you navigate your filesystem and launch applications, but you could program shell scripts to automate tasks and make convenient shortcuts. It also had pipes.&lt;/p&gt;
 
