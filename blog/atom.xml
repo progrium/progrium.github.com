@@ -4,7 +4,7 @@
  <title>Jeff Lindsay</title>
  <link href="http://progrium.com/atom.xml" rel="self"/>
  <link href="http://progrium.com"/>
- <updated>2014-02-07T00:29:52-06:00</updated>
+ <updated>2014-06-25T00:07:45-05:00</updated>
  <id>http://progrium.com</id>
  <author>
    <name>Jeff Lindsay</name>
@@ -17,11 +17,11 @@
    <link href="http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn"/>
    <updated>2014-02-06T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn</id>
-   <content type="html">&lt;p&gt;For about the past six months, I&amp;#8217;ve been working on an open source project called &lt;a href='https://flynn.io/'&gt;Flynn&lt;/a&gt;. It&amp;#8217;s gotten a lot of attention, but I haven&amp;#8217;t written much about it. I&amp;#8217;ve been hoping to start a series discussing the design and development behind Flynn, but it seems appropriate to at least introduce the project and provide some context.&lt;/p&gt;
+   <content type="html">&lt;p&gt;For about the past six months, I&amp;#8217;ve been working on an open source project called &lt;a href=&#39;https://flynn.io/&#39;&gt;Flynn&lt;/a&gt;. It&amp;#8217;s gotten a lot of attention, but I haven&amp;#8217;t written much about it. I&amp;#8217;ve been hoping to start a series discussing the design and development behind Flynn, but it seems appropriate to at least introduce the project and provide some context.&lt;/p&gt;
 
-&lt;h2 id='what_is_flynn'&gt;What is Flynn?&lt;/h2&gt;
+&lt;h2 id=&#39;what_is_flynn&#39;&gt;What is Flynn?&lt;/h2&gt;
 
-&lt;p&gt;Before development, I started writing the official &lt;a href='https://github.com/flynn/flynn-guide'&gt;Flynn Guide&lt;/a&gt;. There I explained Flynn like this:&lt;/p&gt;
+&lt;p&gt;Before development, I started writing the official &lt;a href=&#39;https://github.com/flynn/flynn-guide&#39;&gt;Flynn Guide&lt;/a&gt;. There I explained Flynn like this:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Flynn has been marketed as an open source Heroku-like Platform as a Service (PaaS), however the real answer is more subtle. &lt;br /&gt;&lt;br /&gt; Flynn is two things: &lt;br /&gt;&lt;br /&gt; 1) a &amp;#8220;distribution&amp;#8221; of components that out-of-the-box gives companies a reasonable starting point for an internal &amp;#8220;platform&amp;#8221; for running their applications and services, &lt;br /&gt;&lt;br /&gt; 2) the banner for a collection of independent projects that together make up a toolkit or loose framework for building distributed systems. &lt;br /&gt;&lt;br /&gt; Flynn is both a whole and many parts, depending on what is most useful for you. The common goal is to democratize years of experience and best practices in building distributed systems. It is the software layer between operators and developers that makes both their lives easier.&lt;/p&gt;
@@ -33,25 +33,25 @@
 
 &lt;p&gt;You might be tempted to call Flynn a tool for &amp;#8220;devops&amp;#8221;. While that might be true, remember that the original ideas around devops were about organization-wide systemic understanding of your application, its lifecycle, and its operation. In reality, Flynn is designed for this type of thinking and should hopefully blur the line between operations and engineering, encouraging both to work together and think about the &lt;em&gt;entire&lt;/em&gt; system you&amp;#8217;re building.&lt;/p&gt;
 
-&lt;h2 id='why_build_flynn_how_did_it_come_about'&gt;Why build Flynn, how did it come about?&lt;/h2&gt;
+&lt;h2 id=&#39;why_build_flynn_how_did_it_come_about&#39;&gt;Why build Flynn, how did it come about?&lt;/h2&gt;
 
 &lt;p&gt;This is a long story, but it provides context for the vision of Flynn, what problems inspired it, and shows just how long the idea has been stirring. Though keep in mind Flynn is a collaboration and this is just my half of the story.&lt;/p&gt;
 
-&lt;h3 id='falling_in_love_with_paas'&gt;Falling in love with PaaS&lt;/h3&gt;
+&lt;h3 id=&#39;falling_in_love_with_paas&#39;&gt;Falling in love with PaaS&lt;/h3&gt;
 
 &lt;p&gt;For years I was obsessed with improving the usefulness and programmability of our collective macro distributed system of web services and APIs. Think webhooks. Circa 2006 I was also building lots of little standalone web utilities and APIs for fun. I quickly learned that using technologies like App Engine and Heroku was imperative to sanely operate so many of these free services, and keep costs near zero for what I considered public utilities.&lt;/p&gt;
 
 &lt;p&gt;It turns out, for the exact same reasons of cost and automation, these PaaS providers were slowly revolutionizing a subset of commercial application development. The idea of generic managed applications (&amp;#8220;NoOps&amp;#8221;) and streamlining the delivery pipeline (necessary for Continuous Delivery) has always had huge implications for web apps and their businesses. For me, even though PaaS providers couldn&amp;#8217;t have come soon enough, I seemed to always want more than what they could provide. I constantly struggled with the limitations of App Engine, Heroku, and dotCloud. Originally it was limited to certain languages, certain types of computation, certain types of protocols. In fact, there still isn&amp;#8217;t a great PaaS provider that lets you build or deploy a non-HTTP service, like say, an SMTP server or custom SSH server.&lt;/p&gt;
 
-&lt;h3 id='the_divide_between_paas_and_hostbased_infrastructure'&gt;The divide between PaaS and host-based infrastructure&lt;/h3&gt;
+&lt;h3 id=&#39;the_divide_between_paas_and_hostbased_infrastructure&#39;&gt;The divide between PaaS and host-based infrastructure&lt;/h3&gt;
 
 &lt;p&gt;For all the systems and design knowledge, best practices, and solutions to important problems that Heroku, dotCloud, App Engine, and others have figured out, if for some reason you cannot use them, you get none if it. If it&amp;#8217;s too expensive, or your system is just too complicated, or you need to use a protocol they don&amp;#8217;t support, you just get EC2 or bare metal hosts and have to work from there. If you&amp;#8217;re lucky or smart, depending on who makes these decisions, you get to use Chef or Puppet.&lt;/p&gt;
 
 &lt;p&gt;But I&amp;#8217;ll be honest, the Chef and EC2 combo is still a huge step down from what a system like Heroku can offer. What&amp;#8217;s more is that large scale organizations like Google and Twitter have it pretty well figured out, but they have it figured out for them. The rest of us are left with a myriad of powerful if not mystical solutions to building our distributed systems like Mesos and Zookeeper. If we&amp;#8217;re lucky enough to discover and understand those projects, we often avoid them until absolutely necessary and only then figure out how to integrate them into our already complex systems. Most of which we had to build ourselves because the baseline starting point has always been &amp;#8220;a Linux server&amp;#8221;.&lt;/p&gt;
 
-&lt;h3 id='twilio_and_serviceoriented_architectures'&gt;Twilio and service-oriented architectures&lt;/h3&gt;
+&lt;h3 id=&#39;twilio_and_serviceoriented_architectures&#39;&gt;Twilio and service-oriented architectures&lt;/h3&gt;
 
-&lt;p&gt;For me, a lot of this was learned at &lt;a href='https://www.twilio.com/'&gt;Twilio&lt;/a&gt;, which was a perfect place to think about this space. The Twilio system, behind that wonderfully simple API, is a highly complex service-oriented system. When I left a couple years ago, it involved roughly 200 different types of services to operate. Some were off-the-shelf open source services, like databases or caches. Most of them were custom services that spoke to each other. Some were written in Python, some in PHP, some in Java, others in C. Lots of protocols were used, both internally and publicly facing. Primarily HTTP, but also SIP, RTP, custom TCP protocols, even a little ZeroMQ. Most people forget that databases also add protocols to the list.&lt;/p&gt;
+&lt;p&gt;For me, a lot of this was learned at &lt;a href=&#39;https://www.twilio.com/&#39;&gt;Twilio&lt;/a&gt;, which was a perfect place to think about this space. The Twilio system, behind that wonderfully simple API, is a highly complex service-oriented system. When I left a couple years ago, it involved roughly 200 different types of services to operate. Some were off-the-shelf open source services, like databases or caches. Most of them were custom services that spoke to each other. Some were written in Python, some in PHP, some in Java, others in C. Lots of protocols were used, both internally and publicly facing. Primarily HTTP, but also SIP, RTP, custom TCP protocols, even a little ZeroMQ. Most people forget that databases also add protocols to the list.&lt;/p&gt;
 
 &lt;p&gt;I can&amp;#8217;t tell you how many problems come with a system that complicated. Though it did its job quite well, the system was effectively untestable, had an atrocious delivery pipeline, was incredibly inefficient in terms of EC2 instances, and nobody really understood the whole system. A lot of these are common problems, but they&amp;#8217;re compounded by the scale and complexity of the system.&lt;/p&gt;
 
@@ -59,35 +59,35 @@
 
 &lt;p&gt;I remember very clearly working out sketches for a primitive that I thought was central to the whole system. It was a &amp;#8220;dyno manager&amp;#8221; to me, which gave you a utility to manage the equivalent of Heroku dynos on a single host. These were basically fancy Linux containers. Again, though, not important to Twilio at the time. Eventually, I left Twilio and started contracting.&lt;/p&gt;
 
-&lt;h3 id='more_history_with_cloud_infrastructure'&gt;More history with cloud infrastructure&lt;/h3&gt;
+&lt;h3 id=&#39;more_history_with_cloud_infrastructure&#39;&gt;More history with cloud infrastructure&lt;/h3&gt;
 
-&lt;p&gt;First, I worked with some old friends back from the &lt;a href='http://bit.ly/1fBtien'&gt;NASA Nebula&lt;/a&gt; days. I forgot to mention, in 2009, before Twilio, I worked at NASA building open source cloud infrastructure. The plan was to implement an EC2, then a sort of App Engine on top of it, and then specifically for purposes at NASA, lots of high level application modules. Turns out the first part was hard enough. We started using Eucalyptus, but realized it was not going to cut it. Eventually the team wrote their own version from what they learned using Eucalyptus, called it Nova, partnered with Rackspace, and that&amp;#8217;s how &lt;a href='https://www.openstack.org/'&gt;OpenStack&lt;/a&gt; was born.&lt;/p&gt;
+&lt;p&gt;First, I worked with some old friends back from the &lt;a href=&#39;http://bit.ly/1fBtien&#39;&gt;NASA Nebula&lt;/a&gt; days. I forgot to mention, in 2009, before Twilio, I worked at NASA building open source cloud infrastructure. The plan was to implement an EC2, then a sort of App Engine on top of it, and then specifically for purposes at NASA, lots of high level application modules. Turns out the first part was hard enough. We started using Eucalyptus, but realized it was not going to cut it. Eventually the team wrote their own version from what they learned using Eucalyptus, called it Nova, partnered with Rackspace, and that&amp;#8217;s how &lt;a href=&#39;https://www.openstack.org/&#39;&gt;OpenStack&lt;/a&gt; was born.&lt;/p&gt;
 
 &lt;p&gt;I was on the project pre-OpenStack to actually work on the open source PaaS back then in 2009, but we never got to that before I left. Probably for the best in terms of timing. Another reason I was there was because we also wanted to provide project hosting infrastructure at NASA. This was before Github was popular, and in fact, I was running a competing startup called DevjaVu since 2006 that productized Trac and SVN. As Github got more popular and I was distracted with other projects, I decided to shutdown DevjaVu, admitting that Github was doing it right. But my experience meant I could easily throw together what was originally going to be code.nasa.gov.&lt;/p&gt;
 
-&lt;p&gt;Fast forward to my contracting after Twilio, I worked with my friends at &lt;a href='http://www.pistoncloud.com/'&gt;Piston Cloud&lt;/a&gt;, one of the OpenStack startups that fell out of the NASA Nebula project. My task wasn&amp;#8217;t OpenStack related, it was actually to automate the deployment of &lt;a href='http://www.cloudfoundry.com/'&gt;CloudFoundry&lt;/a&gt; on top of OpenStack for a client. CloudFoundry was one of the first open source PaaS projects. It popped up in 2011. This gave me a taste of CloudFoundry, and boy it was a bad one. Ignoring anything about CloudFoundry itself, just deploying it from scratch, while 100% automated, would take 2 &lt;em&gt;hours&lt;/em&gt; to complete. Nevertheless, there are still some aspects of the project I admire.&lt;/p&gt;
+&lt;p&gt;Fast forward to my contracting after Twilio, I worked with my friends at &lt;a href=&#39;http://www.pistoncloud.com/&#39;&gt;Piston Cloud&lt;/a&gt;, one of the OpenStack startups that fell out of the NASA Nebula project. My task wasn&amp;#8217;t OpenStack related, it was actually to automate the deployment of &lt;a href=&#39;http://www.cloudfoundry.com/&#39;&gt;CloudFoundry&lt;/a&gt; on top of OpenStack for a client. CloudFoundry was one of the first open source PaaS projects. It popped up in 2011. This gave me a taste of CloudFoundry, and boy it was a bad one. Ignoring anything about CloudFoundry itself, just deploying it from scratch, while 100% automated, would take 2 &lt;em&gt;hours&lt;/em&gt; to complete. Nevertheless, there are still some aspects of the project I admire.&lt;/p&gt;
 
-&lt;h3 id='docker_and_dokku'&gt;Docker and Dokku&lt;/h3&gt;
+&lt;h3 id=&#39;docker_and_dokku&#39;&gt;Docker and Dokku&lt;/h3&gt;
 
-&lt;p&gt;My next big client turned out to be an old user of DevjaVu, but I never realized it until I started talking with them. It was a company called dotCloud. Quickly hitting it off with Solomon Hykes, we tried to find a project to collaborate on. I mentioned my &amp;#8220;dyno manager&amp;#8221; concept, and he brought up their next-gen container technology. Soon I was working on a prototype called &lt;a href='http://www.docker.io/'&gt;Docker&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;My next big client turned out to be an old user of DevjaVu, but I never realized it until I started talking with them. It was a company called dotCloud. Quickly hitting it off with Solomon Hykes, we tried to find a project to collaborate on. I mentioned my &amp;#8220;dyno manager&amp;#8221; concept, and he brought up their next-gen container technology. Soon I was working on a prototype called &lt;a href=&#39;http://www.docker.io/&#39;&gt;Docker&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;While the final project was mostly a product of the mind of Solomon and the team, while working on the prototype I made sure that it could be used for the systems I was envisioning. In my mind it was just one piece of a larger system, though a very powerful piece with many other uses and applications. Solomon and I knew this, and would often say it was the next big thing, but it&amp;#8217;s still a bit crazy to see that it&amp;#8217;s turning out to be true.&lt;/p&gt;
 
-&lt;p&gt;Not long after Docker was released, Solomon and I went to give a talk at GlueCon to preach this great new truth. The day before the talk, I spent 6 hours hacking together a demo for the talk that would demonstrate how you could &amp;#8220;easily&amp;#8221; build a PaaS with Docker. I later released this as &lt;a href='https://github.com/progrium/dokku'&gt;Dokku&lt;/a&gt;, a Docker powered mini-Heroku.&lt;/p&gt;
+&lt;p&gt;Not long after Docker was released, Solomon and I went to give a talk at GlueCon to preach this great new truth. The day before the talk, I spent 6 hours hacking together a demo for the talk that would demonstrate how you could &amp;#8220;easily&amp;#8221; build a PaaS with Docker. I later released this as &lt;a href=&#39;https://github.com/progrium/dokku&#39;&gt;Dokku&lt;/a&gt;, a Docker powered mini-Heroku.&lt;/p&gt;
 
 &lt;p&gt;Dokku intentionally left out anything having to do with distributed systems. It was meant for a single host. I thought maybe it would be good for personal use or for building internal tools. Turns it was, and it got pretty popular. I had a note in the readme that said it intentionally does not scale to multiple hosts, and that perhaps this could be done as a separate project that I referred to as &amp;#8220;Super Dokku&amp;#8221;. That&amp;#8217;s what I imagined Flynn as at the time.&lt;/p&gt;
 
-&lt;h3 id='flynn_takes_shape'&gt;Flynn takes shape&lt;/h3&gt;
+&lt;h3 id=&#39;flynn_takes_shape&#39;&gt;Flynn takes shape&lt;/h3&gt;
 
 &lt;p&gt;Now, back around the time I was working on the Docker prototype in Winter 2012, I was approached by two guys, Daniel Siders and Jonathan Rudenberg, that had been working on the Tent protocol and its reference implementation. They wanted to build a fully distributed, enterprise grade, open source platform service. They said they were going to be working on it soon, and they wanted to work on it with me. The only problem is they didn&amp;#8217;t have the money, and they&amp;#8217;d get back to me after a few funding meetings.&lt;/p&gt;
 
 &lt;p&gt;Later, I think around the time I released Dokku mid-2013, Daniel and Jonathan approached me again. They were serious about this platform service project and had the idea to crowdfund it with company sponsorships. You&amp;#8217;d think I&amp;#8217;d be rather dubious about the idea, but given the growing interest in Docker, the great response from Dokku, and basically testimonial after testimonial of companies wanting something like this, I figured it could work.&lt;/p&gt;
 
-&lt;p&gt;We decided to call the project Flynn, and got to work comparing notes and remote whiteboarding the project. I was very lucky that they were very like-minded, and we were already thinking of very similar architectures and would generally agree on approaches. We put together the Flynn Guide and the website copy and funding campaign using &lt;a href='http://selfstarter.us/'&gt;Selfstarter&lt;/a&gt;, then let it loose.&lt;/p&gt;
+&lt;p&gt;We decided to call the project Flynn, and got to work comparing notes and remote whiteboarding the project. I was very lucky that they were very like-minded, and we were already thinking of very similar architectures and would generally agree on approaches. We put together the Flynn Guide and the website copy and funding campaign using &lt;a href=&#39;http://selfstarter.us/&#39;&gt;Selfstarter&lt;/a&gt;, then let it loose.&lt;/p&gt;
 
 &lt;p&gt;We quickly met our funding goal for the year and then spent the rest of the year working on Flynn. Unfortunately, the budget only covered part-time, but we had planned to have a working development release by January 2014.&lt;/p&gt;
 
-&lt;h2 id='what_now'&gt;What now?&lt;/h2&gt;
+&lt;h2 id=&#39;what_now&#39;&gt;What now?&lt;/h2&gt;
 
 &lt;p&gt;It&amp;#8217;s now February 2014, so let&amp;#8217;s take a look at where we are.&lt;/p&gt;
 
@@ -107,18 +107,18 @@
    <link href="http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation"/>
    <updated>2013-11-13T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation</id>
-   <content type="html">&lt;p&gt;A huge part of the user experience for open source software is the documentation. When writing new software to be adopted, I&amp;#8217;ve learned it&amp;#8217;s more important to first write decent docs than tests. And when I forget, &lt;a href='https://github.com/kennethreitz'&gt;Kenneth Reitz&lt;/a&gt; is there to remind me.&lt;/p&gt;
+   <content type="html">&lt;p&gt;A huge part of the user experience for open source software is the documentation. When writing new software to be adopted, I&amp;#8217;ve learned it&amp;#8217;s more important to first write decent docs than tests. And when I forget, &lt;a href=&#39;https://github.com/kennethreitz&#39;&gt;Kenneth Reitz&lt;/a&gt; is there to remind me.&lt;/p&gt;
 
-&lt;p&gt;When I&amp;#8217;ve outgrown a README on Github, I only consider two options for providing documentation: &lt;a href='http://pages.github.com/'&gt;Github Pages&lt;/a&gt; and &lt;a href='https://readthedocs.org/'&gt;Read the Docs&lt;/a&gt;. Unfortunately, I have problems with both of them. Chiefly, Read the Docs makes me use reStructured Text, and Github Pages means maintaining a separate orphan branch and using a static page generator.&lt;/p&gt;
+&lt;p&gt;When I&amp;#8217;ve outgrown a README on Github, I only consider two options for providing documentation: &lt;a href=&#39;http://pages.github.com/&#39;&gt;Github Pages&lt;/a&gt; and &lt;a href=&#39;https://readthedocs.org/&#39;&gt;Read the Docs&lt;/a&gt;. Unfortunately, I have problems with both of them. Chiefly, Read the Docs makes me use reStructured Text, and Github Pages means maintaining a separate orphan branch and using a static page generator.&lt;/p&gt;
 
-&lt;p&gt;What I&amp;#8217;ve really wanted is something like &lt;a href='http://gist.io/'&gt;Gist.io&lt;/a&gt;, but for my repository. Nobody has stepped up, so I built it.&lt;/p&gt;
+&lt;p&gt;What I&amp;#8217;ve really wanted is something like &lt;a href=&#39;http://gist.io/&#39;&gt;Gist.io&lt;/a&gt;, but for my repository. Nobody has stepped up, so I built it.&lt;/p&gt;
 
-&lt;p&gt;I call it &lt;a href='http://progrium.viewdocs.io/viewdocs'&gt;Viewdocs&lt;/a&gt;. It renders static pages on-demand from Markdown in your project&amp;#8217;s docs directory. There&amp;#8217;s no setup, just follow the conventions and it works. It may even already be working for you, since Markdown in a docs directory is not that uncommon. And keeping your documentation in the same branch as your code means it&amp;#8217;s easier for people to contribute docs with their pull requests.&lt;/p&gt;
+&lt;p&gt;I call it &lt;a href=&#39;http://progrium.viewdocs.io/viewdocs&#39;&gt;Viewdocs&lt;/a&gt;. It renders static pages on-demand from Markdown in your project&amp;#8217;s docs directory. There&amp;#8217;s no setup, just follow the conventions and it works. It may even already be working for you, since Markdown in a docs directory is not that uncommon. And keeping your documentation in the same branch as your code means it&amp;#8217;s easier for people to contribute docs with their pull requests.&lt;/p&gt;
 
 &lt;p&gt;The default layout is borrowed from Gist.io, giving you a clean, elegant documentation site. All you have to do is write some Markdown. That&amp;#8217;s about all there is to it.&lt;/p&gt;
 
-&lt;p&gt;You can read more on the &lt;a href='http://progrium.viewdocs.io/viewdocs'&gt;homepage for Viewdocs&lt;/a&gt;, which is powered by Viewdocs. Or here&amp;#8217;s a quick video introduction:&lt;/p&gt;
-&lt;iframe allowFullScreen='allowFullScreen' frameborder='0' height='394' mozallowfullscreen='mozallowfullscreen' src='http://player.vimeo.com/video/79066808' webkitAllowFullScreen='webkitAllowFullScreen' width='700'&gt;No iFrames?&lt;/iframe&gt;</content>
+&lt;p&gt;You can read more on the &lt;a href=&#39;http://progrium.viewdocs.io/viewdocs&#39;&gt;homepage for Viewdocs&lt;/a&gt;, which is powered by Viewdocs. Or here&amp;#8217;s a quick video introduction:&lt;/p&gt;
+&lt;iframe allowFullScreen=&#39;allowFullScreen&#39; frameborder=&#39;0&#39; height=&#39;394&#39; mozallowfullscreen=&#39;mozallowfullscreen&#39; src=&#39;http://player.vimeo.com/video/79066808&#39; webkitAllowFullScreen=&#39;webkitAllowFullScreen&#39; width=&#39;700&#39;&gt;No iFrames?&lt;/iframe&gt;</content>
  </entry>
  
  <entry>
@@ -148,7 +148,7 @@
 
 &lt;p&gt;Hacker Dojo now serves many communities both inside and outside of Hacker Dojo; not only internal communities but external ones as well. External communities can also leverage the infrastructure that Hacker Dojo provides. These communities might already have a member of Hacker Dojo, or someone in the community chooses to become a member of Hacker Dojo, usually to throw an event. Once that community gets into Hacker Dojo, they not only see Hacker Dojo, but all the other communities that come together under our roof. Sometimes this inspires even more people to sign up as members, not just to be a part of Hacker Dojo, but to participate in and see what other communities Hacker Dojo offers.&lt;/p&gt;
 
-&lt;p&gt;We&amp;#8217;re now thinking of Hacker Dojo not just as a community hub, but as a hub of communities. A community &lt;a href='http://en.wikipedia.org/wiki/Trading_zones'&gt;trading zone&lt;/a&gt;, if you will. While we will always support and listen to individual members, we should begin to think of communities, in the plural, as first-class citizens of Hacker Dojo. This may seem like a subtle change but it is a big difference. It means acknowledging and supporting the communities that operate in and around Hacker Dojo. It means going to those communities and asking how we can better serve &lt;em&gt;them as a community&lt;/em&gt;, not just individual members.&lt;/p&gt;
+&lt;p&gt;We&amp;#8217;re now thinking of Hacker Dojo not just as a community hub, but as a hub of communities. A community &lt;a href=&#39;http://en.wikipedia.org/wiki/Trading_zones&#39;&gt;trading zone&lt;/a&gt;, if you will. While we will always support and listen to individual members, we should begin to think of communities, in the plural, as first-class citizens of Hacker Dojo. This may seem like a subtle change but it is a big difference. It means acknowledging and supporting the communities that operate in and around Hacker Dojo. It means going to those communities and asking how we can better serve &lt;em&gt;them as a community&lt;/em&gt;, not just individual members.&lt;/p&gt;
 
 &lt;p&gt;By connecting with communities we can provide infrastructure to foster their growth and development. Imagine going to the Hacker Dojo website and seeing a page devoted to the many communities of Hacker Dojo. When a new member signs up they could indicate their interests and we could provide them with a list of communities they might be interested in. Hacker Dojo would in a sense then be improving the communities&amp;#8217; &amp;#8220;deal flow.&amp;#8221;&lt;/p&gt;
 
@@ -162,22 +162,22 @@
    <link href="http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen"/>
    <updated>2013-06-19T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen</id>
-   <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/dokku'&gt;Dokku&lt;/a&gt; is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it&amp;#8217;s set up on a host, you can push Heroku-compatible applications to it via Git. They&amp;#8217;ll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;a href=&#39;https://github.com/progrium/dokku&#39;&gt;Dokku&lt;/a&gt; is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it&amp;#8217;s set up on a host, you can push Heroku-compatible applications to it via Git. They&amp;#8217;ll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.&lt;/p&gt;
 
 &lt;p&gt;Dokku is under 100 lines because it&amp;#8217;s built out of several components that do most of the heavy lifting: Docker, Buildstep, and gitreceive.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;a href='http://www.docker.io/'&gt;Docker&lt;/a&gt; is a container runtime for Linux. This is a high-level container primitive that gives you a similar technology to what powers Heroku Dynos. It provides the heart of Dokku.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#39;http://www.docker.io/&#39;&gt;Docker&lt;/a&gt; is a container runtime for Linux. This is a high-level container primitive that gives you a similar technology to what powers Heroku Dynos. It provides the heart of Dokku.&lt;/li&gt;
 
-&lt;li&gt;&lt;a href='https://github.com/progrium/buildstep'&gt;Buildstep&lt;/a&gt; uses Heroku&amp;#8217;s open source buildpacks and is responsible for building the base images that applications are built on. You can think of it as producing the &amp;#8220;stack&amp;#8221; for Dokku, to borrow a concept from Heroku.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#39;https://github.com/progrium/buildstep&#39;&gt;Buildstep&lt;/a&gt; uses Heroku&amp;#8217;s open source buildpacks and is responsible for building the base images that applications are built on. You can think of it as producing the &amp;#8220;stack&amp;#8221; for Dokku, to borrow a concept from Heroku.&lt;/li&gt;
 
-&lt;li&gt;&lt;a href='https://github.com/progrium/gitreceive'&gt;Gitreceive&lt;/a&gt; is a project that provides you with a git user that you can push repositories to. It also triggers a script to handle that push. This provides the push mechanism that you might be familiar with from Heroku.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#39;https://github.com/progrium/gitreceive&#39;&gt;Gitreceive&lt;/a&gt; is a project that provides you with a git user that you can push repositories to. It also triggers a script to handle that push. This provides the push mechanism that you might be familiar with from Heroku.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;There are a few other projects being developed to support Dokku and expand its functionality without inflating its line count. Each project is independently useful, but I&amp;#8217;ll share more about these as they&amp;#8217;re integrated into Dokku.&lt;/p&gt;
 
 &lt;p&gt;For now, here&amp;#8217;s a screencast that shows how to set up Dokku, along with a quick walk-through of the code.&lt;/p&gt;
-&lt;iframe allowFullScreen='allowFullScreen' frameborder='0' height='394' mozallowfullscreen='mozallowfullscreen' src='http://player.vimeo.com/video/68631325' webkitAllowFullScreen='webkitAllowFullScreen' width='700'&gt;No iFrames?&lt;/iframe&gt;</content>
+&lt;iframe allowFullScreen=&#39;allowFullScreen&#39; frameborder=&#39;0&#39; height=&#39;394&#39; mozallowfullscreen=&#39;mozallowfullscreen&#39; src=&#39;http://player.vimeo.com/video/68631325&#39; webkitAllowFullScreen=&#39;webkitAllowFullScreen&#39; width=&#39;700&#39;&gt;No iFrames?&lt;/iframe&gt;</content>
  </entry>
  
  <entry>
@@ -186,20 +186,20 @@
    <updated>2013-01-05T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2013/01/05/executable-tweets-and-programs-in-short-urls</id>
    <content type="html">&lt;p&gt;A few weeks ago I was completely consumed for the better part of a day that I would have otherwise spent on more practical work.&lt;/p&gt;
-&lt;blockquote class='twitter-tweet tw-align-center'&gt;&lt;p&gt;Let's reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime='2012-12-13T07:01:11+00:00' href='https://twitter.com/progrium/status/279118756561711104'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
+&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39;&gt;&lt;p&gt;Let&#39;s reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime=&#39;2012-12-13T07:01:11+00:00&#39; href=&#39;https://twitter.com/progrium/status/279118756561711104&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;Yeah, what? Weird, right? It started from a Twitter conversation earlier that day with my friend Joel:&lt;/p&gt;
-&lt;blockquote class='twitter-tweet tw-align-center'&gt;&lt;p&gt;$ for app in `heroku apps | grep -v '='`; do echo &lt;a href='https://twitter.com/search/$app'&gt;$app&lt;/a&gt;; heroku ps --app &lt;a href='https://twitter.com/search/$app'&gt;$app&lt;/a&gt;; done # how to figure out what you have running on heroku&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime='2012-12-13T01:10:20+00:00' href='https://twitter.com/jf/status/279030460674347008'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;&lt;blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279030460674347008'&gt;&lt;p&gt;@&lt;a href='https://twitter.com/jf'&gt;jf&lt;/a&gt; reminds me of yet another app i need to build&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime='2012-12-13T01:10:56+00:00' href='https://twitter.com/progrium/status/279030609345667072'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;&lt;blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279030609345667072'&gt;&lt;p&gt;@&lt;a href='https://twitter.com/progrium'&gt;progrium&lt;/a&gt; I just wrote and launched a &quot;client side&quot; &quot;bash app&quot; right there. Bam.&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime='2012-12-13T01:15:47+00:00' href='https://twitter.com/jf/status/279031831809097728'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;&lt;blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279031831809097728'&gt;&lt;p&gt;@&lt;a href='https://twitter.com/jf'&gt;jf&lt;/a&gt; app tweets. an app in a tweet.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime='2012-12-13T01:16:53+00:00' href='https://twitter.com/progrium/status/279032107265839104'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;&lt;blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279032107265839104'&gt;&lt;p&gt;@&lt;a href='https://twitter.com/progrium'&gt;progrium&lt;/a&gt; $ apptweet install id:279030460674347008&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime='2012-12-13T01:19:10+00:00' href='https://twitter.com/jf/status/279032681373790208'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
+&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39;&gt;&lt;p&gt;$ for app in `heroku apps | grep -v &#39;=&#39;`; do echo &lt;a href=&#39;https://twitter.com/search/$app&#39;&gt;$app&lt;/a&gt;; heroku ps --app &lt;a href=&#39;https://twitter.com/search/$app&#39;&gt;$app&lt;/a&gt;; done # how to figure out what you have running on heroku&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime=&#39;2012-12-13T01:10:20+00:00&#39; href=&#39;https://twitter.com/jf/status/279030460674347008&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39; data-in-reply-to=&#39;279030460674347008&#39;&gt;&lt;p&gt;@&lt;a href=&#39;https://twitter.com/jf&#39;&gt;jf&lt;/a&gt; reminds me of yet another app i need to build&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime=&#39;2012-12-13T01:10:56+00:00&#39; href=&#39;https://twitter.com/progrium/status/279030609345667072&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39; data-in-reply-to=&#39;279030609345667072&#39;&gt;&lt;p&gt;@&lt;a href=&#39;https://twitter.com/progrium&#39;&gt;progrium&lt;/a&gt; I just wrote and launched a &quot;client side&quot; &quot;bash app&quot; right there. Bam.&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime=&#39;2012-12-13T01:15:47+00:00&#39; href=&#39;https://twitter.com/jf/status/279031831809097728&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39; data-in-reply-to=&#39;279031831809097728&#39;&gt;&lt;p&gt;@&lt;a href=&#39;https://twitter.com/jf&#39;&gt;jf&lt;/a&gt; app tweets. an app in a tweet.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime=&#39;2012-12-13T01:16:53+00:00&#39; href=&#39;https://twitter.com/progrium/status/279032107265839104&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39; data-in-reply-to=&#39;279032107265839104&#39;&gt;&lt;p&gt;@&lt;a href=&#39;https://twitter.com/progrium&#39;&gt;progrium&lt;/a&gt; $ apptweet install id:279030460674347008&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime=&#39;2012-12-13T01:19:10+00:00&#39; href=&#39;https://twitter.com/jf/status/279032681373790208&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;This wishful brainstorming inspired me to start building exactly that. But first, a digression.&lt;/p&gt;
 
-&lt;p&gt;The idea reminded me of an idea I got from &lt;a href='https://twitter.com/rndmcnlly'&gt;Adam Smith&lt;/a&gt; back when I was working on Scriptlets. If you can execute code from a URL, you could &amp;#8220;store&amp;#8221; a program in a shortened URL. I decided to combine this with the curl-pipe-bash technique that&amp;#8217;s been starting to get popular to bootstrap installs. If you&amp;#8217;re unfamiliar, take this Gist of a Bash script:&lt;/p&gt;
-&lt;script src='https://gist.github.com/4464431.js'&gt; &lt;/script&gt;
+&lt;p&gt;The idea reminded me of an idea I got from &lt;a href=&#39;https://twitter.com/rndmcnlly&#39;&gt;Adam Smith&lt;/a&gt; back when I was working on Scriptlets. If you can execute code from a URL, you could &amp;#8220;store&amp;#8221; a program in a shortened URL. I decided to combine this with the curl-pipe-bash technique that&amp;#8217;s been starting to get popular to bootstrap installs. If you&amp;#8217;re unfamiliar, take this Gist of a Bash script:&lt;/p&gt;
+&lt;script src=&#39;https://gist.github.com/4464431.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;Given the &amp;#8220;view raw&amp;#8221; URL for that Gist, you can curl it and pipe it into Bash to execute it right there in your shell. It would look like this:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;$ curl -s https://gist.github.com/raw/4464431/gistfile1.txt | bash
 Hello world&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Instead of having Gist store the program, how could we make it so the source would just live within the URL? Well in the case of curl-pipe-bash, we just need that source to be returned in the body of a URL. So I built a simple app to run on Heroku that takes the query string and outputs it in the body, a sort of echo service.&lt;/p&gt;
-&lt;script src='https://gist.github.com/4464442.js'&gt; &lt;/script&gt;
+&lt;script src=&#39;https://gist.github.com/4464442.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;Letting you do this:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;$ curl &amp;quot;http://queryecho.herokuapp.com?Hello+world&amp;quot;
@@ -218,7 +218,7 @@ Hello world&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;See what&amp;#8217;s going on there? We wrote a simple Hello world program in Bash that effectively lives in that short URL. And we can run it with the curl-pipe-bash technique.&lt;/p&gt;
 
 &lt;p&gt;Later in our conversation, Joel suggests an example &amp;#8220;app tweet&amp;#8221; that if executed in Bash given a URL argument, it would tell you where it redirects. So if you gave it a short URL, it would tell you the long URL.&lt;/p&gt;
-&lt;blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279032107265839104'&gt;&lt;p&gt;@&lt;a href='https://twitter.com/progrium'&gt;progrium&lt;/a&gt; $ echo &quot;$1&quot;; curl -IL --silent &quot;$1&quot; | grep Location | grep -o 'http.*' # this is a URL &quot;unshortener&quot;&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime='2012-12-13T01:23:08+00:00' href='https://twitter.com/jf/status/279033679592951809'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
+&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39; data-in-reply-to=&#39;279032107265839104&#39;&gt;&lt;p&gt;@&lt;a href=&#39;https://twitter.com/progrium&#39;&gt;progrium&lt;/a&gt; $ echo &quot;$1&quot;; curl -IL --silent &quot;$1&quot; | grep Location | grep -o &#39;http.*&#39; # this is a URL &quot;unshortener&quot;&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a data-datetime=&#39;2012-12-13T01:23:08+00:00&#39; href=&#39;https://twitter.com/jf/status/279033679592951809&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;Just so you know what it would look like, if you put that program in a shell script and ran it against a short URL that redirected to www.google.com, this is what you would see:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;$ ./unshortener.sh http://j.mp/www-google-com
@@ -227,7 +227,7 @@ http://www.google.com/&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;It prints the URL you gave it and then resolves the URL and prints the long URL. Pretty simple.&lt;/p&gt;
 
-&lt;p&gt;So I decided to put this program in a short URL. Here we have &lt;a href='http://j.mp/TaHyRh'&gt;j.mp/TaHyRh&lt;/a&gt; which will resolve to:&lt;/p&gt;
+&lt;p&gt;So I decided to put this program in a short URL. Here we have &lt;a href=&#39;http://j.mp/TaHyRh&#39;&gt;j.mp/TaHyRh&lt;/a&gt; which will resolve to:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;http://queryecho.herokuapp.com/?echo%20%22$url%22;%20curl%20-ILs%20%22$url%22%20|%20grep%20Location%20|%20grep%20-o%20&amp;#39;http.*&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 
@@ -254,7 +254,7 @@ $ fetchtweet 279072855206031360
 &lt;p&gt;As you can see by inspecting that URL, it just defines a Bash function that runs a Python script from a Gist. I cheated and used Gist for some reason. That Python script uses the Twitter embed endpoint (same one used for the embedded Tweets in this post) to get the contents of a Tweet without authentication.&lt;/p&gt;
 
 &lt;p&gt;The next thing I built installed and used fetchtweet to get a Tweet, parse it, put it in a Bash function named by the string after an &lt;code&gt;#exectweet&lt;/code&gt; hashtag (which happens to also start a comment in Bash). So here we have a Tweet with a program in it:&lt;/p&gt;
-&lt;blockquote class='twitter-tweet tw-align-center'&gt;&lt;p&gt;echo Hello world &lt;a href='https://twitter.com/search/%23exectweet'&gt;#exectweet&lt;/a&gt; helloworld&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime='2012-12-13T04:57:28+00:00' href='https://twitter.com/progrium/status/279087620145958912'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
+&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39;&gt;&lt;p&gt;echo Hello world &lt;a href=&#39;https://twitter.com/search/%23exectweet&#39;&gt;#exectweet&lt;/a&gt; helloworld&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime=&#39;2012-12-13T04:57:28+00:00&#39; href=&#39;https://twitter.com/progrium/status/279087620145958912&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;To install it, we&amp;#8217;d run this:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;$ id=279087620145958912 eval $(curl -Ls http://j.mp/install-tweet)
@@ -272,7 +272,7 @@ $ helloworld
 Hello world&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Where would I go from there? An app that calls itself into a loop, of course!&lt;/p&gt;
-&lt;blockquote class='twitter-tweet tw-align-center'&gt;&lt;p&gt;exectweet &lt;a href='http://t.co/ri0XTprA' title='http://j.mp/recursive-app'&gt;j.mp/recursive-app&lt;/a&gt; ; recursive-app &lt;a href='https://twitter.com/search/%23exectweet'&gt;#exectweet&lt;/a&gt; recursive-app&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime='2012-12-13T07:20:12+00:00' href='https://twitter.com/progrium/status/279123541054595074'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
+&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39;&gt;&lt;p&gt;exectweet &lt;a href=&#39;http://t.co/ri0XTprA&#39; title=&#39;http://j.mp/recursive-app&#39;&gt;j.mp/recursive-app&lt;/a&gt; ; recursive-app &lt;a href=&#39;https://twitter.com/search/%23exectweet&#39;&gt;#exectweet&lt;/a&gt; recursive-app&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a data-datetime=&#39;2012-12-13T07:20:12+00:00&#39; href=&#39;https://twitter.com/progrium/status/279123541054595074&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;
 &lt;pre&gt;&lt;code&gt;$ exectweet https://twitter.com/progrium/status/279123541054595074 &amp;amp;&amp;amp; recursive-app
 Installed recursive-app from Tweet 279123541054595074
 Installed recursive-app from Tweet 279123541054595074
@@ -281,9 +281,9 @@ Installed recursive-app from Tweet 279123541054595074
 ...&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Obviously, this whole project was just a ridiculous, mind-bending exploration. I shared most of these examples on Twitter as I was making them. Here was my favorite response.&lt;/p&gt;
-&lt;blockquote class='twitter-tweet tw-align-center' data-in-reply-to='279087620145958912'&gt;&lt;p&gt;@&lt;a href='https://twitter.com/progrium'&gt;progrium&lt;/a&gt; End of the world, brought to you by Jeff Lindsay, via the Internet collapsing in on itself and taking the world with it.&lt;/p&gt;&amp;mdash; Matt Mechtley (@biphenyl) &lt;a data-datetime='2012-12-13T05:00:44+00:00' href='https://twitter.com/biphenyl/status/279088441084497922'&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset='utf-8' src='//platform.twitter.com/widgets.js'&gt; &lt;/script&gt;
+&lt;blockquote class=&#39;twitter-tweet tw-align-center&#39; data-in-reply-to=&#39;279087620145958912&#39;&gt;&lt;p&gt;@&lt;a href=&#39;https://twitter.com/progrium&#39;&gt;progrium&lt;/a&gt; End of the world, brought to you by Jeff Lindsay, via the Internet collapsing in on itself and taking the world with it.&lt;/p&gt;&amp;mdash; Matt Mechtley (@biphenyl) &lt;a data-datetime=&#39;2012-12-13T05:00:44+00:00&#39; href=&#39;https://twitter.com/biphenyl/status/279088441084497922&#39;&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;&lt;script charset=&#39;utf-8&#39; src=&#39;//platform.twitter.com/widgets.js&#39;&gt; &lt;/script&gt;
 &lt;p&gt;You may have noticed, it just happened to be 12/12/2012 that day.&lt;/p&gt;
-&lt;style type='text/css'&gt;
+&lt;style type=&#39;text/css&#39;&gt;
 .twitter-tweet-rendered {
   clear: none!important;
 }
@@ -308,7 +308,7 @@ Installed recursive-app from Tweet 279123541054595074
 
 &lt;p&gt;Then in late 2009, I had another idea while thinking about webhooks. It would be great if I could expose a local web server to the Internet with a friendly URL. It should just be a simple command. There would have to be a server, but there could just be a public server that you didn&amp;#8217;t even have to think about.&lt;/p&gt;
 
-&lt;p&gt;I committed &lt;a href='https://github.com/progrium/localtunnel/tree/prototype'&gt;the first prototype of Localtunnel&lt;/a&gt; to Github in January 2010. It was written entirely in Twisted. It also didn&amp;#8217;t actually work. I really recommend taking a look because it was terrible. One of the challenges was multiplexing the HTTP requests into a single tunnel connection. My approach was so naive it just didn&amp;#8217;t work. As soon as you made more than one request at a time, it broke.&lt;/p&gt;
+&lt;p&gt;I committed &lt;a href=&#39;https://github.com/progrium/localtunnel/tree/prototype&#39;&gt;the first prototype of Localtunnel&lt;/a&gt; to Github in January 2010. It was written entirely in Twisted. It also didn&amp;#8217;t actually work. I really recommend taking a look because it was terrible. One of the challenges was multiplexing the HTTP requests into a single tunnel connection. My approach was so naive it just didn&amp;#8217;t work. As soon as you made more than one request at a time, it broke.&lt;/p&gt;
 
 &lt;p&gt;A few months later, I decided to take a different approach. Instead of doing my own protocol, client, and server, I&amp;#8217;d just make a wrapper around what I knew already worked: SSH tunneling. This was pretty quick to make happen, and that version is basically what&amp;#8217;s been in production to this day.&lt;/p&gt;
 
@@ -326,7 +326,7 @@ Installed recursive-app from Tweet 279123541054595074
 
 &lt;p&gt;I&amp;#8217;ve used this constant stream of complaints, which has been going on for almost two years, to make sure I keep making progress on the new version. In fact, I&amp;#8217;m pretty sure I needed it because of my lifestyle of abundant projects.&lt;/p&gt;
 
-&lt;p&gt;Last week I finally &lt;a href='http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta/'&gt;released a beta of the new version&lt;/a&gt;. What&amp;#8217;s interesting is that it&amp;#8217;s a completely different architecture from what I started out with for the redesign. After the original unreleased prototype, there&amp;#8217;s been 3 major approaches to implementation. In the coming weeks I&amp;#8217;m going to share a more technical history of the architecture of Localtunnel, leading up to a deep exploration of what I hope will be its final form.&lt;/p&gt;</content>
+&lt;p&gt;Last week I finally &lt;a href=&#39;http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta/&#39;&gt;released a beta of the new version&lt;/a&gt;. What&amp;#8217;s interesting is that it&amp;#8217;s a completely different architecture from what I started out with for the redesign. After the original unreleased prototype, there&amp;#8217;s been 3 major approaches to implementation. In the coming weeks I&amp;#8217;m going to share a more technical history of the architecture of Localtunnel, leading up to a deep exploration of what I hope will be its final form.&lt;/p&gt;</content>
  </entry>
  
  <entry>
@@ -334,9 +334,9 @@ Installed recursive-app from Tweet 279123541054595074
    <link href="http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta"/>
    <updated>2012-12-25T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta</id>
-   <content type="html">&lt;p&gt;A few years back, I released &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it&amp;#8217;s gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source.&lt;/p&gt;
+   <content type="html">&lt;p&gt;A few years back, I released &lt;a href=&#39;http://localtunnel.com&#39;&gt;Localtunnel&lt;/a&gt; to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it&amp;#8217;s gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source.&lt;/p&gt;
 
-&lt;p&gt;With the release of &lt;a href='http://j.mp/localtunnel-v2'&gt;Localtunnel v2&lt;/a&gt;, it will not only remain competitive with similar services, but continue to be the innovator of the group. I&amp;#8217;ll post more on this later.&lt;/p&gt;
+&lt;p&gt;With the release of &lt;a href=&#39;http://j.mp/localtunnel-v2&#39;&gt;Localtunnel v2&lt;/a&gt;, it will not only remain competitive with similar services, but continue to be the innovator of the group. I&amp;#8217;ll post more on this later.&lt;/p&gt;
 
 &lt;p&gt;For now, let&amp;#8217;s talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will be marked as deprecated. This means you should be making the switch to v2.&lt;/p&gt;
 
@@ -362,7 +362,7 @@ Installed recursive-app from Tweet 279123541054595074
 
 &lt;pre&gt;&lt;code&gt;$ python --version&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Localtunnel requires Python 2.6 or later, which comes standard on most systems. If you don&amp;#8217;t have Python, you can &lt;a href='http://wiki.python.org/moin/BeginnersGuide/Download'&gt;install it for your platform&lt;/a&gt;. If &lt;code&gt;easy_install&lt;/code&gt; isn&amp;#8217;t available after you install Python, you can install it with this bootstrap script:&lt;/p&gt;
+&lt;p&gt;Localtunnel requires Python 2.6 or later, which comes standard on most systems. If you don&amp;#8217;t have Python, you can &lt;a href=&#39;http://wiki.python.org/moin/BeginnersGuide/Download&#39;&gt;install it for your platform&lt;/a&gt;. If &lt;code&gt;easy_install&lt;/code&gt; isn&amp;#8217;t available after you install Python, you can install it with this bootstrap script:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;$ curl http://peak.telecommunity.com/dist/ez_setup.py | python&lt;/code&gt;&lt;/pre&gt;
 
@@ -384,7 +384,7 @@ Installed recursive-app from Tweet 279123541054595074
 
 &lt;p&gt;Keep in mind v2 is in active development. There might be some downtime while I work out operational bugs, but you can always use the old version if you run into problems.&lt;/p&gt;
 
-&lt;p&gt;If you do run into any problems, you can &lt;a href='http://twitter.com/progrium'&gt;ping me on Twitter&lt;/a&gt;. If you get traceback you can &lt;a href='https://github.com/progrium/localtunnel/issues'&gt;create an issue on Github&lt;/a&gt;. If you have more in-depth questions or want to get involved in development, check out the &lt;a href='https://groups.google.com/forum/#!forum/localtunnel'&gt;Localtunnel Google Group&lt;/a&gt;.&lt;/p&gt;</content>
+&lt;p&gt;If you do run into any problems, you can &lt;a href=&#39;http://twitter.com/progrium&#39;&gt;ping me on Twitter&lt;/a&gt;. If you get traceback you can &lt;a href=&#39;https://github.com/progrium/localtunnel/issues&#39;&gt;create an issue on Github&lt;/a&gt;. If you have more in-depth questions or want to get involved in development, check out the &lt;a href=&#39;https://groups.google.com/forum/#!forum/localtunnel&#39;&gt;Localtunnel Google Group&lt;/a&gt;.&lt;/p&gt;</content>
  </entry>
  
  <entry>
@@ -392,13 +392,13 @@ Installed recursive-app from Tweet 279123541054595074
    <link href="http://progrium.com/blog/2012/12/17/http-signatures-with-content-hmac"/>
    <updated>2012-12-17T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/12/17/http-signatures-with-content-hmac</id>
-   <content type="html">&lt;p&gt;Today I wanted to propose another header. It would be used for signing HTTP content with HMAC, and is appropriately called Content-HMAC. In &lt;a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'&gt;a previous post&lt;/a&gt; about the Callback header, I mentioned using an X-Signature header in callback requests to sign the payload of the callback. It looked like this:&lt;/p&gt;
+   <content type="html">&lt;p&gt;Today I wanted to propose another header. It would be used for signing HTTP content with HMAC, and is appropriately called Content-HMAC. In &lt;a href=&#39;http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/&#39;&gt;a previous post&lt;/a&gt; about the Callback header, I mentioned using an X-Signature header in callback requests to sign the payload of the callback. It looked like this:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;X-Signature: sha1=&amp;lt;hexdigest of sha1 hmac&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;The HMAC would be built with just the content of the request (i.e., no headers, no query params) and a secret key. &lt;a href='http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.3.html#authednotify'&gt;This was borrowed directly from the PubSubHubbub spec&lt;/a&gt;, but the general idea of using HMAC to sign callback requests has become pretty standard in the world of webhooks. Here are details on how &lt;a href='http://code.google.com/p/support/wiki/PostCommitWebHooks#Authentication'&gt;Google&lt;/a&gt; and &lt;a href='http://www.twilio.com/docs/security#validating-requests'&gt;Twilio&lt;/a&gt; use them.&lt;/p&gt;
+&lt;p&gt;The HMAC would be built with just the content of the request (i.e., no headers, no query params) and a secret key. &lt;a href=&#39;http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.3.html#authednotify&#39;&gt;This was borrowed directly from the PubSubHubbub spec&lt;/a&gt;, but the general idea of using HMAC to sign callback requests has become pretty standard in the world of webhooks. Here are details on how &lt;a href=&#39;http://code.google.com/p/support/wiki/PostCommitWebHooks#Authentication&#39;&gt;Google&lt;/a&gt; and &lt;a href=&#39;http://www.twilio.com/docs/security#validating-requests&#39;&gt;Twilio&lt;/a&gt; use them.&lt;/p&gt;
 
-&lt;p&gt;Each of these providers is using their own header for basically the same use case. It would seem like there is an opportunity to standardize on a common header format for it. There&amp;#8217;s been a number of proposals for a general Signature header to sign an entire request. There was a fairly comprehensive one proposed called &lt;a href='http://tools.ietf.org/html/draft-burke-content-signature-00'&gt;Content-Signature&lt;/a&gt;. With signing, the difficulty is often getting the input string correct. Most signing mechanisms need to normalize their input. If you&amp;#8217;ve ever had to deal with OAuth or AWS signatures, you&amp;#8217;ll know what I&amp;#8217;m talking about. With request signing, the headers pose a particularly tricky situation with signing since they often change as the request goes through proxies.&lt;/p&gt;
+&lt;p&gt;Each of these providers is using their own header for basically the same use case. It would seem like there is an opportunity to standardize on a common header format for it. There&amp;#8217;s been a number of proposals for a general Signature header to sign an entire request. There was a fairly comprehensive one proposed called &lt;a href=&#39;http://tools.ietf.org/html/draft-burke-content-signature-00&#39;&gt;Content-Signature&lt;/a&gt;. With signing, the difficulty is often getting the input string correct. Most signing mechanisms need to normalize their input. If you&amp;#8217;ve ever had to deal with OAuth or AWS signatures, you&amp;#8217;ll know what I&amp;#8217;m talking about. With request signing, the headers pose a particularly tricky situation with signing since they often change as the request goes through proxies.&lt;/p&gt;
 
 &lt;p&gt;The idea of Content-HMAC is to focus on a simpler goal of signing just the content payload, since it&amp;#8217;s normally treated as-is, and is not altered when going through proxies. The X-Signature proposal I had was a decent one, as is almost any cowpath-based proposal, but I realized it would probably be a good idea to limit the implied scope to what it&amp;#8217;s really doing: providing an HMAC for request (or response) content.&lt;/p&gt;
 
@@ -416,7 +416,7 @@ Installed recursive-app from Tweet 279123541054595074
 
 &lt;p&gt;It&amp;#8217;s also very worth mentioning that the need for content signing is unnecessary when using HTTPS. It currently looks like the future will eventually be 100% SSL encrypted HTTP, but until then, there will always be situations where HTTPS is not available. Content-HMAC is perhaps a stop-gap until we reach that ideal. Until then, I think Content-HMAC is a good, standard way to add authorization to callback requests.&lt;/p&gt;
 
-&lt;p&gt;Let me know if you have any questions or feedback on this proposal. Further discussion is likely to happen on the &lt;a href='https://groups.google.com/forum/#!forum/webhooks'&gt;Webhooks Google Group&lt;/a&gt;.&lt;/p&gt;</content>
+&lt;p&gt;Let me know if you have any questions or feedback on this proposal. Further discussion is likely to happen on the &lt;a href=&#39;https://groups.google.com/forum/#!forum/webhooks&#39;&gt;Webhooks Google Group&lt;/a&gt;.&lt;/p&gt;</content>
  </entry>
  
  <entry>
@@ -431,7 +431,7 @@ Installed recursive-app from Tweet 279123541054595074
 &lt;p&gt;One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.&lt;/p&gt;
 
 &lt;p&gt;Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.&lt;/p&gt;
-&lt;center&gt;&lt;img src='/images/content/open_vs_closed_sys.png' title='Open systems vs Closed systems' /&gt;&lt;/center&gt;
+&lt;center&gt;&lt;img src=&#39;/images/content/open_vs_closed_sys.png&#39; title=&#39;Open systems vs Closed systems&#39; /&gt;&lt;/center&gt;
 &lt;p&gt;This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don&amp;#8217;t appreciate how little this idea was understood for basically all of human existence up until just a few decades ago.&lt;/p&gt;
 
 &lt;p&gt;Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.&lt;/p&gt;
@@ -443,8 +443,8 @@ Installed recursive-app from Tweet 279123541054595074
 &lt;p&gt;Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.&lt;/p&gt;
 
 &lt;p&gt;Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:&lt;/p&gt;
-&lt;img src='/images/content/nested_environments.png' style='float: left;' title='Nested
-environments' /&gt;
+&lt;img src=&#39;/images/content/nested_environments.png&#39; style=&#39;float: left;&#39; title=&#39;Nested
+environments&#39; /&gt;
 &lt;p&gt;If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality.&lt;/p&gt;
 
 &lt;p&gt;In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920&amp;#8217;s have we begun to accept that reality is just too complicated to fully understand at once.&lt;/p&gt;
@@ -461,7 +461,7 @@ environments' /&gt;
 
 &lt;p&gt;The primary use case for this is handling HTTP responses that take longer than you would prefer to keep an open connection. As we build APIs that start interacting with the real world and human processes, you could expect operations that might take hours to days to complete.&lt;/p&gt;
 
-&lt;h3 id='example_of_response_redirection'&gt;Example of Response Redirection&lt;/h3&gt;
+&lt;h3 id=&#39;example_of_response_redirection&#39;&gt;Example of Response Redirection&lt;/h3&gt;
 
 &lt;p&gt;Response Redirection is done by performing a regular HTTP request with two additions: a Pragma directive telling the server you want the response to be redirected, and a Callback to be used for the response.&lt;/p&gt;
 
@@ -480,19 +480,19 @@ Content-Type: text/plain
 
 Hello world&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;As we talked about with the &lt;a href='http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/'&gt;Callback header&lt;/a&gt;, if a &lt;code&gt;secret&lt;/code&gt; parameter was given, it would imply that an HMAC signature be provided in the callback request. We&amp;#8217;ll revisit this again in another post.&lt;/p&gt;
+&lt;p&gt;As we talked about with the &lt;a href=&#39;http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/&#39;&gt;Callback header&lt;/a&gt;, if a &lt;code&gt;secret&lt;/code&gt; parameter was given, it would imply that an HMAC signature be provided in the callback request. We&amp;#8217;ll revisit this again in another post.&lt;/p&gt;
 
 &lt;p&gt;If the server doesn&amp;#8217;t understand &lt;code&gt;Pragma: redirect&lt;/code&gt;, it would return a normal response to the initial request and the client would have to handle it as usual.&lt;/p&gt;
 
-&lt;h3 id='using_pragma'&gt;Using Pragma&lt;/h3&gt;
+&lt;h3 id=&#39;using_pragma&#39;&gt;Using Pragma&lt;/h3&gt;
 
-&lt;p&gt;You&amp;#8217;ll notice we didn&amp;#8217;t invent a header to tell the server to we want to do Response Redirection. You may remember Pragma&amp;#8217;s original use was only for &lt;code&gt;Pragma: no-cache&lt;/code&gt; and was eventually replaced with other cache control headers. However, the semantics of Pragma remain useful. To quote the &lt;a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32'&gt;HTTP 1.1 spec&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;You&amp;#8217;ll notice we didn&amp;#8217;t invent a header to tell the server to we want to do Response Redirection. You may remember Pragma&amp;#8217;s original use was only for &lt;code&gt;Pragma: no-cache&lt;/code&gt; and was eventually replaced with other cache control headers. However, the semantics of Pragma remain useful. To quote the &lt;a href=&#39;http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32&#39;&gt;HTTP 1.1 spec&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;The Pragma general-header field is used to include implementation-specific directives that might apply to any recipient along the request/response chain.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Another potential header field would be the &lt;a href='http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20'&gt;Expect header&lt;/a&gt;. The Expect header is designed to let the client specify certain behaviors expected of the server. This would be perfect except for this property:&lt;/p&gt;
+&lt;p&gt;Another potential header field would be the &lt;a href=&#39;http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20&#39;&gt;Expect header&lt;/a&gt;. The Expect header is designed to let the client specify certain behaviors expected of the server. This would be perfect except for this property:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;The Expect mechanism is hop-by-hop: that is, an HTTP/1.1 proxy MUST return a 417 (Expectation Failed) status if it receives a request with an expectation that it cannot meet.&lt;/p&gt;
@@ -500,9 +500,9 @@ Hello world&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;In today&amp;#8217;s world, this renders it useless unless we were talking about changing the behavior of proxies. The Pragma header was designed to be forwarded by proxies and ignored if it doesn&amp;#8217;t know how to fulfill the directive.&lt;/p&gt;
 
-&lt;h3 id='alternate_implementation'&gt;Alternate Implementation&lt;/h3&gt;
+&lt;h3 id=&#39;alternate_implementation&#39;&gt;Alternate Implementation&lt;/h3&gt;
 
-&lt;p&gt;In the discussion that followed the Callback header post, not only did we learn that the &lt;code&gt;X-&lt;/code&gt; header prefix &lt;a href='http://tools.ietf.org/html/rfc6648'&gt;is now deprecated&lt;/a&gt;, but there is an RFC draft called &lt;a href='http://tools.ietf.org/html/draft-snell-http-prefer-17'&gt;Prefer Header for HTTP&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In the discussion that followed the Callback header post, not only did we learn that the &lt;code&gt;X-&lt;/code&gt; header prefix &lt;a href=&#39;http://tools.ietf.org/html/rfc6648&#39;&gt;is now deprecated&lt;/a&gt;, but there is an RFC draft called &lt;a href=&#39;http://tools.ietf.org/html/draft-snell-http-prefer-17&#39;&gt;Prefer Header for HTTP&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;It actually addresses the issue with the Expect header, providing an alternative for specifying optional preferences for how the server handles a request. One of the example preferences is for returning the response asynchronously, which is exactly what we&amp;#8217;re achieving with Response Redirection. The only missing element is the callback, which we can easily include with our Callback header. Here we augment an example directly from the spec:&lt;/p&gt;
 
@@ -516,13 +516,13 @@ Callback: &amp;lt;http://server.com/callback&amp;gt;; rel=&amp;quot;respond-asyn
 
 &lt;p&gt;The server would respond with 202 Accepted, just as we would have had with the Pragma implementation. It&amp;#8217;s up for discussion which implementation is ideal.&lt;/p&gt;
 
-&lt;h3 id='last_thoughts'&gt;Last Thoughts&lt;/h3&gt;
+&lt;h3 id=&#39;last_thoughts&#39;&gt;Last Thoughts&lt;/h3&gt;
 
 &lt;p&gt;Granted, there are likely better ways to approach the use case we described at the beginning. Creating a resource immediately and subscribing to state changes might actually be ideal. Perhaps the Response Redirection spec is purely academic. That brings us again to the idea of HTTP Subscriptions, which I&amp;#8217;ll get to posting about soon.&lt;/p&gt;
 
 &lt;p&gt;However, Response Redirection is a great example of a simple protocol built on top of the Callback header. The use of Prefer and Pragma will also set the stage for the design decisions of my initial informal draft of HTTP Subscriptions. It will continue this trend of reusing existing pieces of technology (Pragma, Expect, Prefer, Callback) as building blocks that, from my perspective, were intended to be re-combined to achieve new behavior.&lt;/p&gt;
 
-&lt;p&gt;Let me know what you think in the comments or in the &lt;a href='https://groups.google.com/forum/#!forum/webhooks'&gt;Webhooks Google Group&lt;/a&gt;.&lt;/p&gt;</content>
+&lt;p&gt;Let me know what you think in the comments or in the &lt;a href=&#39;https://groups.google.com/forum/#!forum/webhooks&#39;&gt;Webhooks Google Group&lt;/a&gt;.&lt;/p&gt;</content>
  </entry>
  
  <entry>
@@ -530,27 +530,27 @@ Callback: &amp;lt;http://server.com/callback&amp;gt;; rel=&amp;quot;respond-asyn
    <link href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block"/>
    <updated>2012-11-26T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block</id>
-   <content type="html">&lt;div class='alert alert-info'&gt;
+   <content type="html">&lt;div class=&#39;alert alert-info&#39;&gt;
 Since this posting, we decided to adopt &quot;best current
-practice&quot; and drop the X- prefix as described in &lt;a href='http://tools.ietf.org/html/rfc6648'&gt;RFC 6648&lt;/a&gt;. Future posts refer to this as the Callback header.
+practice&quot; and drop the X- prefix as described in &lt;a href=&#39;http://tools.ietf.org/html/rfc6648&#39;&gt;RFC 6648&lt;/a&gt;. Future posts refer to this as the Callback header.
 &lt;/div&gt;
-&lt;p&gt;Webhooks is the simple concept of HTTP callbacks. It expands on the simple request/response model of HTTP, giving you the semantics of &lt;a href='http://j.mp/10EitT8'&gt;callbacks in programming&lt;/a&gt;. Request/response gives you one response for one request in one synchronous operation. It&amp;#8217;s like invoking a function and getting a return value. With callbacks, after you register a callback, the callback will receive one or more invocations, perhaps minutes or hours apart.&lt;/p&gt;
+&lt;p&gt;Webhooks is the simple concept of HTTP callbacks. It expands on the simple request/response model of HTTP, giving you the semantics of &lt;a href=&#39;http://j.mp/10EitT8&#39;&gt;callbacks in programming&lt;/a&gt;. Request/response gives you one response for one request in one synchronous operation. It&amp;#8217;s like invoking a function and getting a return value. With callbacks, after you register a callback, the callback will receive one or more invocations, perhaps minutes or hours apart.&lt;/p&gt;
 
-&lt;p&gt;Callbacks are a necessary component of any evented or reactor-based system, like Node.js, Twisted, or EventMachine. So, naturally, HTTP callbacks are necessary to achieve &lt;a href='http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/'&gt;the Evented Web&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Callbacks are a necessary component of any evented or reactor-based system, like Node.js, Twisted, or EventMachine. So, naturally, HTTP callbacks are necessary to achieve &lt;a href=&#39;http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/&#39;&gt;the Evented Web&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Modeling callbacks in HTTP is somewhat straightforward. The callback is a URL. You perform an HTTP request against an application to register a callback URL. The application then performs an HTTP request to that URL to invoke that callback.&lt;/p&gt;
 
 &lt;p&gt;Those high-level requirements are enough to set anybody in the right direction to effectively implement webhooks or HTTP callbacks for their application. The problem is that now every application implements the specifics differently. While this is fine to provide a callback paradigm for each application, it doesn&amp;#8217;t let us &lt;em&gt;build&lt;/em&gt; on this paradigm. The Evented Web needs to agree on some standards, and the X-Callback header is one of those standards.&lt;/p&gt;
 
-&lt;h3 id='xcallback_header'&gt;X-Callback Header&lt;/h3&gt;
+&lt;h3 id=&#39;xcallback_header&#39;&gt;X-Callback Header&lt;/h3&gt;
 
-&lt;p&gt;The X-Callback header is a proposal for a common way to describe HTTP callbacks, primarily in the case of registering them. It does not get into the specifics for different ways of using HTTP callbacks, so it&amp;#8217;s more of a building block for APIs or larger protocols such as HTTP Subscriptions, which I mentioned &lt;a href='http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/'&gt;in my previous post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The X-Callback header is a proposal for a common way to describe HTTP callbacks, primarily in the case of registering them. It does not get into the specifics for different ways of using HTTP callbacks, so it&amp;#8217;s more of a building block for APIs or larger protocols such as HTTP Subscriptions, which I mentioned &lt;a href=&#39;http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web/&#39;&gt;in my previous post&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Here&amp;#8217;s what it looks like to use X-Callback:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;X-Callback: &amp;lt;http://example.com/callback&amp;gt;; method=&amp;quot;post&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;The format is directly borrowed from the &lt;a href='http://www.w3.org/Protocols/9707-link-header.html'&gt;Link header&lt;/a&gt; used for responses. You provide a URL and then optional key-value parameters. In the case above, the HTTP method for invoking the callback was specified as a parameter.&lt;/p&gt;
+&lt;p&gt;The format is directly borrowed from the &lt;a href=&#39;http://www.w3.org/Protocols/9707-link-header.html&#39;&gt;Link header&lt;/a&gt; used for responses. You provide a URL and then optional key-value parameters. In the case above, the HTTP method for invoking the callback was specified as a parameter.&lt;/p&gt;
 
 &lt;p&gt;Here is a more formal description of the header:&lt;/p&gt;
 
@@ -567,7 +567,7 @@ callback-param  = token [ &amp;quot;=&amp;quot; ( token | quoted-string ) ]&lt;/
 &lt;li&gt;&lt;strong&gt;rel&lt;/strong&gt;: The relationship of this callback to this request, similar to the rel of the Link header. This lets you specify the role of this callback, which is useful when multiple callbacks are provided. It effectively lets you classify the callbacks.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id='authenticating_with_signatures'&gt;Authenticating with Signatures&lt;/h3&gt;
+&lt;h3 id=&#39;authenticating_with_signatures&#39;&gt;Authenticating with Signatures&lt;/h3&gt;
 
 &lt;p&gt;A common pattern across most implementations of webhooks has been the use of signatures for authenticating the callback &amp;#8220;invocation&amp;#8221; requests. Either built-in to the X-Callback header spec or maybe as a separate extension, a standard way of providing a secret then building and including a signature would be a Good Idea. The following is a proposal based on PubSubHubbub&amp;#8217;s signature model, but is not that different from the majority of implementations out there.&lt;/p&gt;
 
@@ -581,7 +581,7 @@ callback-param  = token [ &amp;quot;=&amp;quot; ( token | quoted-string ) ]&lt;/
 
 &lt;p&gt;Signing lets the callback handler be more certain of the source without requiring SSL. Signatures become much less necessary if all requests are using HTTPS. But having this simple complement to X-Callback makes it easy when you need it, and may help unify all the different approaches that are all effectively doing the same thing.&lt;/p&gt;
 
-&lt;h3 id='example_callback_flow'&gt;Example Callback Flow&lt;/h3&gt;
+&lt;h3 id=&#39;example_callback_flow&#39;&gt;Example Callback Flow&lt;/h3&gt;
 
 &lt;p&gt;Let&amp;#8217;s use all this in an example, showing you the actual HTTP requests. First, we&amp;#8217;re going to register a callback at a particular endpoint:&lt;/p&gt;
 
@@ -604,11 +604,11 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
 
 &lt;p&gt;You&amp;#8217;ll notice we&amp;#8217;ve stayed completely out of the content layer of HTTP. This is quite intentional. This gives implementors lots of flexibility and keeps this a &amp;#8220;pure&amp;#8221; extension to HTTP.&lt;/p&gt;
 
-&lt;h3 id='a_building_block'&gt;A Building Block&lt;/h3&gt;
+&lt;h3 id=&#39;a_building_block&#39;&gt;A Building Block&lt;/h3&gt;
 
 &lt;p&gt;As I&amp;#8217;ve mentioned, this header is intended to be used in APIs and protocols that use callbacks in different ways. The obvious example is HTTP Subscriptions, which will let you subscribe to events using HTTP callbacks.&lt;/p&gt;
 
-&lt;p&gt;Another example, which I&amp;#8217;ll also talk about soon, is HTTP Response Redirection. Regular &lt;a href='http://en.wikipedia.org/wiki/URL_redirection#HTTP_status_codes_3xx'&gt;HTTP Redirection&lt;/a&gt; lets the server redirect the client&amp;#8217;s request to another URL, whereas Response Redirection lets the client redirect where the server sends the response using an HTTP callback.&lt;/p&gt;
+&lt;p&gt;Another example, which I&amp;#8217;ll also talk about soon, is HTTP Response Redirection. Regular &lt;a href=&#39;http://en.wikipedia.org/wiki/URL_redirection#HTTP_status_codes_3xx&#39;&gt;HTTP Redirection&lt;/a&gt; lets the server redirect the client&amp;#8217;s request to another URL, whereas Response Redirection lets the client redirect where the server sends the response using an HTTP callback.&lt;/p&gt;
 
 &lt;p&gt;The X-Callback header is simple, focused, and content neutral. Hopefully this makes it a powerful building block for other technologies of the Evented Web.&lt;/p&gt;</content>
  </entry>
@@ -618,13 +618,13 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
    <link href="http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web"/>
    <updated>2012-11-19T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2012/11/19/from-webhooks-to-the-evented-web</id>
-   <content type="html">&lt;p&gt;Back in 2007 I started thinking and talking a lot about &lt;a href='http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/'&gt;an idea called webhooks&lt;/a&gt;. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including &lt;a href='http://localtunnel.com'&gt;Localtunnel&lt;/a&gt; and &lt;a href='http://requestb.in'&gt;RequestBin&lt;/a&gt; (originally PostBin). There were others that might not be around anymore: &lt;a href='http://mailhooks.com'&gt;MailHooks&lt;/a&gt;, &lt;a href='http://clickhooks.com'&gt;ClickHooks&lt;/a&gt;, &lt;a href='http://twitterhooks.com'&gt;TwitterHooks&lt;/a&gt;, &lt;a href='http://scriptlets.org'&gt;Scriptlets&lt;/a&gt;, and a few others.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Back in 2007 I started thinking and talking a lot about &lt;a href=&#39;http://progrium.com/blog/2007/05/03/web-hooks-to-revolutionize-the-web/&#39;&gt;an idea called webhooks&lt;/a&gt;. Over the following few years I started evangelizing it. I spent a lot of my free time giving talks and building tools around the idea of webhooks. Some of these tools are still around today, including &lt;a href=&#39;http://localtunnel.com&#39;&gt;Localtunnel&lt;/a&gt; and &lt;a href=&#39;http://requestb.in&#39;&gt;RequestBin&lt;/a&gt; (originally PostBin). There were others that might not be around anymore: &lt;a href=&#39;http://mailhooks.com&#39;&gt;MailHooks&lt;/a&gt;, &lt;a href=&#39;http://clickhooks.com&#39;&gt;ClickHooks&lt;/a&gt;, &lt;a href=&#39;http://twitterhooks.com&#39;&gt;TwitterHooks&lt;/a&gt;, &lt;a href=&#39;http://scriptlets.org&#39;&gt;Scriptlets&lt;/a&gt;, and a few others.&lt;/p&gt;
 
 &lt;p&gt;Webhooks wasn&amp;#8217;t really a new technology in the sense that there was a specification or tangible piece of software. It was more of an architectural pattern, and a loose one at that. To me it was just a different way to think about web applications, and it opened up a lot of new possibilities.&lt;/p&gt;
 
 &lt;p&gt;I was really excited by those possibilities, so I started telling people about it. The only problem was that it was this semi-vague idea. I often spoke in high-level notions. It was hard for some people to understand at the time. I think some people mostly got it, but a lot of people didn&amp;#8217;t get it and thought they did.&lt;/p&gt;
 
-&lt;h3 id='confusion'&gt;Confusion&lt;/h3&gt;
+&lt;h3 id=&#39;confusion&#39;&gt;Confusion&lt;/h3&gt;
 
 &lt;p&gt;For example, the name &amp;#8220;webhooks&amp;#8221; was more about the pattern than any specific part of how it works. Webhooks involve two parts: an application that triggers a URL, and a handler at that URL. If you were to ask &amp;#8220;where is the webhook?&amp;#8221; different people will answer you differently. Some say it&amp;#8217;s the trigger side. Some say it&amp;#8217;s the handler side. For me, &amp;#8220;a webhook&amp;#8221; is the combination of both a trigger and a handler.&lt;/p&gt;
 
@@ -632,7 +632,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
 
 &lt;p&gt;I didn&amp;#8217;t want to say, &amp;#8220;Well, if you want to implement webhooks, it&amp;#8217;s got to be JSON. And use this payload structure. And this is the API for registering them. Otherwise, it&amp;#8217;s not webhooks.&amp;#8221; Because if you didn&amp;#8217;t do those things in a particular way, they&amp;#8217;d still be webhooks to me.&lt;/p&gt;
 
-&lt;h3 id='mild_success'&gt;Mild Success&lt;/h3&gt;
+&lt;h3 id=&#39;mild_success&#39;&gt;Mild Success&lt;/h3&gt;
 
 &lt;p&gt;After a while, the idea got out there and companies like Google, Facebook, Wordpress, GitHub, Twilio, and other startups started implementing it. Five years later and I still often run into new applications or open source projects using the term webhooks. But even after all this time, there&amp;#8217;s still a lot of cool stuff that I wanted to emerge that hasn&amp;#8217;t really happened yet.&lt;/p&gt;
 
@@ -642,9 +642,9 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
 
 &lt;p&gt;Scriptlets didn&amp;#8217;t get very popular, though I didn&amp;#8217;t push it very hard. There was a lot I wanted to do with it but there wasn&amp;#8217;t enough demand to drive development, and I was so busy that it eventually became defunct.&lt;/p&gt;
 
-&lt;p&gt;Four years later, we actually have a service like this. I discovered it about a week ago. It&amp;#8217;s called &lt;a href='http://webscript.io'&gt;Webscript&lt;/a&gt;. It&amp;#8217;s basically Scriptlets done right. Webscript is a web app where you can write Lua, hit save, and then you&amp;#8217;ve got little web service. It has basically everything you need to write webhook handler scripts.&lt;/p&gt;
+&lt;p&gt;Four years later, we actually have a service like this. I discovered it about a week ago. It&amp;#8217;s called &lt;a href=&#39;http://webscript.io&#39;&gt;Webscript&lt;/a&gt;. It&amp;#8217;s basically Scriptlets done right. Webscript is a web app where you can write Lua, hit save, and then you&amp;#8217;ve got little web service. It has basically everything you need to write webhook handler scripts.&lt;/p&gt;
 
-&lt;h3 id='the_ecosystem'&gt;The Ecosystem&lt;/h3&gt;
+&lt;h3 id=&#39;the_ecosystem&#39;&gt;The Ecosystem&lt;/h3&gt;
 
 &lt;p&gt;Slowly, people &lt;em&gt;are&lt;/em&gt; building out pieces of the ecosystem. You could say that the webhooks paradigm was really about this ecosystem. At some point I realized this and decided to give that ecosystem a name. It turned out the ecosystem was really what I was getting at with webhooks. That&amp;#8217;s where the magic was.&lt;/p&gt;
 
@@ -654,7 +654,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
 
 &lt;p&gt;By the time I started talking more about the Evented Web instead of just webhooks, I was already pretty tired of talking about it all. I was sort of &amp;#8220;over it&amp;#8221; and I started to not care if people didn&amp;#8217;t see or share this vision. I continued to think it was cool, but I started to move on to other interests.&lt;/p&gt;
 
-&lt;h3 id='the_future'&gt;The Future&lt;/h3&gt;
+&lt;h3 id=&#39;the_future&#39;&gt;The Future&lt;/h3&gt;
 
 &lt;p&gt;These days, the people that really get it are starting to build some really neat things. Webhooks have spread enough that you can at least reference them or the idea of HTTP callbacks and not have to explain yourself. Now is maybe the perfect time for me to put a few specific projects into motion that could at least provide a tangible foundation for building out the Evented Web. Not just vague notions.&lt;/p&gt;
 
@@ -668,7 +668,7 @@ X-Signature: sha1=76afe1da675cf6d3d59c71a4af44dafc69fd03f0
    <link href="http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe"/>
    <updated>2012-09-30T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe</id>
-   <content type="html">&lt;p&gt;&lt;a href='https://github.com/progrium/skypipe'&gt;Skypipe&lt;/a&gt; is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data &lt;em&gt;anywhere&lt;/em&gt;.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;a href=&#39;https://github.com/progrium/skypipe&#39;&gt;Skypipe&lt;/a&gt; is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data &lt;em&gt;anywhere&lt;/em&gt;.&lt;/p&gt;
 
 &lt;p&gt;I built it while on vacation the last couple months. I wasn&amp;#8217;t intending to write software while on my trip, but I just couldn&amp;#8217;t help myself.&lt;/p&gt;
 
@@ -713,13 +713,13 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;pre&gt;&lt;code&gt;$ echo | skypipe trigger&lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id='how_does_this_magic_work'&gt;How does this magic work?&lt;/h3&gt;
+&lt;h3 id=&#39;how_does_this_magic_work&#39;&gt;How does this magic work?&lt;/h3&gt;
 
-&lt;p&gt;You&amp;#8217;ll need a free &lt;a href='https://www.dotcloud.com/'&gt;Dotcloud&lt;/a&gt; account to use skypipe, but you don&amp;#8217;t need to know anything about using Dotcloud to use skypipe.&lt;/p&gt;
+&lt;p&gt;You&amp;#8217;ll need a free &lt;a href=&#39;https://www.dotcloud.com/&#39;&gt;Dotcloud&lt;/a&gt; account to use skypipe, but you don&amp;#8217;t need to know anything about using Dotcloud to use skypipe.&lt;/p&gt;
 
 &lt;p&gt;When you first use skypipe it will want you to run a setup command (&lt;code&gt;skypipe --setup&lt;/code&gt;). This will deploy a very simple messaging server to Dotcloud. From then on, skypipe will use your account to transparently find and use this server, no matter where you are. The server is managed automatically and runs on Dotcloud free of charge, so you never need to think about it.&lt;/p&gt;
 
-&lt;h3 id='software_with_a_service'&gt;Software with a service!&lt;/h3&gt;
+&lt;h3 id=&#39;software_with_a_service&#39;&gt;Software with a service!&lt;/h3&gt;
 
 &lt;p&gt;This is a new paradigm of creating tools that transparently leverage the cloud to create magical experiences. It&amp;#8217;s not quite software as a service, it&amp;#8217;s software &lt;em&gt;with&lt;/em&gt; a service. Nobody is using a shared, central server, and no one needs to setup or manage their own server. The &lt;em&gt;software&lt;/em&gt; deploys and manages its own server for you.&lt;/p&gt;
 
@@ -727,7 +727,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;I&amp;#8217;m excited to see what else can be done with this pattern. Naturally, I&amp;#8217;m already thinking about a number of other potential uses.&lt;/p&gt;
 
-&lt;h3 id='using_skypipe_and_getting_involved'&gt;Using skypipe and getting involved&lt;/h3&gt;
+&lt;h3 id=&#39;using_skypipe_and_getting_involved&#39;&gt;Using skypipe and getting involved&lt;/h3&gt;
 
 &lt;p&gt;Skypipe is still an alpha piece of software. Be warned, there are some rough edges. That said, you can install skypipe with pip:&lt;/p&gt;
 
@@ -735,9 +735,9 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;The user experience is not yet entirely optimized. One of the biggest issues is that it needs to check for the server on every use. This can be done less often and cached, which would make it much snappier and on par with most command line utilities.&lt;/p&gt;
 
-&lt;p&gt;This and a few other issues are already tracked in &lt;a href='https://github.com/progrium/skypipe/issues'&gt;Github Issues&lt;/a&gt;; feel free to take a whack at them. The codebase is intentionally small, documented, and written to be read, although there are no tests yet.&lt;/p&gt;
+&lt;p&gt;This and a few other issues are already tracked in &lt;a href=&#39;https://github.com/progrium/skypipe/issues&#39;&gt;Github Issues&lt;/a&gt;; feel free to take a whack at them. The codebase is intentionally small, documented, and written to be read, although there are no tests yet.&lt;/p&gt;
 
-&lt;p&gt;The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I&amp;#8217;d like to find a way to package skypipe in a way that includes all its dependencies. Perhaps &lt;a href='http://www.pyinstaller.org/'&gt;PyInstaller&lt;/a&gt; can help with this.&lt;/p&gt;
+&lt;p&gt;The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I&amp;#8217;d like to find a way to package skypipe in a way that includes all its dependencies. Perhaps &lt;a href=&#39;http://www.pyinstaller.org/&#39;&gt;PyInstaller&lt;/a&gt; can help with this.&lt;/p&gt;
 
 &lt;p&gt;Another feature I&amp;#8217;m sure a lot of people will want (or complain about) is being able to run your own server and ignore the software with a service aspect. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen.&lt;/p&gt;
 
@@ -753,7 +753,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;I&amp;#8217;ve never been happy with my website or blog, perhaps because I&amp;#8217;ve never been able to invest enough time into it. Over the years, I&amp;#8217;ve at least been able to put a lot of thought into what I want and how I want to express myself. This attempt gets pretty close.&lt;/p&gt;
 
-&lt;h3 id='highlevel_goals'&gt;High-level Goals&lt;/h3&gt;
+&lt;h3 id=&#39;highlevel_goals&#39;&gt;High-level Goals&lt;/h3&gt;
 
 &lt;p&gt;Too many of my personal site designs have been dark and gloomy, often monochromatic. I think one of the biggest ideas going into this project was to make something bright and colorful. From a pure functional standpoint, I felt this was important. I also wanted to actually reflect my style. Too often I&amp;#8217;ve settled for pre-designed blog themes that &amp;#8220;kinda, sorta&amp;#8221; match my sense of style and how I want to express myself. This time I would have full control.&lt;/p&gt;
 
@@ -761,13 +761,13 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Combining my personal website with my blog is another thing I wanted to do. So far they&amp;#8217;ve always been separate. Not only would this be for consistency and simplicity, but for future proofing. Anything else I want to put online I can do with this site in a way that feels part of a whole. A whole that represents my identity and personal brand.&lt;/p&gt;
 
-&lt;h3 id='aesthetic'&gt;Aesthetic&lt;/h3&gt;
+&lt;h3 id=&#39;aesthetic&#39;&gt;Aesthetic&lt;/h3&gt;
 
 &lt;p&gt;Like I mentioned, I wanted bright and colorful. I also wanted simple and toy-like. I wanted it to feel well designed, but without a lot of modern web design tropes. This led to a minimalist foundation that I could sprinkle my favorite motifs on top of.&lt;/p&gt;
 
-&lt;p&gt;I actually only had one website in mind that I used for initial inspiration. In fact, I think when I came across &lt;a href='http://disqus.com/for-websites/awesome-ux'&gt;this page of the Disqus website&lt;/a&gt;, I immediately started imagining a new personal website. Most of that initial vision has since disappeared, but with that framing I was able to move on to colors.&lt;/p&gt;
+&lt;p&gt;I actually only had one website in mind that I used for initial inspiration. In fact, I think when I came across &lt;a href=&#39;http://disqus.com/for-websites/awesome-ux&#39;&gt;this page of the Disqus website&lt;/a&gt;, I immediately started imagining a new personal website. Most of that initial vision has since disappeared, but with that framing I was able to move on to colors.&lt;/p&gt;
 
-&lt;p&gt;The colors on that page reminded me of one of my favorite kinds of infographics: transit maps. I quickly started poking around ColourLovers for palettes inspired by transit maps. I found a few and settled on &lt;a href='http://www.colourlovers.com/palette/1043750/Tokyo_Subway'&gt;one based on Tokyo&amp;#8217;s subway map&lt;/a&gt;. Then I moved on to typeface.&lt;/p&gt;
+&lt;p&gt;The colors on that page reminded me of one of my favorite kinds of infographics: transit maps. I quickly started poking around ColourLovers for palettes inspired by transit maps. I found a few and settled on &lt;a href=&#39;http://www.colourlovers.com/palette/1043750/Tokyo_Subway&#39;&gt;one based on Tokyo&amp;#8217;s subway map&lt;/a&gt;. Then I moved on to typeface.&lt;/p&gt;
 
 &lt;p&gt;I limited my options to what was available on Google Webfonts. Previously I was a fan of the Droid Sans and Droid Serif families. This time around, I used Open Sans as the primary font. For the header title (my name), I needed something different. I wanted something heavier but not wide. Ideally, I wanted a bold Futura Condensed, but a heavy Futura isn&amp;#8217;t on Google Webfonts.&lt;/p&gt;
 
@@ -775,15 +775,15 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;The tree in the header was a late addition. I have a thing for trees as a symbol of nature and I wanted to add more character to the design. Originally I was going to use Context Free to create a procedurally generated tree, but this proved too time consuming to get what I wanted. A free vector based tree was not hard to find.&lt;/p&gt;
 
-&lt;h3 id='platform'&gt;Platform&lt;/h3&gt;
+&lt;h3 id=&#39;platform&#39;&gt;Platform&lt;/h3&gt;
 
-&lt;p&gt;I&amp;#8217;ve become a fan of using &lt;a href='http://pages.github.com/'&gt;GitHub Pages&lt;/a&gt; for simple websites. It&amp;#8217;s hosted, it&amp;#8217;s free, and powered by Git. The site is then versioned, editable online, and even forkable. The only limitation is that it only hosts static files.&lt;/p&gt;
+&lt;p&gt;I&amp;#8217;ve become a fan of using &lt;a href=&#39;http://pages.github.com/&#39;&gt;GitHub Pages&lt;/a&gt; for simple websites. It&amp;#8217;s hosted, it&amp;#8217;s free, and powered by Git. The site is then versioned, editable online, and even forkable. The only limitation is that it only hosts static files.&lt;/p&gt;
 
-&lt;p&gt;Luckily, they&amp;#8217;ve built-in support for &lt;a href='https://github.com/mojombo/jekyll'&gt;Jekyll&lt;/a&gt;, which is more or less like pre-rendering a dynamic site. This not only gives you templating, layouts, and includes, but it&amp;#8217;s &amp;#8220;blog aware&amp;#8221; so you get pagination, meta-data, and even related post links. The only real dynamic bits of the site are blog comments and analytics, both are solved by client-side JavaScript powered services. Neither of those I care to have in my Git repo anyway.&lt;/p&gt;
+&lt;p&gt;Luckily, they&amp;#8217;ve built-in support for &lt;a href=&#39;https://github.com/mojombo/jekyll&#39;&gt;Jekyll&lt;/a&gt;, which is more or less like pre-rendering a dynamic site. This not only gives you templating, layouts, and includes, but it&amp;#8217;s &amp;#8220;blog aware&amp;#8221; so you get pagination, meta-data, and even related post links. The only real dynamic bits of the site are blog comments and analytics, both are solved by client-side JavaScript powered services. Neither of those I care to have in my Git repo anyway.&lt;/p&gt;
 
 &lt;p&gt;The other part of this plan I like is that it lets you write content in simple Markdown files kept in a Git repo. If I ever need, I can take this repo anywhere and still have my blog posts as Markdown files. This is a far more ideal place to be in that most blogging platforms I&amp;#8217;ve used in the past.&lt;/p&gt;
 
-&lt;h3 id='future'&gt;Future&lt;/h3&gt;
+&lt;h3 id=&#39;future&#39;&gt;Future&lt;/h3&gt;
 
 &lt;p&gt;It&amp;#8217;s still a work in progress. You may have noticed the homepage currently redirects to the blog index. I&amp;#8217;m hoping to have more of a landing or intro page as the homepage. The idea there is to quickly communicate what I&amp;#8217;m about and what I work on.&lt;/p&gt;
 
@@ -801,7 +801,7 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
    <id>http://progrium.com/blog/2010/05/11/making-a-local-web-server-public-with-localtunnel</id>
    <content type="html">&lt;p&gt;These days it&amp;#8217;s fairly common to run a local environment for web development. Whether you&amp;#8217;re running Apache, Mongrel, or the App Engine SDK, we&amp;#8217;re all starting to see the benefits of having a production-like environment right there on your laptop so you can iteratively code and debug your app without deploying live, or even needing the Internet.&lt;/p&gt;
 
-&lt;p&gt;However, with the growing popularity of callbacks and &lt;a href='http://webhooks.org'&gt;webhooks&lt;/a&gt;, you can only really debug if your script is live and on the Internet. There are also other cases where you need to make what are normally private and/or local web servers public, such as various kinds of testing or quick public demos. Demos are a surprisingly common case, especially for multi-user systems (&amp;#8220;Man, I wish I could have you join this chat room app I&amp;#8217;m working on, but it&amp;#8217;s only running on my laptop&amp;#8221;).&lt;/p&gt;
+&lt;p&gt;However, with the growing popularity of callbacks and &lt;a href=&#39;http://webhooks.org&#39;&gt;webhooks&lt;/a&gt;, you can only really debug if your script is live and on the Internet. There are also other cases where you need to make what are normally private and/or local web servers public, such as various kinds of testing or quick public demos. Demos are a surprisingly common case, especially for multi-user systems (&amp;#8220;Man, I wish I could have you join this chat room app I&amp;#8217;m working on, but it&amp;#8217;s only running on my laptop&amp;#8221;).&lt;/p&gt;
 
 &lt;p&gt;The solution is obvious, right? SSH remote forwarding, or reverse tunneling. Use a magical set of options with SSH with a public server you have SSH access to, and set up a tunnel from that machine to your local machine. When people connect to a port on your public machine, it gets forwarded to a local port on your machine, looking as if that port was on a public IP.&lt;/p&gt;
 
@@ -816,11 +816,11 @@ echo &amp;quot;I was triggered!&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;$ localtunnel 8080
 Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;What&amp;#8217;s going on behind the scenes is a web server component running on localtunnel.com. It serves two purposes: a virtual host reverse proxy to the port forward, and a tunnel register API (try going to &lt;a href='http://open.localtunnel.com'&gt;http://open.localtunnel.com&lt;/a&gt;). This simple API allocates a port to tunnel on, and gives the localtunnel client command the information it needs to set up an SSH tunnel for you. The localtunnel command just wraps an SSH library and does this register call.&lt;/p&gt;
+&lt;p&gt;What&amp;#8217;s going on behind the scenes is a web server component running on localtunnel.com. It serves two purposes: a virtual host reverse proxy to the port forward, and a tunnel register API (try going to &lt;a href=&#39;http://open.localtunnel.com&#39;&gt;http://open.localtunnel.com&lt;/a&gt;). This simple API allocates a port to tunnel on, and gives the localtunnel client command the information it needs to set up an SSH tunnel for you. The localtunnel command just wraps an SSH library and does this register call.&lt;/p&gt;
 
 &lt;p&gt;Of course, there&amp;#8217;s also the authentication part. As a free, public service, we don&amp;#8217;t want to just give everybody SSH access to this machine (as it may seem). The user localtunnel on that box is made just for this service. It has no shell. It only has a home directory with an authorized_keys file. We require you to upload a public key for authentication, and we also mark that key with options that say you can only do port forwarding. Although, it can&amp;#8217;t be used for arbitrary port forwarding&amp;#8230; because it&amp;#8217;s only a private port on the remote side, it can only be used with the special reverse proxy.&lt;/p&gt;
 
-&lt;p&gt;So there it is. &lt;a href='http://github.com/progrium/localtunnel'&gt;And the code is on GitHub.&lt;/a&gt; You might notice the server is in Python and the client in Ruby. Why? It just made sense. Python has Twisted, which I like for server stuff. And Ruby is great for command line scripts, and has a nice SSH library. In the end, it doesn&amp;#8217;t matter what it&amp;#8217;s written in. Ultimately it&amp;#8217;s a Unix program.&lt;/p&gt;
+&lt;p&gt;So there it is. &lt;a href=&#39;http://github.com/progrium/localtunnel&#39;&gt;And the code is on GitHub.&lt;/a&gt; You might notice the server is in Python and the client in Ruby. Why? It just made sense. Python has Twisted, which I like for server stuff. And Ruby is great for command line scripts, and has a nice SSH library. In the end, it doesn&amp;#8217;t matter what it&amp;#8217;s written in. Ultimately it&amp;#8217;s a Unix program.&lt;/p&gt;
 
 &lt;p&gt;Enjoy!&lt;/p&gt;</content>
  </entry>
@@ -830,7 +830,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
    <link href="http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure"/>
    <updated>2010-02-02T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2010/02/02/learning-from-disparity-aka-failure</id>
-   <content type="html">&lt;p&gt;I&amp;#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &amp;#8220;Yes, you can learn from failure, but you can also learn from success!&amp;#8221; Only after reading Jason Fried&amp;#8217;s blog post from one year ago, &lt;a href='http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated'&gt;Learning from failure is overrated&lt;/a&gt;, have I realized exactly what&amp;#8217;s wrong. We&amp;#8217;re talking about different kinds of failure.&lt;/p&gt;
+   <content type="html">&lt;p&gt;I&amp;#8217;ve long argued that failure is the only way a person can learn. This has been a very resonating bit of wisdom for me, despite the fact people have often argued against it with rather sound logic: &amp;#8220;Yes, you can learn from failure, but you can also learn from success!&amp;#8221; Only after reading Jason Fried&amp;#8217;s blog post from one year ago, &lt;a href=&#39;http://37signals.com/svn/posts/1555-learning-from-failure-is-overrated&#39;&gt;Learning from failure is overrated&lt;/a&gt;, have I realized exactly what&amp;#8217;s wrong. We&amp;#8217;re talking about different kinds of failure.&lt;/p&gt;
 
 &lt;p&gt;Learning happens when you correct the mismatch of an expected outcome from the actual outcome. This is where the idea of learning from failure actually comes from. Failure represents a mistake in judgment, a disparity between expectation and reality. Therefore, if your expectation is validated by success and there is no disparity, then you didn&amp;#8217;t actually &lt;em&gt;learn&lt;/em&gt; anything &amp;#8212; you already knew.&lt;/p&gt;
 
@@ -850,19 +850,19 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;p&gt;&lt;strong&gt;Update:&lt;/strong&gt; Notify.io is currently out of service as it is being re-imagined in smaller pieces based on open standards. Contact me for more information.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;In October 2009 I started a project called &lt;a href='http://www.notify.io/'&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
-&lt;center&gt;&lt;iframe frameborder='0' height='315' src='http://www.youtube.com/embed/Fs9NauQ2M6o' width='560'&gt; &lt;/iframe&gt;&lt;/center&gt;
-&lt;h3 id='overview'&gt;Overview&lt;/h3&gt;
+&lt;p&gt;In October 2009 I started a project called &lt;a href=&#39;http://www.notify.io/&#39;&gt;Notify.io&lt;/a&gt; and a month later announced it. I talked about how it will bring notifications to the web. Now that it&amp;#8217;s basically alpha complete, I&amp;#8217;ll give you a quick walkthrough of what makes it so great.&lt;/p&gt;
+&lt;center&gt;&lt;iframe frameborder=&#39;0&#39; height=&#39;315&#39; src=&#39;http://www.youtube.com/embed/Fs9NauQ2M6o&#39; width=&#39;560&#39;&gt; &lt;/iframe&gt;&lt;/center&gt;
+&lt;h3 id=&#39;overview&#39;&gt;Overview&lt;/h3&gt;
 
-&lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href='http://growl.info/'&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
+&lt;p&gt;At a really high level, you can think of Notify.io as a notification router. As a web service, it provides a singleton endpoint for any web-connected program, whether a web application, desktop application or user script, to send notifications to somebody. For users, you can control what notifications you get and how you get them. In this way, Notify.io is like a global, web-accessable version of the popular &lt;a href=&#39;http://growl.info/&#39;&gt;Growl&lt;/a&gt; application for OS X (which should honestly just ship with OS X). Only it&amp;#8217;s even better.&lt;/p&gt;
 
-&lt;h3 id='desktop_notifications'&gt;Desktop Notifications&lt;/h3&gt;
+&lt;h3 id=&#39;desktop_notifications&#39;&gt;Desktop Notifications&lt;/h3&gt;
 
 &lt;p&gt;The original inspiration for Notify.io was to make Growl more useful by fixing its ability to receive notifications from the Internet. Out of the box, Growl is effectively only good for notifications from sources running on your machine. If you wanted to get notifications from a web app, you&amp;#8217;d have to wait for them to release a desktop notifier, which hopefully would use Growl to actually display the notifications. So you end up with all these desktop notifiers running for some apps, and have no option of desktop notifications for others.&lt;/p&gt;
 
 &lt;p&gt;This is probably the killer feature of Notify.io: it lets you get desktop notifications from any web app that supports it, which is an order of magnatude easier for them to do than build their own desktop notifier.&lt;/p&gt;
 
-&lt;h3 id='sources_and_outlets'&gt;Sources and Outlets&lt;/h3&gt;
+&lt;h3 id=&#39;sources_and_outlets&#39;&gt;Sources and Outlets&lt;/h3&gt;
 
 &lt;p&gt;The language of Notify.io is based around Sources and Outlets. Sources are pretty straightforward. They&amp;#8217;re a source of notifications. They could represent an application, script, company, person (or perhaps object?) that can send you notifications.&lt;/p&gt;
 
@@ -870,7 +870,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 
 &lt;p&gt;The magic is in routing notifications from Sources to Outlets. Currently this is a simple mapping of Source to Outlet. For example, you can get notifications from Source A on your desktop, while notifications from Source B go to IM. This simplistic routing is just the beginning. We&amp;#8217;ll talk about how we&amp;#8217;ll do advanced routing when we get to the Roadmap.&lt;/p&gt;
 
-&lt;h3 id='the_nio_client'&gt;The Nio Client&lt;/h3&gt;
+&lt;h3 id=&#39;the_nio_client&#39;&gt;The Nio Client&lt;/h3&gt;
 
 &lt;p&gt;For developers, it&amp;#8217;s worth mentioning that the pipe for our Desktop Notifier is really just a Comet HTTP stream. It can be consumed by pretty much anything. We were originally talking with Growl and authors of other desktop notifiers of direct integration. This is still a possibility, but just so we could move forward, we built our own client for OS X. Clients for other systems are available (but not yet &amp;#8220;officially&amp;#8221; supported) or are in progress, including Windows and Android.&lt;/p&gt;
 
@@ -880,9 +880,9 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 
 &lt;p&gt;The other cool thing about our client is that it has a shell script notification hook. This means you can have notifications trigger a shell script that&amp;#8217;s passed the notification details. This is pretty powerful because it means you can do things like create your own local logging, hear your notifications with text-to-speech, or make certain notifications trigger a more obstrusive means of notifying you, such as Quicksilver&amp;#8217;s Large Type feature. This kind of programmability is central to our approach to design, as you&amp;#8217;ll see later on in the Roadmap.&lt;/p&gt;
 
-&lt;h3 id='simple_api_and_approval_model'&gt;Simple API and Approval Model&lt;/h3&gt;
+&lt;h3 id=&#39;simple_api_and_approval_model&#39;&gt;Simple API and Approval Model&lt;/h3&gt;
 
-&lt;p&gt;For proper adoption, we need web apps to integrate Notify.io, so we have a super simple API for Sources. It&amp;#8217;s a simple REST API based on an endpoint constructed by the target of your notification. Like &lt;a href='http://en.gravatar.com/'&gt;Gravatar&lt;/a&gt;, we use an MD5 hash of a user&amp;#8217;s email address to identify targets. For example, to send a notification to test@example.com, you&amp;#8217;d do an HTTP POST to this URL:&lt;/p&gt;
+&lt;p&gt;For proper adoption, we need web apps to integrate Notify.io, so we have a super simple API for Sources. It&amp;#8217;s a simple REST API based on an endpoint constructed by the target of your notification. Like &lt;a href=&#39;http://en.gravatar.com/&#39;&gt;Gravatar&lt;/a&gt;, we use an MD5 hash of a user&amp;#8217;s email address to identify targets. For example, to send a notification to test@example.com, you&amp;#8217;d do an HTTP POST to this URL:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;http://api.notify.io/v1/notify/55502f40dc8b7c769880b10874abc9d0&lt;/code&gt;&lt;/pre&gt;
 
@@ -890,23 +890,23 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 
 &lt;p&gt;Then what happens is the first notification you send actually triggers a notification to that user that you want to send them notifications. If they accept, future notifications will be sent and your previous notifications will show up in their history. This may change to replay previous notifications on approval, but the point here is the user has to approve notifications before they get them. In this way, it&amp;#8217;s similar to Jabber&amp;#8217;s approval model and helps avoid spammers.&lt;/p&gt;
 
-&lt;h3 id='public_service_software'&gt;Public Service Software&lt;/h3&gt;
+&lt;h3 id=&#39;public_service_software&#39;&gt;Public Service Software&lt;/h3&gt;
 
-&lt;p&gt;&lt;a href='http://code.google.com/p/notify-io/'&gt;Notify.io and its clients are open source&lt;/a&gt;. The service is free. Or rather, it&amp;#8217;s not-for-profit donationware. Notify.io is being run under a model I&amp;#8217;m developing called POSS, the goal of which is to automate/abstract away the maintainence and funding of its operation. The end result should be: the service exists, it&amp;#8217;s open source, and some in the developer community can deploy changes. But no single person is financially responsible for it, and it&amp;#8217;s run on maintained cloud infrastructure. In this case it&amp;#8217;s mostly App Engine.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#39;http://code.google.com/p/notify-io/&#39;&gt;Notify.io and its clients are open source&lt;/a&gt;. The service is free. Or rather, it&amp;#8217;s not-for-profit donationware. Notify.io is being run under a model I&amp;#8217;m developing called POSS, the goal of which is to automate/abstract away the maintainence and funding of its operation. The end result should be: the service exists, it&amp;#8217;s open source, and some in the developer community can deploy changes. But no single person is financially responsible for it, and it&amp;#8217;s run on maintained cloud infrastructure. In this case it&amp;#8217;s mostly App Engine.&lt;/p&gt;
 
-&lt;p&gt;This means that Notify.io is not a startup. It&amp;#8217;s public infrastructure. Ideally, I&amp;#8217;m not even in the loop. It should be a self-sustaining public service. This is not fully realized, but it will be as it starts to consume more resources. For more information, you can &lt;a href='http://blogrium.wordpress.com/2009/10/29/public-open-source-services/'&gt;read more&lt;/a&gt; on POSS or &lt;a href='http://groups.google.com/group/poss-talk'&gt;join our discussion group&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This means that Notify.io is not a startup. It&amp;#8217;s public infrastructure. Ideally, I&amp;#8217;m not even in the loop. It should be a self-sustaining public service. This is not fully realized, but it will be as it starts to consume more resources. For more information, you can &lt;a href=&#39;http://blogrium.wordpress.com/2009/10/29/public-open-source-services/&#39;&gt;read more&lt;/a&gt; on POSS or &lt;a href=&#39;http://groups.google.com/group/poss-talk&#39;&gt;join our discussion group&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;For now, the important thing is that Notify.io is open source. This means anybody can contribute bug fixes, new outlets, new desktop clients, etc.&lt;/p&gt;
 
-&lt;h3 id='roadmap'&gt;Roadmap&lt;/h3&gt;
+&lt;h3 id=&#39;roadmap&#39;&gt;Roadmap&lt;/h3&gt;
 
 &lt;p&gt;Okay, sure, Notify.io is pretty cool now. But here are some of the major things that will be coming soon. Hopefully with your help!&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Advanced Routing and Filters&lt;/em&gt;&lt;br /&gt; From the beginning, I wanted really powerful routing and filtering. My evangelism of webhooks has given me the obvious answer to this, but in a more integrated way. Basically, how do you allow any routing scheme imagineable by users? Let them write code. Originally it was going to be powered by &lt;a href='http://www.scriptlets.org/'&gt;Scriptlets&lt;/a&gt;, but since I split the eval engine out as &lt;a href='http://github.com/progrium/DrEval'&gt;DrEval&lt;/a&gt;, it will be based on that.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Advanced Routing and Filters&lt;/em&gt;&lt;br /&gt; From the beginning, I wanted really powerful routing and filtering. My evangelism of webhooks has given me the obvious answer to this, but in a more integrated way. Basically, how do you allow any routing scheme imagineable by users? Let them write code. Originally it was going to be powered by &lt;a href=&#39;http://www.scriptlets.org/&#39;&gt;Scriptlets&lt;/a&gt;, but since I split the eval engine out as &lt;a href=&#39;http://github.com/progrium/DrEval&#39;&gt;DrEval&lt;/a&gt;, it will be based on that.&lt;/p&gt;
 
 &lt;p&gt;Basically, just a imagine a UI with a little textarea for writing JavaScript that can make web calls. Route notifications based on your IM status, your location, what music you&amp;#8217;re listening to, arbitrary time schedules, or anything you can code.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;More Outlets&lt;/em&gt;&lt;br /&gt; Obviously, more Outlets are good. Obvious ones are IRC, SMS, and Twitter DM. With Twilio we can do voice call notifications. Integration with push clients like the iPhone&amp;#8217;s Prowl app would be easy to do. Our outlet system is very simple, so you can &lt;a href='http://github.com/progrium/notify-io/blob/master/www/outlet_types.py'&gt;look at the source of our existing ones&lt;/a&gt;, write an outlet and it&amp;#8217;s likely we&amp;#8217;ll deploy it.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;More Outlets&lt;/em&gt;&lt;br /&gt; Obviously, more Outlets are good. Obvious ones are IRC, SMS, and Twitter DM. With Twilio we can do voice call notifications. Integration with push clients like the iPhone&amp;#8217;s Prowl app would be easy to do. Our outlet system is very simple, so you can &lt;a href=&#39;http://github.com/progrium/notify-io/blob/master/www/outlet_types.py&#39;&gt;look at the source of our existing ones&lt;/a&gt;, write an outlet and it&amp;#8217;s likely we&amp;#8217;ll deploy it.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;OpenID Support&lt;/em&gt;&lt;br /&gt; Right now, you authenticate with Google. I don&amp;#8217;t believe in creating authentication systems, and Google was the quickest given the platform. It&amp;#8217;s also pretty popular and ensures you have an email address we can use. However, there are plenty of people that don&amp;#8217;t like the idea of using their Google Account, so at some point we&amp;#8217;ll support OpenID login and then go from there.&lt;/p&gt;
 
@@ -926,9 +926,9 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
    <link href="http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker"/>
    <updated>2009-12-08T00:00:00-06:00</updated>
    <id>http://progrium.com/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker</id>
-   <content type="html">&lt;p&gt;Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on &lt;a href='http://www.flickr.com/photos/progrium/4017351989/'&gt;the front page&lt;/a&gt; of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on &lt;a href=&#39;http://www.flickr.com/photos/progrium/4017351989/&#39;&gt;the front page&lt;/a&gt; of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.&lt;/p&gt;
 
-&lt;p&gt;&lt;a href='http://hackerdojo.com'&gt;Hacker Dojo&lt;/a&gt;, aspiring to be a global hub of innovation, is based on a simple idea: to provide a community center for hackers, thinkers and technologists to meet, discuss, learn and create.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#39;http://hackerdojo.com&#39;&gt;Hacker Dojo&lt;/a&gt;, aspiring to be a global hub of innovation, is based on a simple idea: to provide a community center for hackers, thinkers and technologists to meet, discuss, learn and create.&lt;/p&gt;
 
 &lt;p&gt;It&amp;#8217;s a non-profit, volunteer-run, member-supported operation that simply provides a space for hackers to do their thing 24/7, whether it&amp;#8217;s working on side projects, organizing a meetup, building the next startup, giving a class, working remotely, or just hanging out with diverse yet like-minded people. The thing they have in common is the hacker spirit, a force that drives ordinary but curious people to create what can end up being extraordinary, such as the personal computer, the first video game system, or the technology powering the Internet.&lt;/p&gt;
 
@@ -940,13 +940,13 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;p&gt;A hacker is expert in their field, whether hobby or professional, that pushes the envelope of what&amp;#8217;s possible through hands-on exploration, driven by relentless curiosity and a desire to challenge the status quo.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;Steven Levy, author of &lt;a href='http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511'&gt;Hackers: Heroes of the Computer Revolution&lt;/a&gt;, describes computer hackers as people that &amp;#8220;regard computing as the most important thing in the world.&amp;#8221; It&amp;#8217;s about passion. It&amp;#8217;s about something most of us can&amp;#8217;t even describe. It inexplicably compels us to explore technology. To build things. To learn things. To be like the heroes in our field and achieve the remarkable, which is something I think everybody can relate to.&lt;/p&gt;
+&lt;p&gt;Steven Levy, author of &lt;a href=&#39;http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511&#39;&gt;Hackers: Heroes of the Computer Revolution&lt;/a&gt;, describes computer hackers as people that &amp;#8220;regard computing as the most important thing in the world.&amp;#8221; It&amp;#8217;s about passion. It&amp;#8217;s about something most of us can&amp;#8217;t even describe. It inexplicably compels us to explore technology. To build things. To learn things. To be like the heroes in our field and achieve the remarkable, which is something I think everybody can relate to.&lt;/p&gt;
 
 &lt;p&gt;In fact, there is no reason why anybody shouldn&amp;#8217;t aspire to be like a hacker, an innovator. This is what Hacker Dojo is about. We want to foster hacker culture so it can grow, develop and spread. We want to make its values explicit, and be the &amp;#8220;place of the way&amp;#8221; of the hacker.&lt;/p&gt;
 
-&lt;p&gt;If you still don&amp;#8217;t understand the hacker, or want to learn more, take a look at the &lt;a href='http://en.wikipedia.org/wiki/Hacker_ethic'&gt;Hacker ethic article&lt;/a&gt; on Wikipedia. There&amp;#8217;s also an excellent, short documentary available to watch online that shows you the energy and excitement of true hackers called &lt;a href='http://www.youtube.com/view_play_list?p=906FF3F2339D0C70'&gt;Hackers: Wizards of the Electronic Age&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you still don&amp;#8217;t understand the hacker, or want to learn more, take a look at the &lt;a href=&#39;http://en.wikipedia.org/wiki/Hacker_ethic&#39;&gt;Hacker ethic article&lt;/a&gt; on Wikipedia. There&amp;#8217;s also an excellent, short documentary available to watch online that shows you the energy and excitement of true hackers called &lt;a href=&#39;http://www.youtube.com/view_play_list?p=906FF3F2339D0C70&#39;&gt;Hackers: Wizards of the Electronic Age&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;If you want to get involved in Hacker Dojo, come stop by or &lt;a href='http://hackerdojo.com/'&gt;visit the website&lt;/a&gt;! We hold many events at the Dojo, but it&amp;#8217;s also generally open for anybody to come and hack. If you&amp;#8217;re too far to come to us, you may find another &lt;a href='http://en.wikipedia.org/wiki/Hackerspace'&gt;hackerspace&lt;/a&gt; nearby. For example, in SF there is the excellent &lt;a href='https://www.noisebridge.net/wiki/Noisebridge'&gt;Noisebridge&lt;/a&gt; hackerspace.&lt;/p&gt;
+&lt;p&gt;If you want to get involved in Hacker Dojo, come stop by or &lt;a href=&#39;http://hackerdojo.com/&#39;&gt;visit the website&lt;/a&gt;! We hold many events at the Dojo, but it&amp;#8217;s also generally open for anybody to come and hack. If you&amp;#8217;re too far to come to us, you may find another &lt;a href=&#39;http://en.wikipedia.org/wiki/Hackerspace&#39;&gt;hackerspace&lt;/a&gt; nearby. For example, in SF there is the excellent &lt;a href=&#39;https://www.noisebridge.net/wiki/Noisebridge&#39;&gt;Noisebridge&lt;/a&gt; hackerspace.&lt;/p&gt;
 
 &lt;p&gt;When you&amp;#8217;re this obsessed with technology, so much that most &amp;#8220;normal&amp;#8221; people have no idea what you&amp;#8217;re talking about, it helps to have a place where people don&amp;#8217;t think you&amp;#8217;re crazy. People have moved to Mountain View to be closer to Hacker Dojo. If you already live nearby, you should definitely take advantage of this place of the way of the hacker.&lt;/p&gt;</content>
  </entry>
@@ -986,7 +986,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
    <link href="http://progrium.com/blog/2009/10/29/public-open-source-services"/>
    <updated>2009-10-29T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/10/29/public-open-source-services</id>
-   <content type="html">&lt;p&gt;Last night I went off and put up a wiki about an idea I&amp;#8217;ve been thinking about for a while: &lt;a href='http://poss.gliderlab.com/'&gt;public open source services&lt;/a&gt; or POSS. Think: public services or utilities on the web run as open source.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Last night I went off and put up a wiki about an idea I&amp;#8217;ve been thinking about for a while: &lt;a href=&#39;http://poss.gliderlab.com/&#39;&gt;public open source services&lt;/a&gt; or POSS. Think: public services or utilities on the web run as open source.&lt;/p&gt;
 
 &lt;p&gt;Unlike open source software, web services aren&amp;#8217;t just source code. They&amp;#8217;re source code that &lt;em&gt;runs&lt;/em&gt;. They have to be maintained in order to keep running, and the resources they consume have to be paid for. This is why most web services are built using a business as the vehicle. This effectively constrains what you can build by framing it as something that needs to turn a profit or support you to work on it. But does it need to be that way? Can web services be built in a way that make it self-sufficient? Not needing some ambivalent leader to take responsibility for it?&lt;/p&gt;
 
@@ -1006,7 +1006,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 
 &lt;p&gt;If the service isn&amp;#8217;t useful, nobody uses it, it&amp;#8217;s not paid for, it disappears. If it is useful, people will pay for it to keep it running. They are assured they are paying operating costs, which are significantly lower than most because it doesn&amp;#8217;t include paying for human resources! Volunteers might need to meddle with settings, but otherwise, the coders are in control and the community accepts or denies changes made by whoever wants them.&lt;/p&gt;
 
-&lt;p&gt;So if this is interesting, read the &lt;a href='http://poss.gliderlab.com/'&gt;full essay I wrote up on the wiki&lt;/a&gt;. It&amp;#8217;s been my intention to prototype and validate this model with many of my projects.&lt;/p&gt;</content>
+&lt;p&gt;So if this is interesting, read the &lt;a href=&#39;http://poss.gliderlab.com/&#39;&gt;full essay I wrote up on the wiki&lt;/a&gt;. It&amp;#8217;s been my intention to prototype and validate this model with many of my projects.&lt;/p&gt;</content>
  </entry>
  
  <entry>
@@ -1014,9 +1014,9 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
    <link href="http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow"/>
    <updated>2009-06-26T00:00:00-05:00</updated>
    <id>http://progrium.com/blog/2009/06/26/why-minimalist-software-wins-at-workflow</id>
-   <content type="html">&lt;p&gt;Recently I&amp;#8217;ve been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We&amp;#8217;re already married to &lt;a href='http://trac.edgewall.org/'&gt;Trac&lt;/a&gt;, so we&amp;#8217;ve been playing with &lt;a href='http://www.agile42.com/cms/pages/agilo/'&gt;Agilo&lt;/a&gt; and are looking at some of the other agile plugins for Trac. Unfortunately they&amp;#8217;re all so heavyweight, despite some that claim not to be.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Recently I&amp;#8217;ve been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We&amp;#8217;re already married to &lt;a href=&#39;http://trac.edgewall.org/&#39;&gt;Trac&lt;/a&gt;, so we&amp;#8217;ve been playing with &lt;a href=&#39;http://www.agile42.com/cms/pages/agilo/&#39;&gt;Agilo&lt;/a&gt; and are looking at some of the other agile plugins for Trac. Unfortunately they&amp;#8217;re all so heavyweight, despite some that claim not to be.&lt;/p&gt;
 
-&lt;p&gt;I came back to a realization I&amp;#8217;m sure a lot of us have had: most software sucks. Especially software that&amp;#8217;s intended to augment some real-life process. When asking friend/colleague &lt;a href='http://timothyfitz.com'&gt;Timothy Fitz&lt;/a&gt; about recommendations on agile tools, he said: &amp;#8220;A board and post-its. Seriously.&amp;#8221;&lt;/p&gt;
+&lt;p&gt;I came back to a realization I&amp;#8217;m sure a lot of us have had: most software sucks. Especially software that&amp;#8217;s intended to augment some real-life process. When asking friend/colleague &lt;a href=&#39;http://timothyfitz.com&#39;&gt;Timothy Fitz&lt;/a&gt; about recommendations on agile tools, he said: &amp;#8220;A board and post-its. Seriously.&amp;#8221;&lt;/p&gt;
 
 &lt;p&gt;This is part of the reason most enterprise software sucks so terribly. Enterprise is about lots of real-life process and workflow, and given that process augmentation software even in small doses generally sucks, large amounts of it will suck exponentially.&lt;/p&gt;
 
@@ -1034,7 +1034,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 
 &lt;p&gt;However, I&amp;#8217;m seeing a lot of this in agile/scrum software. Requirements have stories, stories have tasks, organized into iterations and releases. CRUD for every noun mentioned in scrum. This on top of abstractions in a direction different than we need. Numbers where it doesn&amp;#8217;t really matter. Nice pie chart breakdowns we&amp;#8217;ll rarely use. Top it off with horrible UI, since with all these features there isn&amp;#8217;t time to make them easy to use.&lt;/p&gt;
 
-&lt;p&gt;Honestly, &lt;a href='http://www.pivotaltracker.com/'&gt;Pivotal Tracker&lt;/a&gt; seems to have the best abstraction of agile. It folds requirements, stories and tasks into just stories. It automatically and dynamically creates iterations and calculates velocity. It keeps you on a single page, keeping you focused on what&amp;#8217;s important.&lt;/p&gt;
+&lt;p&gt;Honestly, &lt;a href=&#39;http://www.pivotaltracker.com/&#39;&gt;Pivotal Tracker&lt;/a&gt; seems to have the best abstraction of agile. It folds requirements, stories and tasks into just stories. It automatically and dynamically creates iterations and calculates velocity. It keeps you on a single page, keeping you focused on what&amp;#8217;s important.&lt;/p&gt;
 
 &lt;p&gt;Unfortunately, we can&amp;#8217;t use Pivotal Tracker since we&amp;#8217;d need it on our servers and the licensing they offered doesn&amp;#8217;t scale if we want to essentially give it away as part of NASA Code. It&amp;#8217;s likely I&amp;#8217;ll want to just start nudging Trac in the right direction using Pivotal Tracker as a model reference, pulling together code from Agilo and other plugins. If there&amp;#8217;s one thing that complements minimalist design, it&amp;#8217;s an extension architecture, and Trac has an excellent plugin system.&lt;/p&gt;
 
@@ -1066,11 +1066,11 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 
 &lt;p&gt;What upsets me is that many who would identify as hackers in this sense seem to be afraid to claim it. Most likely in fear of confusing the layman that has the media&amp;#8217;s myopic view of hackers. You&amp;#8217;ve never heard of the canonical conference for real hackers. No, it&amp;#8217;s not DefCon. (Just get up and leave.) It&amp;#8217;s a conference called Hackers. You&amp;#8217;ve never heard of it because they keep it secret!&lt;/p&gt;
 
-&lt;p&gt;This conference was started to gather everybody together that was mentioned in Steven Levy&amp;#8217;s book &lt;a href='http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511/ref=sr_1_2?ie=UTF8&amp;amp;s=books&amp;amp;qid=1245307316&amp;amp;sr=8-2'&gt;Hackers: Heroes of the Computer Revolution&lt;/a&gt; (one of the last good publication on hackers, and it came out in 1984!). This conference holds all the values of true hackerism and it&amp;#8217;s been happening for 25 years. But they won&amp;#8217;t promote it! It goes by a fake name and even has all mentions of &amp;#8220;hacker&amp;#8221; on their website replaced with an image so it won&amp;#8217;t be indexed. Seriously??&lt;/p&gt;
+&lt;p&gt;This conference was started to gather everybody together that was mentioned in Steven Levy&amp;#8217;s book &lt;a href=&#39;http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511/ref=sr_1_2?ie=UTF8&amp;amp;s=books&amp;amp;qid=1245307316&amp;amp;sr=8-2&#39;&gt;Hackers: Heroes of the Computer Revolution&lt;/a&gt; (one of the last good publication on hackers, and it came out in 1984!). This conference holds all the values of true hackerism and it&amp;#8217;s been happening for 25 years. But they won&amp;#8217;t promote it! It goes by a fake name and even has all mentions of &amp;#8220;hacker&amp;#8221; on their website replaced with an image so it won&amp;#8217;t be indexed. Seriously??&lt;/p&gt;
 
 &lt;p&gt;Trying to supplant public perception of hackers by just saying they&amp;#8217;re something different and providing a better name nobody uses (&amp;#8220;crackers&amp;#8221;) is not going to work. It hasn&amp;#8217;t worked. They need something to replace those visions of crackers with. We need tangible examples and stories. We need heroes. Heroes willing to wear the title.&lt;/p&gt;
 
-&lt;p&gt;Luckily, we have a new generation of hackers. One that has started a global movement called &lt;a href='http://hackerspaces.org/'&gt;hackerspaces&lt;/a&gt;, probably one of the biggest things for hackers in years. Our local hackerscene fostered by Silicon Valley culture and events like &lt;a href='http://devhouse.org'&gt;SuperHappyDevHouse&lt;/a&gt; have led to a hackerspace we hope will have a big impact. One that proudly wears the name hacker: &lt;a href='http://hackerdojo.com'&gt;Hacker Dojo&lt;/a&gt;.&lt;/p&gt;</content>
+&lt;p&gt;Luckily, we have a new generation of hackers. One that has started a global movement called &lt;a href=&#39;http://hackerspaces.org/&#39;&gt;hackerspaces&lt;/a&gt;, probably one of the biggest things for hackers in years. Our local hackerscene fostered by Silicon Valley culture and events like &lt;a href=&#39;http://devhouse.org&#39;&gt;SuperHappyDevHouse&lt;/a&gt; have led to a hackerspace we hope will have a big impact. One that proudly wears the name hacker: &lt;a href=&#39;http://hackerdojo.com&#39;&gt;Hacker Dojo&lt;/a&gt;.&lt;/p&gt;</content>
  </entry>
  
  <entry>
@@ -1095,8 +1095,8 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...&lt;/co
 &lt;p&gt;If you could avoid polling, you probably would. If you&amp;#8217;re building an app that works with a feed, you have to write a polling system. This means messing with the often-hard-to-debug crontab or writing and managing a full-fledged daemon. Then you have to worry about caching and parsing. Feeds seem to be made for the browser because the browser does a lot of this work for you, but it&amp;#8217;s a different story if you&amp;#8217;re constantly polling feeds or APIs in the backend. Then it almost becomes too much work to do anything simple with feeds and APIs. If you want to use feeds for real-time notification, have fun setting that up.&lt;/p&gt;
 
 &lt;p&gt;I also think there&amp;#8217;s a problem with the command line metaphor in the first place. The web is not linear. Web apps aren&amp;#8217;t synchronous. A better metaphor would be a daemon process. How do they communicate? IPC? Sockets? Queues?&lt;/p&gt;
-&lt;div class='alert alert-info'&gt;
-Note from 2012: Remember, this was 2007. Web developers didn't have Node.js or EventMachine, and mainstream developers didn't understand queuing systems or async operations. Often all they had was Apache and PHP.
+&lt;div class=&#39;alert alert-info&#39;&gt;
+Note from 2012: Remember, this was 2007. Web developers didn&#39;t have Node.js or EventMachine, and mainstream developers didn&#39;t understand queuing systems or async operations. Often all they had was Apache and PHP.
 &lt;/div&gt;
 &lt;p&gt;Unfortunately, web stacks are stateless request processors, so you can&amp;#8217;t really use sockets. You could use Amazon SQS or some other queuing system, but queues often just move the polling to somewhere else. What we need is something simple, stateless, and ideally real-time. We need to push.&lt;/p&gt;
 
